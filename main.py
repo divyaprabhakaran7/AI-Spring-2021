@@ -1,6 +1,8 @@
 import pandas as pd
+from country import Country
+from world import World
 
-def getDataFromFile(file_name):
+def get_data_from_file(file_name):
     excel_file = pd.ExcelFile(file_name)  # Install xlrd package to unlock Excel functionality in Pandas
 
     # Extract sheets from the file
@@ -17,9 +19,18 @@ def getDataFromFile(file_name):
     return df_all
 
 
+def generate_world(matrix):
+    world = World()
+    for country, resources in matrix.iterrows():
+        newCountry = Country(country, dict(resources))
+        world.add_country(newCountry)
+    return world
+
+
 def main():
-    matrix = getDataFromFile("Example-Initial-World.xls")
-    print(matrix)
+    matrix = get_data_from_file("data/Example-Initial-World.xls")
+    world = generate_world(matrix)
+    print(world)
 
 
 if __name__ == '__main__':
