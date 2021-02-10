@@ -2,6 +2,7 @@ import pandas as pd
 from country import Country
 from world import World
 
+
 def get_data_from_file(file_name):
     excel_file = pd.ExcelFile(file_name)  # Install xlrd package to unlock Excel functionality in Pandas
 

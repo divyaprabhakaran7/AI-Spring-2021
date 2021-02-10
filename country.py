@@ -20,4 +20,4 @@ class Country:
         resources = ""
         for resource in self.__resources:
             resources += str(resource) + ": " + str(self.__resources[resource]) + " "
-        return '{:<20}{:>4}'.format(name, resources)
+        return '{:<15}{:>5}'.format(name, resources)
