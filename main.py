@@ -23,8 +23,8 @@ def get_data_from_file(file_name):
 def generate_world(matrix):
     world = World()
     for country, resources in matrix.iterrows():
-        newCountry = Country(country, dict(resources))
-        world.add_country(newCountry)
+        new_country = Country(country, dict(resources))
+        world.add_country(new_country)
     return world
 
 
@@ -32,6 +32,10 @@ def main():
     matrix = get_data_from_file("data/Example-Initial-World.xls")
     world = generate_world(matrix)
     print(world)
+    print("Test transfer")
+    world.transfer('Atlantis', 'Erewhon', 'R1', 50)
+    print(world)
+
 
 
 if __name__ == '__main__':

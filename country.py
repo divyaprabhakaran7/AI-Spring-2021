@@ -12,6 +12,9 @@ class Country:
     def get_resources(self):
         return self.__resources
 
+    def get_resource_val(self, resource):
+        return self.__resources[resource]
+
     def get_name(self):
         return self.__name
 
