@@ -35,6 +35,8 @@ def main():
     print("Test transfer")
     world.transfer('Atlantis', 'Erewhon', 'R1', 50)
     print(world)
+    world.transform_housing('Atlantis', 2)
+    print(world)
 
 
 

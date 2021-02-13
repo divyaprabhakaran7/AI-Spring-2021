@@ -22,11 +22,23 @@ class World:
         if from_country.get_resource_val(resource) < amount:
             print("Transfer failed")
         else:
-            from_country.set_resource(resource, from_country.get_resource_val(resource) - amount)
-            to_country.set_resource(resource, to_country.get_resource_val(resource) + amount)
+            from_country.dec_resource(resource, amount)
+            to_country.inc_resource(resource, amount)
 
-    def transform(self, country, ):
-        
+
+    # Default number of transforms is 1
+    # FIXME could make theses constants if we change transforms
+    def transform_housing(self, country, amount=1):
+        # Decrease inputs
+        transform_country = self.get_country(country)
+        transform_country.dec_resource("R2", 1 * amount) # MetallicElements
+        transform_country.dec_resource("R3", 5 * amount) # Timber
+        transform_country.dec_resource("R21", 3 * amount) # MetallicAlloys
+
+        # increase outputs (population unchanged)
+        transform_country.inc_resource("R23", 1 * amount) # Housing
+        transform_country.inc_resource("R23'", 1 * amount) # HousingWaste
+
 
     def __str__(self):
         countries = ""

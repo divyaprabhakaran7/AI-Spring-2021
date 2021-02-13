@@ -6,8 +6,14 @@ class Country:
         self.__name = name
         self.__resources = resources
 
-    def set_resource(self, resource, newVal):
-        self.__resources[resource] = newVal
+    def set_resource(self, resource, new_val):
+        self.__resources[resource] = new_val
+
+    def dec_resource(self, resource, amount):
+        self.__resources[resource] -= amount
+
+    def inc_resource(self, resource, amount):
+        self.__resources[resource] += amount
 
     def get_resources(self):
         return self.__resources
