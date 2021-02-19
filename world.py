@@ -27,15 +27,6 @@ class World:
     def get_resource_weight(self, resource):
         return self.__resources[resource]
 
-    def transfer(self, country1, country2, resource, amount):
-        from_country = self.get_country(country1)
-        to_country = self.get_country(country2)
-        if from_country.get_resource_val(resource) < amount:
-            print("Transfer failed")
-        else:
-            from_country.dec_resource(resource, amount)
-            to_country.inc_resource(resource, amount)
-
     # Default number of transforms is 1 (Population requirement is checked by verifying function)
     # Requires 5 population
     def transform_housing(self, transform_country, amount=1):
@@ -95,6 +86,18 @@ class World:
 
         # Transform was unsuccessful -> return false
         return False
+
+    # Checks if a given transfer is feasible for a certain country:
+    # Either transfers and returns true, or returns false if transfer was not feasible
+    def transfer(self, country1, country2, resource, amount):
+        from_country = self.get_country(country1)
+        to_country = self.get_country(country2)
+        if from_country.resource_check(resource, amount):
+            from_country.dec_resource(resource, amount)
+            to_country.inc_resource(resource, amount)
+            return True
+        else:
+            return False
 
     def __str__(self):
         world = "Current world state:\n\n"

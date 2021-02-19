@@ -13,7 +13,9 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
                                   df_resources)  # Create the world object with country objects and weights
 
     print(world_object)
-    world_object.transform('Atlantis', 'R23', 2)
+    world_object.transform('Atlantis', 'R21', 10)
+    world_object.transform('Atlantis', 'R22', 2)
+    world_object.transfer('Atlantis', 'Carpania', 'R22', 1)
     print(world_object)
 
 
