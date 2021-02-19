@@ -1,6 +1,6 @@
 class World:
 
-    # Countries: Array of countries
+    # Countries: dict of countries
     def __init__(self):
         self.__countries = {}
 
