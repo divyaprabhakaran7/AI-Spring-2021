@@ -24,6 +24,18 @@ class Country:
     def get_name(self):
         return self.__name
 
+    # Determine whether a country has a certain amount (or more) of a resource
+    # overloaded to use dict if necessary (either input a single resource + an amount
+    # or a dict of resources and amounts)
+    def resource_check(self, resource, amount=None):
+        if amount is None:
+            for x in resource:
+                if self.__resources[x] < resource[x]:
+                    return False
+            return True
+        else:
+            return self.__resources[resource] >= amount
+
     def __str__(self):
         name = self.get_name()
         resources = ""

@@ -4,18 +4,16 @@ from world import World
 
 
 # Prototype function as described in the project spec (we'll initiate the scheduler from here)
-def my_country_scheduler (your_country_name, resources_filename, initial_state_filename, output_schedule_filename,
-                       num_output_schedules, depth_bound, frontier_max_size):
-    df_resources = get_data_from_file(resources_filename) # load resources data frame
-    df_countries = get_data_from_file(initial_state_filename) # load country data frame
-    world_matrix = create_matrix(df_countries, df_resources) # Get the two data frames into a matrix
-    world_object = generate_world(world_matrix) # Create the world object with country objects
+def my_country_scheduler(your_country_name, resources_filename, initial_state_filename, output_schedule_filename,
+                         num_output_schedules, depth_bound, frontier_max_size):
+    df_resources = get_data_from_file(resources_filename)  # load resources data frame
+    df_countries = get_data_from_file(initial_state_filename)  # load country data frame
+    world_matrix = create_matrix(df_countries, df_resources)  # Get the two data frames into a matrix
+    world_object = generate_world(world_matrix,
+                                  df_resources)  # Create the world object with country objects and weights
 
     print(world_object)
-    print("Test transfer")
-    world_object.transfer('Atlantis', 'Erewhon', 'R1', 50)
-    print(world_object)
-    world_object.transform_housing('Atlantis', 2)
+    world_object.transform('Atlantis', 'R23', 2)
     print(world_object)
 
 
@@ -39,8 +37,10 @@ def create_matrix(df_countries, df_resources):
 
 
 # Uses the country/resource matrix to create the country objects and load them into the world
-def generate_world(matrix):
+def generate_world(matrix, df_resources):
+    resource_dict = pd.Series(df_resources.Weight.values, index=df_resources.Resource).to_dict()
     world = World()
+    world.set_resources(resource_dict)
     for country, resources in matrix.iterrows():
         new_country = Country(country, dict(resources))
         world.add_country(new_country)
