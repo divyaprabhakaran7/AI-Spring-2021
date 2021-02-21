@@ -12,11 +12,13 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
     world_object = generate_world(world_matrix,
                                   df_resources)  # Create the world object with country objects and weights
 
-    print(world_object)
+    # Simple transform/transfer tests
+    #print(world_object)
     world_object.transform('Atlantis', 'R21', 10)
     world_object.transform('Atlantis', 'R22', 2)
     world_object.transfer('Atlantis', 'Carpania', 'R22', 1)
     print(world_object)
+    print_data_to_file('data/output_data.xlsx', world_object)
 
 
 # Load a data frame of an excel sheet
@@ -24,6 +26,20 @@ def get_data_from_file(file_name):
     df = pd.read_excel(file_name, engine='openpyxl')  # FIXME Need to install openpyxl package to run this
     df = df.loc[:df.last_valid_index()]  # This ensures that there are no trailing blank rows (weird bug with openpyxl)
     return df
+
+
+# Prints our ouput into a .xlsx file
+def print_data_to_file(file_name, world):
+    resources = world.get_resources()
+    countries = world.get_countries()
+
+    # Load countries into a dictionary of countries and their resource values
+    dict_all = {}
+    for country in countries:
+        dict_all[country] = countries[country].get_resources_as_array()
+    df_all = pd.DataFrame.from_dict(dict_all, orient='index')  # Turn this into a data frame (countries as index)
+    df_all.columns = resources.keys()  # Add resources as column headers
+    df_all.to_excel(file_name, sheet_name='Output Data')  # Print into our output excel file
 
 
 # Create a matrix of countries and resources (used for initializing the country and world objects)
