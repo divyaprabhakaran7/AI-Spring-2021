@@ -27,37 +27,6 @@ class World:
     def get_resource_weight(self, resource):
         return self.__resources[resource]
 
-    # Default number of transforms is 1 (Population requirement is checked by verifying function)
-    # Requires 5 population
-    def transform_housing(self, transform_country, amount=1):
-        # Decrease inputs
-        transform_country.dec_resource("R2", 1 * amount)  # MetallicElements
-        transform_country.dec_resource("R3", 5 * amount)  # Timber
-        transform_country.dec_resource("R21", 3 * amount)  # MetallicAlloys
-
-        # increase outputs (population unchanged)
-        transform_country.inc_resource("R23", 1 * amount)  # Housing
-        transform_country.inc_resource("R23'", 1 * amount)  # HousingWaste
-
-    # Requires 1 population
-    def transform_alloys(self, country, amount=1):
-        # Decrease inputs
-        country.dec_resource("R2", 2 * amount)  # MetallicElements
-
-        # increase outputs (population unchanged)
-        country.inc_resource("R21", 1 * amount)  # Housing
-        country.inc_resource("R21'", 1 * amount)  # HousingWaste
-
-    # Requires 1 population
-    def transform_electronics(self, transform_country, amount=1):
-        # Decrease inputs
-        transform_country.dec_resource("R2", 3 * amount)  # MetallicElements
-        transform_country.dec_resource("R21", 2 * amount)  # MetallicAlloys
-
-        # increase outputs (population unchanged)
-        transform_country.inc_resource("R22", 2 * amount)  # Housing
-        transform_country.inc_resource("R22'", 1 * amount)  # HousingWaste
-
     # Checks if a given transformation is feasible for a certain country:
     # Either transforms and returns true, or returns false if transformation was not feasible
     def transform(self, country, output_resource, amount):
@@ -67,21 +36,21 @@ class World:
         if output_resource is 'R21':
             alloys_dict = {'R1': 1 * amount, 'R2': 2 * amount}
             if transform_country.resource_check(alloys_dict):
-                self.transform_alloys(transform_country, amount)
+                transform_alloys(transform_country, amount)
                 return True
 
         # Transform electronics
         if output_resource is 'R22':
             elec_dict = {'R1': 1 * amount, 'R2': 3 * amount, 'R21': 2 * amount}
             if transform_country.resource_check(elec_dict):
-                self.transform_electronics(transform_country, amount)
+                transform_electronics(transform_country, amount)
                 return True
 
         # Transform housing
         if output_resource is 'R23':
             alloys_dict = {'R1': 5 * amount, 'R2': 1 * amount, 'R3': 5 * amount, 'R21': 3 * amount}
             if transform_country.resource_check(alloys_dict):
-                self.transform_housing(transform_country, amount)
+                transform_housing(transform_country, amount)
                 return True
 
         # Transform was unsuccessful -> return false
@@ -110,3 +79,37 @@ class World:
             countries += str(self.__countries[country]) + "\n"
         world += weights + countries
         return world
+
+
+# Default number of transforms is 1 (Population requirement is checked by verifying function)
+# Requires 5 population
+def transform_housing(transform_country, amount=1):
+    # Decrease inputs
+    transform_country.dec_resource("R2", 1 * amount)  # MetallicElements
+    transform_country.dec_resource("R3", 5 * amount)  # Timber
+    transform_country.dec_resource("R21", 3 * amount)  # MetallicAlloys
+
+    # increase outputs (population unchanged)
+    transform_country.inc_resource("R23", 1 * amount)  # Housing
+    transform_country.inc_resource("R23'", 1 * amount)  # HousingWaste
+
+
+# Requires 1 population
+def transform_alloys(country, amount=1):
+    # Decrease inputs
+    country.dec_resource("R2", 2 * amount)  # MetallicElements
+
+    # increase outputs (population unchanged)
+    country.inc_resource("R21", 1 * amount)  # Housing
+    country.inc_resource("R21'", 1 * amount)  # HousingWaste
+
+
+# Requires 1 population
+def transform_electronics(transform_country, amount=1):
+    # Decrease inputs
+    transform_country.dec_resource("R2", 3 * amount)  # MetallicElements
+    transform_country.dec_resource("R21", 2 * amount)  # MetallicAlloys
+
+    # increase outputs (population unchanged)
+    transform_country.inc_resource("R22", 2 * amount)  # Housing
+    transform_country.inc_resource("R22'", 1 * amount)  # HousingWaste

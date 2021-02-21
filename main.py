@@ -21,8 +21,8 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
 
 # Load a data frame of an excel sheet
 def get_data_from_file(file_name):
-    excel_file = pd.ExcelFile(file_name)
-    df = pd.read_excel(excel_file)
+    df = pd.read_excel(file_name, engine='openpyxl')  # FIXME Need to install openpyxl package to run this
+    df = df.loc[:df.last_valid_index()]  # This ensures that there are no trailing blank rows (weird bug with openpyxl)
     return df
 
 
@@ -35,6 +35,7 @@ def create_matrix(df_countries, df_resources):
     df_all = df_countries.reindex(columns=resources, fill_value=0)
     df_all['Countries'] = countries
     df_all = df_all.set_index('Countries')
+    df_all = df_all.fillna(0.0).astype(int)  # Turns matrix from floats to ints (better display since no float values)
     return df_all
 
 
@@ -50,7 +51,8 @@ def generate_world(matrix, df_resources):
 
 
 def main():
-    my_country_scheduler('Atlantis', 'data/resource_data.xls', 'data/country_data.xls', 'data/output_data.xls', 1, 1, 1)
+    my_country_scheduler('Atlantis', 'data/resource_data.xlsx', 'data/country_data.xlsx',
+                         'data/output_data.xls', 1, 1, 1)
 
 
 if __name__ == '__main__':
