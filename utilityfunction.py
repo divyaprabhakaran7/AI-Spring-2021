@@ -1,6 +1,6 @@
+import math
 from country import Country
 from world import World
-import math
 
 
 # essential:  LogF / p * f  + h/(p/3)  +  LogW / p * w
@@ -34,4 +34,15 @@ def land_state(country):
 
 
 def manmade_state(country):
-    return 0
+    # return value for metallic alloys
+    linear_value(country, 'R21', 'R21x')
+
+
+
+def linear_value(country, resource, resource_waste):
+    quantity = country.get_resource_val(country, resource)
+    weight = world.get_resource_weight(world, resource)
+    quantity_waste = country.get_resource_val(country, resource_waste)
+    weight_waste = world.get_resource_weight(world, resource_waste)
+
+    return quantity * weight - quantity_waste * weight_waste
