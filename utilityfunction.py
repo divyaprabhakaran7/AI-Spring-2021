@@ -31,8 +31,13 @@ def essential_state(country):
 
 
 def land_state(country):
-    return 0
+    timber_val = linear_value(country, 'R3', 'R3X')
+    metallic_elements_val = linear_value(country, 'R2', 'R2X')
+    land_val = linear_value(country, 'R4', 'R4X')
+    renewable_energy_capacity_val = linear_value(country, 'R5', 'R5X')
+    fossil_energy_capacity_val = linear_value(country, 'R6', 'R6X')
 
+    return timber_val + metallic_elements_val + land_val + fossil_energy_capacity_val + renewable_energy_capacity_val
 
 def manmade_state(country):
 
