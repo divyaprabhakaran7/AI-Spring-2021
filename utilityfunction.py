@@ -1,4 +1,5 @@
 import math
+
 from country import Country
 from world import World
 
@@ -34,9 +35,15 @@ def land_state(country):
 
 
 def manmade_state(country):
-    # return value for metallic alloys
-    linear_value(country, 'R21', 'R21x')
 
+    metallic_alloy_val = linear_value(country, 'R21', 'R21X')
+    electronics_val = linear_value(country, 'R25', 'R25X')
+    prep_renew_energy_val = linear_value(country, 'R26', 'R26X')
+    prep_fossil_energy_val = linear_value(country, 'R24', 'R24X')
+    farm_val = linear_value(country, 'R8', 'R8X')
+    military_val = linear_value(country, 'R20', 'R20X')
+
+    return metallic_alloy_val + electronics_val + prep_renew_energy_val + prep_fossil_energy_val + farm_val + military_val
 
 
 def linear_value(country, resource, resource_waste):
