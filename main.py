@@ -1,6 +1,7 @@
 import pandas as pd
 from country import Country
 from world import World
+import statequality as sq
 
 
 # Prototype function as described in the project spec (we'll initiate the scheduler from here)
@@ -15,10 +16,11 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
     # Simple transform/transfer tests
     #print(world_object)
     world_object.transform('Atlantis', 'R21', 10)
-    world_object.transform('Atlantis', 'R22', 2)
-    world_object.transfer('Atlantis', 'Carpania', 'R22', 1)
+    world_object.transform('Atlantis', 'R22', 5)
+    world_object.transfer('Atlantis', 'Carpania', 'R22', 3)
     print(world_object)
-    print_data_to_file('data/output_data.xlsx', world_object)
+    print(sq.state_quality(world_object.get_country('Atlantis'), world_object))
+    print_data_to_file(output_schedule_filename, world_object)
 
 
 # Load a data frame of an excel sheet
@@ -28,7 +30,7 @@ def get_data_from_file(file_name):
     return df
 
 
-# Prints our ouput into a .xlsx file
+# Prints our output state into a .xlsx file
 def print_data_to_file(file_name, world):
     resources = world.get_resources()
     countries = world.get_countries()
@@ -36,7 +38,8 @@ def print_data_to_file(file_name, world):
     # Load countries into a dictionary of countries and their resource values
     dict_all = {}
     for country in countries:
-        dict_all[country] = countries[country].get_resources_as_array()
+        dict_all[country] = countries[country].get_resources_as_list()
+
     df_all = pd.DataFrame.from_dict(dict_all, orient='index')  # Turn this into a data frame (countries as index)
     df_all.columns = resources.keys()  # Add resources as column headers
     df_all.to_excel(file_name, sheet_name='Output Data')  # Print into our output excel file
@@ -68,7 +71,7 @@ def generate_world(matrix, df_resources):
 
 def main():
     my_country_scheduler('Atlantis', 'data/resource_data.xlsx', 'data/country_data.xlsx',
-                         'data/output_data.xls', 1, 1, 1)
+                         'data/output_data.xlsx', 1, 1, 1)
 
 
 if __name__ == '__main__':

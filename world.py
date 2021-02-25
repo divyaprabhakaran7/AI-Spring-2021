@@ -91,7 +91,7 @@ def transform_housing(transform_country, amount=1):
 
     # increase outputs (population unchanged)
     transform_country.inc_resource("R23", 1 * amount)  # Housing
-    transform_country.inc_resource("R23'", 1 * amount)  # HousingWaste
+    transform_country.inc_resource("R23X", 1 * amount)  # HousingWaste
 
 
 # Requires 1 population
@@ -101,7 +101,7 @@ def transform_alloys(country, amount=1):
 
     # increase outputs (population unchanged)
     country.inc_resource("R21", 1 * amount)  # Housing
-    country.inc_resource("R21'", 1 * amount)  # HousingWaste
+    country.inc_resource("R21X", 1 * amount)  # HousingWaste
 
 
 # Requires 1 population
@@ -112,4 +112,4 @@ def transform_electronics(transform_country, amount=1):
 
     # increase outputs (population unchanged)
     transform_country.inc_resource("R22", 2 * amount)  # Housing
-    transform_country.inc_resource("R22'", 1 * amount)  # HousingWaste
+    transform_country.inc_resource("R22X", 1 * amount)  # HousingWaste
