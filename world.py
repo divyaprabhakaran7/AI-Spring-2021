@@ -33,21 +33,21 @@ class World:
         transform_country = self.get_country(country)
 
         # Transform alloys, perform check for feasibility on amount
-        if output_resource is 'R21':
+        if output_resource == 'R21':
             alloys_dict = {'R1': 1 * amount, 'R2': 2 * amount}
             if transform_country.resource_check(alloys_dict):
                 transform_alloys(transform_country, amount)
                 return True
 
         # Transform electronics
-        if output_resource is 'R22':
+        if output_resource == 'R22':
             elec_dict = {'R1': 1 * amount, 'R2': 3 * amount, 'R21': 2 * amount}
             if transform_country.resource_check(elec_dict):
                 transform_electronics(transform_country, amount)
                 return True
 
         # Transform housing
-        if output_resource is 'R23':
+        if output_resource == 'R23':
             alloys_dict = {'R1': 5 * amount, 'R2': 1 * amount, 'R3': 5 * amount, 'R21': 3 * amount}
             if transform_country.resource_check(alloys_dict):
                 transform_housing(transform_country, amount)
