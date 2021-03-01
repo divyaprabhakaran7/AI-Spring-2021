@@ -1,9 +1,5 @@
 import math
 
-from country import Country
-from world import World
-
-
 # essential:  LogF / p * f  + h/(p/3)  +  LogW / p * w
 # Land:  T(W) + ME(W+ +  W-) + L(W+ +  W-) + REC(W+ +  W-) + FEC(W+ +  W-)  (linear)
 # Manmade: MA(W+ +  W-) + E(W+ +  W-) + PRE(W+ +  W-) + PFE(W+ +  W-) + F(W+ +  W-) + M(W+ +  W-)
@@ -19,13 +15,13 @@ def state_quality(country, world):
 def essential_state(country):
     quantity_food = country.get_resource_val('R23') #food
     population = country.get_resource_val('R1') #population
-    food_val = (math.log(quantity_food, 10)) / population
+    food_val = quantity_food / population
 
     quantity_housing = country.get_resource_val('R22') #housing
     housing_val = quantity_housing / (population * 3)
 
     quantity_water = country.get_resource_val('R7') #water
-    water_val = (math.log(quantity_water, 10)) / population
+    water_val = quantity_water / population
 
     return food_val + housing_val + water_val
 
@@ -53,8 +49,8 @@ def manmade_state(country, world):
 
 def linear_value(world, country, resource, resource_waste):
     quantity = country.get_resource_val(resource)
-    weight = world.get_resource_weight(world, resource)
+    weight = world.get_resource_weight(resource)
     quantity_waste = country.get_resource_val(resource_waste)
-    weight_waste = world.get_resource_weight(world, resource_waste)
+    weight_waste = world.get_resource_weight(resource_waste)
 
-    return quantity * weight - quantity_waste * weight_waste
+    return (float(quantity) * float(weight)) - (float(quantity_waste) * float(weight_waste))
