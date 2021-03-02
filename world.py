@@ -85,23 +85,30 @@ class World:
 # Requires 5 population
 def transform_housing(transform_country, amount=1):
     # Decrease inputs
+    transform_country.dec_resource("R4", 1 * amount) # AvailableLand
+    transform_country.dec_resource("R7", 5 * amount) # Water
     transform_country.dec_resource("R2", 1 * amount)  # MetallicElements
     transform_country.dec_resource("R3", 5 * amount)  # Timber
     transform_country.dec_resource("R21", 3 * amount)  # MetallicAlloys
+    transform_country.dec_resource("R5", 3 * amount) # PotentialEnergyUsable
 
     # increase outputs (population unchanged)
     transform_country.inc_resource("R23", 1 * amount)  # Housing
     transform_country.inc_resource("R23X", 1 * amount)  # HousingWaste
+    transform_country.inc_resource("R7", 4 * amount) # Water
 
 
 # Requires 1 population
 def transform_alloys(country, amount=1):
     # Decrease inputs
     country.dec_resource("R2", 2 * amount)  # MetallicElements
+    country.dec_resource("R5", 3 * amount) # PotentialUsableEnergy
+    country.dec_resource("R7", 3 * amount) # Water
 
     # increase outputs (population unchanged)
-    country.inc_resource("R21", 1 * amount)  # Housing
-    country.inc_resource("R21X", 1 * amount)  # HousingWaste
+    country.inc_resource("R21", 1 * amount)  # MetallicAlloys
+    country.inc_resource("R21X", 1 * amount)  # MetallicAlloysWaste
+    country.inc_resource("R7", 2 * amount) # Water
 
 
 # Requires 1 population
@@ -109,7 +116,63 @@ def transform_electronics(transform_country, amount=1):
     # Decrease inputs
     transform_country.dec_resource("R2", 3 * amount)  # MetallicElements
     transform_country.dec_resource("R21", 2 * amount)  # MetallicAlloys
+    transform_country.dec_resource("R5", 3 * amount) # PotentialEnergyUsable
+    transform_country.dec_resource ("R7", 3 * amount) # Water
 
     # increase outputs (population unchanged)
-    transform_country.inc_resource("R22", 2 * amount)  # Housing
-    transform_country.inc_resource("R22X", 1 * amount)  # HousingWaste
+    transform_country.inc_resource("R25", 2 * amount)  # Electronics
+    transform_country.inc_resource("R25X", 1 * amount)  # ElectronicsWaste
+
+#requires 2 population
+def transform_military(transform_country, amount=1):
+    # Decrease inputs
+    transform_country.dec_resource("R25", 2 * amount) # Electronics
+    transform_country.dec_resource("R22", 2 * amount) # Housing
+    transform_country.dec_resource("R23", 2 * amount) # Food
+    transform_country.dec_resource("R7", 1 * amount) # Water
+
+    # increase outputs (population unchanged)
+    transform_country.inc_resource("R20", 2 * amount) # Military
+    transform_country.inc_resource("R20X", 1 * amount) # MilitaryWaste
+
+#requires 1 population
+def transform_food(transform_country, amount=1):
+    # Decrease inputs
+    transform_country.dec_resource("R4", 3 * amount) # AvailableLand
+    transform_country.dec_resource("R23X", 1 * amount) # FoodWaste as fertilizer
+    transform_country.dec_resource("R5", 1 * amount) # PotentialEnergyUsable
+    transform_country.dec_resource("R7", 3 * amount) # Water
+
+    # increase outputs (population unchanged)
+    transform_country.inc_resource("R23", 4 * amount) # Food
+    transform_country.inc_resource("R7", 1 * amount) # Water
+    transform_country.inc_resource("R23X", 2 * amount) # FoodWaste
+
+#requires 2 population
+def transform_fossil_energy(transform_country, amount=1):
+    # Decrease inputs
+    transform_country.dec_resource("R3", 3 * amount) # AvailableLand
+    transform_country.dec_resource("R7", 3 * amount) # Water
+
+    # increase outputs (population unchanged)
+    transform_country.inc_resource("R24", 3 * amount) # FossilEnergyUsable
+    transform_country.inc_resource("R7", 1 * amount) # Water
+    transform_country.inc_resource("R24X", 2 * amount) # FossilEnergyUsable
+
+#requires 2 population
+def transform_renewable_energy(transform_country, amount=1):
+    # Decrease inputs
+    transform_country.dec_resource("R3", 3 * amount) # AvailableLand
+    transform_country.dec_resource("R7", 2 * amount) # Water
+    transform_country.dec_resource("R23X", 1 * amount) # FoodWaste for composting
+    transform_country.dec_resource("R25", 2 * amount) # Electronics
+
+    # increase outputs (population unchanged)
+    transform_country.inc_resource("R3", 2 * amount) # AvailableLand
+    transform_country.inc_resource("R7", 2 * amount) # Water
+    transform_country.inc_resource("R25", 1 * amount) # Electronics
+    transform_country.inc_resource("R26", 3 * amount) # RenewableEnergyUsable
+    transform_country.inc_resource("R26X", 1 * amount) # RenewableEnergyUsableWaste
+
+
+
