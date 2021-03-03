@@ -1,5 +1,6 @@
 import math
 
+
 # essential:  LogF / p * f  + h/(p/3)  +  LogW / p * w
 # Land:  T(W) + ME(W+ +  W-) + L(W+ +  W-) + REC(W+ +  W-) + FEC(W+ +  W-)  (linear)
 # Manmade: MA(W+ +  W-) + E(W+ +  W-) + PRE(W+ +  W-) + PFE(W+ +  W-) + F(W+ +  W-) + M(W+ +  W-)
@@ -13,14 +14,14 @@ def state_quality(country, world):
 
 
 def essential_state(country):
-    quantity_food = country.get_resource_val('R23') #food
-    population = country.get_resource_val('R1') #population
+    quantity_food = country.get_resource_val('R23')  # food
+    population = country.get_resource_val('R1')  # population
     food_val = quantity_food / population
 
-    quantity_housing = country.get_resource_val('R22') #housing
+    quantity_housing = country.get_resource_val('R22')  # housing
     housing_val = quantity_housing / (population * 3)
 
-    quantity_water = country.get_resource_val('R7') #water
+    quantity_water = country.get_resource_val('R7')  # water
     water_val = quantity_water / population
 
     return food_val + housing_val + water_val
@@ -35,8 +36,8 @@ def land_state(country, world):
 
     return timber_val + metallic_elements_val + land_val + fossil_energy_capacity_val + renewable_energy_capacity_val
 
-def manmade_state(country, world):
 
+def manmade_state(country, world):
     metallic_alloy_val = linear_value(world, country, 'R21', 'R21X')
     electronics_val = linear_value(world, country, 'R25', 'R25X')
     prep_renew_energy_val = linear_value(world, country, 'R26', 'R26X')

@@ -57,19 +57,6 @@ def create_matrix(df_countries, df_resources):
     df_all = df_all.fillna(0.0).astype(int)  # Turns matrix from floats to ints (better display since no float values)
     return df_all
 
-
-def get_undiscounted_reward(world, country):
-    return 1;
-
-
-def get_discounted_reward(world, country):
-    return 1;
-
-
-def expected_utility(world, country):
-    return 1;
-
-
 # Uses the country/resource matrix to create the country objects and load them into the world
 def generate_world(matrix, df_resources):
     resource_dict = pd.Series(df_resources.Weight.values, index=df_resources.Resource).to_dict()
