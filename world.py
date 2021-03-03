@@ -32,28 +32,6 @@ class World:
     def transform(self, country, output_resource, amount):
         transform_country = self.get_country(country)
 
-        # Transform alloys, perform check for feasibility on amount
-        if output_resource == 'R21':
-            alloys_dict = {'R1': 1 * amount, 'R2': 2 * amount, 'R5': 3 * amount, 'R7': 3 * amount}
-            if transform_country.resource_check(alloys_dict):
-                transform_alloys(transform_country, amount)
-                return True
-
-        # Transform electronics
-        if output_resource == 'R22':
-            elec_dict = {'R1': 1 * amount, 'R2': 3 * amount, 'R21': 2 * amount, 'R5': 3 * amount, 'R7': 3 * amount}
-            if transform_country.resource_check(elec_dict):
-                transform_electronics(transform_country, amount)
-                return True
-
-        # Transform housing
-        if output_resource == 'R23':
-            housing_dict = {'R1': 5 * amount, 'R2': 1 * amount, 'R3': 5 * amount, 'R4': 1 * amount, 'R7': 5 * amount,
-                            'R21': 3 * amount, 'R5': 3 * amount}
-            if transform_country.resource_check(housing_dict):
-                transform_housing(transform_country, amount)
-                return True
-
         # Transform military
         if output_resource == 'R20':
             military_dict = {'R1': 2 * amount, 'R25': 2 * amount, 'R22': 2 * amount, 'R23': 2 * amount,
@@ -62,9 +40,26 @@ class World:
                 transform_military(transform_country, amount)
                 return True
 
+        # Transform alloys, perform check for feasibility on amount
+        if output_resource == 'R21':
+            alloys_dict = {'R1': 1 * amount, 'R2': 2 * amount, 'R5': 3 * amount, 'R7': 3 * amount}
+            if transform_country.resource_check(alloys_dict):
+                transform_alloys(transform_country, amount)
+                return True
+
+        # Transform housing
+        if output_resource == 'R22':
+            housing_dict = {'R1': 5 * amount, 'R2': 1 * amount, 'R3': 5 * amount, 'R4': 1 * amount,
+                            'R7': 5 * amount,
+                            'R21': 3 * amount, 'R5': 3 * amount}
+            if transform_country.resource_check(housing_dict):
+                transform_housing(transform_country, amount)
+                return True
+
         # Transform food
         if output_resource == 'R23':
-            food_dict = {'R1': 1 * amount, 'R4': 3 * amount, 'R23X': 1 * amount, 'R5': 1 * amount, 'R7': 3 * amount}
+            food_dict = {'R1': 1 * amount, 'R4': 3 * amount, 'R23X': 1 * amount, 'R5': 1 * amount,
+                         'R7': 3 * amount}
             if transform_country.resource_check(food_dict):
                 transform_food(transform_country, amount)
                 return True
@@ -74,6 +69,13 @@ class World:
             fossil_dict = {'R1': 2 * amount, 'R3': 3 * amount, 'R7': 3 * amount, 'R25': 2 * amount}
             if transform_country.resource_check(fossil_dict):
                 transform_fossil_energy(transform_country, amount)
+                return True
+
+        # Transform electronics
+        if output_resource == 'R25':
+            elec_dict = {'R1': 1 * amount, 'R2': 3 * amount, 'R21': 2 * amount, 'R5': 3 * amount, 'R7': 3 * amount}
+            if transform_country.resource_check(elec_dict):
+                transform_electronics(transform_country, amount)
                 return True
 
         # Transform Renewable Energy
@@ -109,6 +111,12 @@ class World:
             countries += str(self.__countries[country]) + "\n"
         world += weights + countries
         return world
+
+    def get_undiscounted_reward(self, world, country):
+        return 1
+
+    def get_discounted_reward(self, world, country, depth):
+        return 1
 
 
 # Default number of transforms is 1 (Population requirement is checked by verifying function)

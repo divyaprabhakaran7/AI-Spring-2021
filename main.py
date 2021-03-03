@@ -2,6 +2,7 @@ import pandas as pd
 from country import Country
 from world import World
 import statequality as sq
+import scheduler as sd
 
 
 # Prototype function as described in the project spec (we'll initiate the scheduler from here)
@@ -15,11 +16,14 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
 
     # Simple transform/transfer tests
     #print(world_object)
-    world_object.transform('Atlantis', 'R21', 10)
-    world_object.transform('Atlantis', 'R22', 5)
-    world_object.transfer('Atlantis', 'Carpania', 'R22', 3)
-    print(world_object)
-    print(sq.state_quality(world_object.get_country('Atlantis'), world_object))
+    # world_object.transform('Atlantis', 'R21', 10)
+    # world_object.transform('Atlantis', 'R22', 5)
+    # world_object.transfer('Atlantis', 'Carpania', 'R22', 3)
+    # print(world_object)
+    # print(sq.state_quality(world_object.get_country('Atlantis'), world_object))
+
+    sd.scheduler(world_object, your_country_name, num_output_schedules, depth_bound, frontier_max_size)
+
     print_data_to_file(output_schedule_filename, world_object)
 
 
@@ -58,16 +62,8 @@ def create_matrix(df_countries, df_resources):
     return df_all
 
 
-def get_undiscounted_reward(world, country):
-    return 1;
-
-
-def get_discounted_reward(world, country):
-    return 1;
-
-
 def expected_utility(world, country):
-    return 1;
+    return 1
 
 
 # Uses the country/resource matrix to create the country objects and load them into the world
