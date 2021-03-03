@@ -79,7 +79,7 @@ class World:
         # Transform Renewable Energy
         if output_resource == 'R26':
             renew_dict = {'R1': 2 * amount, 'R3': 3 * amount, 'R7': 2 * amount, 'R23X': 1 * amount, 'R25': 2 * amount}
-            if transform_country.resource_check(output_resource):
+            if transform_country.resource_check(renew_dict):
                 transform_renewable_energy(transform_country, amount)
                 return True
 
