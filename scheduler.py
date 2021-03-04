@@ -6,19 +6,24 @@ TRANSFER_RESOURCES = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R20', 'R2
 UPPER_BOUND = 10
 LOWER_BOUND = 5
 
+
 def scheduler(world_object, country_name, num_output_schedules, depth_bound, frontier_max_size):
     frontier = DEPQ(maxlen=frontier_max_size)
+    schedules = DEPQ(maxlen=num_output_schedules)
     initial_state = world_object
     frontier.insert(initial_state, sq.state_quality(country_name, initial_state))
-    depth = 0
 
-    while frontier.is_empty() is not True:
+    while (frontier.is_empty() is not True) and (schedules.size() < num_output_schedules):
         current_state = frontier.popfirst()
-        successor_states = get_successors(current_state, country_name)
-        for successor in successor_states:
-            frontier.insert(successor, successor.expected_utility(country_name, depth))
 
-    return 0
+        if current_state.get_path_length() <= depth_bound:
+            successor_states = get_successors(current_state, country_name)
+            for successor in successor_states:
+                frontier.insert(successor, successor.expected_utility(country_name, successor.get_path_length()))
+        else:
+            schedules.insert(current_state,
+                             current_state.expected_utility(country_name, current_state.get_path_length()))
+    return schedules_to_string(schedules)
 
 
 def get_successors(world_object, country_name):
@@ -58,3 +63,10 @@ def get_successors(world_object, country_name):
                 successors.append(tmp_world)
 
     return successors
+
+
+def schedules_to_string(schedules):
+    schedule_list = []
+    for schedule, quality in schedules:
+        schedule_list.append("Expected Utility: " + str(quality) + "\nPath:\n" + schedule.get_path_as_string())
+    return schedule_list

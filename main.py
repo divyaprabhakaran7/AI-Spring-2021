@@ -18,13 +18,13 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
     #print(world_object)
     # world_object.transform('Atlantis', 'R21', 10)
     # world_object.transform('Atlantis', 'R22', 5)
-    # world_object.transfer('Atlantis', 'Carpania', 'R22', 3)
     # print(world_object)
     # print(sq.state_quality(world_object.get_country('Atlantis'), world_object))
 
     world_object.transform('Atlantis', 'R22', 3)
     world_object.transform('Atlantis', 'R22', 2)
     world_object.transform('Atlantis', 'R22', 1)
+    world_object.transfer('Atlantis', 'Carpania', 'R22', 3)
     print(world_object.get_path_as_string())
     #sd.scheduler(world_object, your_country_name, num_output_schedules, depth_bound, frontier_max_size)
 
@@ -66,15 +66,13 @@ def create_matrix(df_countries, df_resources):
     return df_all
 
 
-def expected_utility(world, country):
-    return 1
-
-
 # Uses the country/resource matrix to create the country objects and load them into the world
 def generate_world(matrix, df_resources):
     resource_dict = pd.Series(df_resources.Weight.values, index=df_resources.Resource).to_dict()
+    names_dict = pd.Series(df_resources.Names.values, index=df_resources.Resource).to_dict()  # Get resource names
     world = World()
     world.set_resources(resource_dict)
+    world.set_resource_names(names_dict)
     for country, resources in matrix.iterrows():
         new_country = Country(country, dict(resources))
         world.add_country(new_country)

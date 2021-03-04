@@ -8,6 +8,7 @@ class World:
     def __init__(self):
         self.__countries = {}
         self.__resources = {}
+        self.__resource_name = {}
         self.__actions_path = []
 
     def set_countries(self, countries):
@@ -28,6 +29,12 @@ class World:
     def get_resources(self):
         return self.__resources
 
+    def set_resource_names(self, resource_names):
+        self.__resource_names = resource_names
+
+    def get_resource_name(self, resource):
+        return self.__resource_names[resource]
+
     def get_resource_weight(self, resource):
         return self.__resources[resource]
 
@@ -39,6 +46,9 @@ class World:
         for action in self.__actions_path:
             action_str += action + "\n"
         return action_str
+
+    def get_path_length(self):
+        return len(self.__actions_path)
 
     def get_max_resource(self, resource):
         max_country = ""
@@ -129,6 +139,8 @@ class World:
         if from_country.resource_check(resource, amount):
             from_country.dec_resource(resource, amount)
             to_country.inc_resource(resource, amount)
+            self.__actions_path.append("(TRANSFER " + country1 + " " + country2 + " (("
+                                             + self.get_resource_name(resource) + " " + str(amount) +"))")
             return True
         else:
             return False
@@ -213,16 +225,24 @@ class World:
 
 
     # Requires 1 population
-    def transform_alloys(self, country, amount=1):
+    def transform_alloys(self, transform_country, amount=1):
         # Decrease inputs
-        country.dec_resource("R2", 2 * amount)  # MetallicElements
-        country.dec_resource("R5", 3 * amount)  # PotentialUsableEnergy
-        country.dec_resource("R7", 3 * amount)  # Water
+        transform_country.dec_resource("R2", 2 * amount)  # MetallicElements
+        transform_country.dec_resource("R5", 3 * amount)  # PotentialUsableEnergy
+        transform_country.dec_resource("R7", 3 * amount)  # Water
 
         # increase outputs (population unchanged)
-        country.inc_resource("R21", 1 * amount)  # MetallicAlloys
-        country.inc_resource("R21X", 1 * amount)  # MetallicAlloysWaste
-        country.inc_resource("R7", 2 * amount)  # Water
+        transform_country.inc_resource("R21", 1 * amount)  # MetallicAlloys
+        transform_country.inc_resource("R21X", 1 * amount)  # MetallicAlloysWaste
+        transform_country.inc_resource("R7", 2 * amount)  # Water
+
+        self.__actions_path.append("(TRANSFORM " + transform_country.get_name() + " "
+                            "\n\t(INPUTS (AvailableLand " + str(amount) + ") "
+                            "(Population " + str(5 * amount) + ") (Water " + str(5 * amount) + ") "
+                            "(MetallicElements " + str(amount) + ") (Timber " + str(5 * amount) + ") "
+                            "(MetallicAlloys " + str(3 * amount) + ") (PotentialEnergyUsable " + str(5 * amount) + "))"
+                            "\n\t(OUTPUTS (Housing " + str(amount) + ") (HousingWaste " + str(amount) + ") "
+                            "(Population " + str(5 * amount) + ") (Water " + str(4 * amount) + ")))")
 
 
     # Requires 1 population
