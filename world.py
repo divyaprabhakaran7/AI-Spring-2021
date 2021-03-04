@@ -1,6 +1,5 @@
-import statequality as sq
 import math
-
+import statequality as sq
 
 class World:
 
@@ -31,32 +30,30 @@ class World:
     def get_resource_weight(self, resource):
         return self.__resources[resource]
 
+    def get_max_resource(self, resource):
+        max_country = ""
+        max_count = -1
+        for country in self.__countries:
+            count = self.__countries[country].get_resource_val(resource)
+            if count > max_count:
+                max_country = country
+                max_count = count
+        return max_country
+
+    def get_min_resource(self, resource):
+        min_country = ""
+        min_count = 100000  # FIXME find a better way of doing this
+        for country in self.__countries:
+            count = self.__countries[country].get_resource_val(resource)
+            if count < min_count:
+                min_country = country
+                min_count = count
+        return min_country
+
     # Checks if a given transformation is feasible for a certain country:
     # Either transforms and returns true, or returns false if transformation was not feasible
     def transform(self, country, output_resource, amount):
         transform_country = self.get_country(country)
-
-        # Transform alloys, perform check for feasibility on amount
-        if output_resource == 'R21':
-            alloys_dict = {'R1': 1 * amount, 'R2': 2 * amount, 'R5': 3 * amount, 'R7': 3 * amount}
-            if transform_country.resource_check(alloys_dict):
-                transform_alloys(transform_country, amount)
-                return True
-
-        # Transform electronics
-        if output_resource == 'R22':
-            elec_dict = {'R1': 1 * amount, 'R2': 3 * amount, 'R21': 2 * amount, 'R5': 3 * amount, 'R7': 3 * amount}
-            if transform_country.resource_check(elec_dict):
-                transform_electronics(transform_country, amount)
-                return True
-
-        # Transform housing
-        if output_resource == 'R23':
-            housing_dict = {'R1': 5 * amount, 'R2': 1 * amount, 'R3': 5 * amount, 'R4': 1 * amount, 'R7': 5 * amount,
-                            'R21': 3 * amount, 'R5': 3 * amount}
-            if transform_country.resource_check(housing_dict):
-                transform_housing(transform_country, amount)
-                return True
 
         # Transform military
         if output_resource == 'R20':
@@ -66,9 +63,26 @@ class World:
                 transform_military(transform_country, amount)
                 return True
 
+        # Transform alloys, perform check for feasibility on amount
+        if output_resource == 'R21':
+            alloys_dict = {'R1': 1 * amount, 'R2': 2 * amount, 'R5': 3 * amount, 'R7': 3 * amount}
+            if transform_country.resource_check(alloys_dict):
+                transform_alloys(transform_country, amount)
+                return True
+
+        # Transform housing
+        if output_resource == 'R22':
+            housing_dict = {'R1': 5 * amount, 'R2': 1 * amount, 'R3': 5 * amount, 'R4': 1 * amount,
+                            'R7': 5 * amount,
+                            'R21': 3 * amount, 'R5': 3 * amount}
+            if transform_country.resource_check(housing_dict):
+                transform_housing(transform_country, amount)
+                return True
+
         # Transform food
         if output_resource == 'R23':
-            food_dict = {'R1': 1 * amount, 'R4': 3 * amount, 'R23X': 1 * amount, 'R5': 1 * amount, 'R7': 3 * amount}
+            food_dict = {'R1': 1 * amount, 'R4': 3 * amount, 'R23X': 1 * amount, 'R5': 1 * amount,
+                         'R7': 3 * amount}
             if transform_country.resource_check(food_dict):
                 transform_food(transform_country, amount)
                 return True
@@ -78,6 +92,13 @@ class World:
             fossil_dict = {'R1': 2 * amount, 'R3': 3 * amount, 'R7': 3 * amount, 'R25': 2 * amount}
             if transform_country.resource_check(fossil_dict):
                 transform_fossil_energy(transform_country, amount)
+                return True
+
+        # Transform electronics
+        if output_resource == 'R25':
+            elec_dict = {'R1': 1 * amount, 'R2': 3 * amount, 'R21': 2 * amount, 'R5': 3 * amount, 'R7': 3 * amount}
+            if transform_country.resource_check(elec_dict):
+                transform_electronics(transform_country, amount)
                 return True
 
         # Transform Renewable Energy
@@ -113,6 +134,47 @@ class World:
             countries += str(self.__countries[country]) + "\n"
         world += weights + countries
         return world
+
+    def get_undiscounted_reward(self, country, world2):
+        initial_utility = sq.state_quality(country, self)
+        final_utility = sq.state_quality(country, world2)
+        return final_utility - initial_utility
+
+    def get_discounted_reward(self, country, depth):
+        # DR(c_i, s_j) = gamma^N * Q_end(c_i, s_j) – Q_start(c_i, s_j)), where 0 <= gamma < 1
+        gamma = 0.99
+        n = depth  # this is how many times the scheduler ran
+
+        discount_reward = gamma ** n * self.get_undiscounted_reward(country)
+        gamma -= .02
+
+        return discount_reward
+
+    def country_accept_prob(self, country, depth):
+        l = 1
+        x0 = 0
+        k = 1
+        discount_reward = self.get_discounted_reward(country, depth)
+        prob = l / (1 + math.e ** (-k * (discount_reward - x0)))
+        return prob
+
+    def schedule_accept_prob(self, country, depth):
+        prob_product = 0
+        for x in depth - 1:
+            if x == 1:
+                prob_product = self.get_discounted_reward(country, depth)
+                return prob_product
+            else:
+                prob_product *= self.get_discounted_reward(country, depth)
+        return prob_product
+
+    def expected_utility(self, country, depth):
+        c = -0.3  # can change later
+        probability = self.schedule_accept_prob(country, depth)
+        discount_reward = self.get_discounted_reward(country, depth)
+
+        expected_util = probability * discount_reward + ((1 - probability) * c)
+        return expected_util
 
 
 # Default number of transforms is 1 (Population requirement is checked by verifying function)
@@ -212,49 +274,3 @@ def transform_renewable_energy(transform_country, amount=1):
     transform_country.inc_resource("R25", 1 * amount)  # Electronics
     transform_country.inc_resource("R26", 3 * amount)  # RenewableEnergyUsable
     transform_country.inc_resource("R26X", 1 * amount)  # RenewableEnergyUsableWaste
-
-
-def get_undiscounted_reward(country, world, country2, world2):
-    initial_utility = sq.state_quality(country, world)
-    final_utility = sq.state_quality(country2, world2)
-    return final_utility - initial_utility
-
-
-def get_discounted_reward(country, world, depth):
-    # DR(c_i, s_j) = gamma^N * Q_end(c_i, s_j) – Q_start(c_i, s_j)), where 0 <= gamma < 1
-    gamma = 0.99
-    n = depth  # this is how many times the scheduler ran
-
-    discount_reward = gamma ** n * get_undiscounted_reward(country, world)
-    gamma -= .02
-
-    return discount_reward
-
-
-def country_accept_prob(country, world, depth):
-    l = 1
-    x0 = 0
-    k = 1
-    discount_reward = get_discounted_reward(country, world, depth)
-    prob = l / (1 + math.e ** (-k * (discount_reward - x0)))
-    return prob
-
-
-def schedule_accept_prob(country, world, depth):
-    prob_product = 0;
-    for x in depth - 1:
-        if x == 1:
-            prob_product = get_discounted_reward(country, world, depth)
-            return prob_product
-        else:
-            prob_product *= get_discounted_reward(country, world, depth)
-    return prob_product
-
-
-def expected_utility(country, world, depth):
-    c = -.3  # can change later
-    probability = schedule_accept_prob(country, world, depth)
-    discount_reward = get_discounted_reward(country, world, depth)
-
-    expected_util = probability * discount_reward + ((1 - probability) * c)
-    return expected_util
