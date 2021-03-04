@@ -1,6 +1,7 @@
 import math
 import statequality as sq
 
+
 class World:
 
     # Countries: dict of countries (Country name: country object)
@@ -140,7 +141,7 @@ class World:
             from_country.dec_resource(resource, amount)
             to_country.inc_resource(resource, amount)
             self.__actions_path.append("(TRANSFER " + country1 + " " + country2 + " (("
-                                             + self.get_resource_name(resource) + " " + str(amount) +"))")
+                                       + self.get_resource_name(resource) + " " + str(amount) + "))")
             return True
         else:
             return False
@@ -198,7 +199,6 @@ class World:
         expected_util = probability * discount_reward + ((1 - probability) * c)
         return expected_util
 
-
     # Default number of transforms is 1 (Population requirement is checked by verifying function)
     # Requires 5 population
     def transform_housing(self, transform_country, amount=1):
@@ -216,13 +216,17 @@ class World:
         transform_country.inc_resource("R7", 4 * amount)  # Water
 
         self.__actions_path.append("(TRANSFORM " + transform_country.get_name() + " "
-                            "\n\t(INPUTS (AvailableLand " + str(amount) + ") "
-                            "(Population " + str(5 * amount) + ") (Water " + str(5 * amount) + ") "
-                            "(MetallicElements " + str(amount) + ") (Timber " + str(5 * amount) + ") "
-                            "(MetallicAlloys " + str(3 * amount) + ") (PotentialEnergyUsable " + str(5 * amount) + "))"
-                            "\n\t(OUTPUTS (Housing " + str(amount) + ") (HousingWaste " + str(amount) + ") "
-                            "(Population " + str(5 * amount) + ") (Water " + str(4 * amount) + ")))")
-
+                                                                                  "\n\t(INPUTS (AvailableLand " + str(
+            amount) + ") "
+                      "(Population " + str(5 * amount) + ") (Water " + str(5 * amount) + ") "
+                                                                                         "(MetallicElements " + str(
+            amount) + ") (Timber " + str(5 * amount) + ") "
+                                                       "(MetallicAlloys " + str(
+            3 * amount) + ") (PotentialEnergyUsable " + str(5 * amount) + "))"
+                                                                          "\n\t(OUTPUTS (Housing " + str(
+            amount) + ") (HousingWaste " + str(amount) + ") "
+                                                         "(Population " + str(5 * amount) + ") (Water " + str(
+            4 * amount) + ")))")
 
     # Requires 1 population
     def transform_alloys(self, transform_country, amount=1):
@@ -237,13 +241,17 @@ class World:
         transform_country.inc_resource("R7", 2 * amount)  # Water
 
         self.__actions_path.append("(TRANSFORM " + transform_country.get_name() + " "
-                            "\n\t(INPUTS (AvailableLand " + str(amount) + ") "
-                            "(Population " + str(5 * amount) + ") (Water " + str(5 * amount) + ") "
-                            "(MetallicElements " + str(amount) + ") (Timber " + str(5 * amount) + ") "
-                            "(MetallicAlloys " + str(3 * amount) + ") (PotentialEnergyUsable " + str(5 * amount) + "))"
-                            "\n\t(OUTPUTS (Housing " + str(amount) + ") (HousingWaste " + str(amount) + ") "
-                            "(Population " + str(5 * amount) + ") (Water " + str(4 * amount) + ")))")
-
+                                                                                  "\n\t(INPUTS (AvailableLand " + str(
+            amount) + ") "
+                      "(Population " + str(5 * amount) + ") (Water " + str(5 * amount) + ") "
+                                                                                         "(MetallicElements " + str(
+            amount) + ") (Timber " + str(5 * amount) + ") "
+                                                       "(MetallicAlloys " + str(
+            3 * amount) + ") (PotentialEnergyUsable " + str(5 * amount) + "))"
+                                                                          "\n\t(OUTPUTS (Housing " + str(
+            amount) + ") (HousingWaste " + str(amount) + ") "
+                                                         "(Population " + str(5 * amount) + ") (Water " + str(
+            4 * amount) + ")))")
 
     # Requires 1 population
     def transform_electronics(self, transform_country, amount=1):
@@ -257,7 +265,6 @@ class World:
         transform_country.inc_resource("R25", 2 * amount)  # Electronics
         transform_country.inc_resource("R25X", 1 * amount)  # ElectronicsWaste
 
-
     # requires 2 population
     def transform_military(self, transform_country, amount=1):
         # Decrease inputs
@@ -269,7 +276,6 @@ class World:
         # increase outputs (population unchanged)
         transform_country.inc_resource("R20", 2 * amount)  # Military
         transform_country.inc_resource("R20X", 1 * amount)  # MilitaryWaste
-
 
     # requires 1 population
     def transform_food(self, transform_country, amount=1):
@@ -284,7 +290,6 @@ class World:
         transform_country.inc_resource("R7", 1 * amount)  # Water
         transform_country.inc_resource("R23X", 2 * amount)  # FoodWaste
 
-
     # requires 2 population
     def transform_fossil_energy(self, transform_country, amount=1):
         # Decrease inputs
@@ -296,7 +301,6 @@ class World:
         transform_country.inc_resource("R24", 3 * amount)  # FossilEnergyUsable
         transform_country.inc_resource("R7", 1 * amount)  # Water
         transform_country.inc_resource("R24X", 2 * amount)  # FossilEnergyUsable
-
 
     # requires 2 population
     def transform_renewable_energy(self, transform_country, amount=1):
