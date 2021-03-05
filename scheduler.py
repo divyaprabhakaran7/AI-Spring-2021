@@ -10,7 +10,14 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
     frontier = DEPQ(maxlen=frontier_max_size)
     initial_state = world_object
     frontier.insert(initial_state, sq.state_quality(country_name, initial_state))
-    next_state = frontier.popfirst()
+    depth = 0
+
+    while frontier.is_empty() is not True:
+        current_state = frontier.popfirst()
+        successor_states = get_successors(current_state, country_name)
+        for successor in successor_states:
+            frontier.insert(successor, successor.expected_utility(country_name, depth))
+
     return 0
 
 
@@ -50,3 +57,4 @@ def get_successors(world_object, country_name):
                 tmp_world.transfer(from_country_name, country_name, resource, 1)
                 successors.append(tmp_world)
 
+    return successors
