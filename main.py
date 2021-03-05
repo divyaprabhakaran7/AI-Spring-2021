@@ -19,15 +19,16 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
     # print(world_object)
     # print(sq.state_quality(world_object.get_country('Atlantis'), world_object))
 
-    world_object.transform('Atlantis', 'R22', 3)
-    world_object.transform('Atlantis', 'R22', 2)
-    world_object.transform('Atlantis', 'R22', 1)
-    world_object.transfer('Atlantis', 'Carpania', 'R22', 3)
-    world_object.transform('Atlantis', 'R21', 10)
-    world_object.transform('Atlantis', 'R22', 5)
-    print(world_object.get_path_as_string())
-    #sd.scheduler(world_object, your_country_name, num_output_schedules, depth_bound, frontier_max_size)
-
+    # world_object.transform('Atlantis', 'R22', 3)
+    # world_object.transform('Atlantis', 'R22', 2)
+    # world_object.transform('Atlantis', 'R22', 1)
+    # world_object.transfer('Atlantis', 'Carpania', 'R22', 3)
+    # world_object.transform('Atlantis', 'R21', 10)
+    # world_object.transform('Atlantis', 'R22', 5)
+    # print(world_object.get_path_as_string())
+    schedules = sd.scheduler(world_object, your_country_name, num_output_schedules, depth_bound, frontier_max_size)
+    for x in schedules:
+        print(x + "\n")
     print_data_to_file(output_schedule_filename, world_object)
 
 
@@ -81,7 +82,7 @@ def generate_world(matrix, df_resources):
 
 def main():
     my_country_scheduler('Atlantis', 'data/resource_data.xlsx', 'data/country_data.xlsx',
-                         'data/output_data.xlsx', 1, 1, 1)
+                         'data/output_data.xlsx', 2, 3, 10)
 
 
 if __name__ == '__main__':
