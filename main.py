@@ -15,9 +15,7 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
                                   df_resources)  # Create the world object with country objects and weights
 
     # Simple transform/transfer tests
-    #print(world_object)
-    # world_object.transform('Atlantis', 'R21', 10)
-    # world_object.transform('Atlantis', 'R22', 5)
+    # print(world_object)
     # print(world_object)
     # print(sq.state_quality(world_object.get_country('Atlantis'), world_object))
 
@@ -25,6 +23,8 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
     world_object.transform('Atlantis', 'R22', 2)
     world_object.transform('Atlantis', 'R22', 1)
     world_object.transfer('Atlantis', 'Carpania', 'R22', 3)
+    world_object.transform('Atlantis', 'R21', 10)
+    world_object.transform('Atlantis', 'R22', 5)
     print(world_object.get_path_as_string())
     #sd.scheduler(world_object, your_country_name, num_output_schedules, depth_bound, frontier_max_size)
 
