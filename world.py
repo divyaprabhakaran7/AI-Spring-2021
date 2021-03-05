@@ -1,6 +1,7 @@
 import math
 import statequality as sq
 
+
 class World:
 
     # Countries: dict of countries (Country name: country object)
@@ -140,7 +141,7 @@ class World:
             from_country.dec_resource(resource, amount)
             to_country.inc_resource(resource, amount)
             self.__actions_path.append("(TRANSFER " + country1 + " " + country2 + " (("
-                                             + self.get_resource_name(resource) + " " + str(amount) +"))")
+                                       + self.get_resource_name(resource) + " " + str(amount) + "))")
             return True
         else:
             return False
@@ -173,31 +174,30 @@ class World:
         return discount_reward
 
     def country_accept_prob(self, country, depth):
-        l = 1
-        x0 = 0
-        k = 1
+        l = 1.0
+        x0 = 0.0
+        k = 1.0
         discount_reward = self.get_discounted_reward(country, depth)
-        prob = l / (1 + math.e ** (-k * (discount_reward - x0)))
+        prob = l / (1.0 + math.e ** (-k * (discount_reward - x0)))
         return prob
 
-    def schedule_accept_prob(self, country, depth):
+    def schedule_accept_prob(self, countries, depth):
         prob_product = 0
-        for x in range(depth - 1):
+        for x in range(len(countries)):
             if x == 1:
-                prob_product = self.get_discounted_reward(country, depth)
+                prob_product = self.country_accept_prob(countries[x], depth)
                 return prob_product
             else:
-                prob_product *= self.get_discounted_reward(country, depth)
+                prob_product *= self.country_accept_prob(countries[x], depth)
         return prob_product
 
-    def expected_utility(self, country, depth):
+    def expected_utility(self, country, countries, depth):
         c = -0.3  # can change later
-        probability = self.schedule_accept_prob(country, depth)
+        probability = self.schedule_accept_prob(countries, depth)
         discount_reward = self.get_discounted_reward(country, depth)
 
         expected_util = probability * discount_reward + ((1 - probability) * c)
         return expected_util
-
 
     # Default number of transforms is 1 (Population requirement is checked by verifying function)
     # Requires 5 population
@@ -216,13 +216,17 @@ class World:
         transform_country.inc_resource("R7", 4 * amount)  # Water
 
         self.__actions_path.append("(TRANSFORM " + transform_country.get_name() + " "
-                            "\n\t(INPUTS (AvailableLand " + str(amount) + ") "
-                            "(Population " + str(5 * amount) + ") (Water " + str(5 * amount) + ") "
-                            "(MetallicElements " + str(amount) + ") (Timber " + str(5 * amount) + ") "
-                            "(MetallicAlloys " + str(3 * amount) + ") (PotentialEnergyUsable " + str(5 * amount) + "))"
-                            "\n\t(OUTPUTS (Housing " + str(amount) + ") (HousingWaste " + str(amount) + ") "
-                            "(Population " + str(5 * amount) + ") (Water " + str(4 * amount) + ")))")
-
+                                                                                  "\n\t(INPUTS (AvailableLand " + str(
+            amount) + ") "
+                      "(Population " + str(5 * amount) + ") (Water " + str(5 * amount) + ") "
+                                                                                         "(MetallicElements " + str(
+            amount) + ") (Timber " + str(5 * amount) + ") "
+                                                       "(MetallicAlloys " + str(
+            3 * amount) + ") (PotentialEnergyUsable " + str(5 * amount) + "))"
+                                                                          "\n\t(OUTPUTS (Housing " + str(
+            amount) + ") (HousingWaste " + str(amount) + ") "
+                                                         "(Population " + str(5 * amount) + ") (Water " + str(
+            4 * amount) + ")))")
 
     # Requires 1 population
     def transform_alloys(self, transform_country, amount=1):
@@ -237,11 +241,12 @@ class World:
         transform_country.inc_resource("R7", 2 * amount)  # Water
 
         self.__actions_path.append("(TRANSFORM " + transform_country.get_name() + " "
-                            "\n\t(INPUTS (MetallicElements " + str(2 * amount) + ") "
-                            "(Renewable Energy " + str(3 * amount) + ") (Water " + str(3 * amount) + "))"
-                            "\n\t(OUTPUTS (MetallicAlloys " + str(amount) + ") (MetallicAlloysWaste " + str(amount) + ") "
-                            "(Water " + str(2 * amount) + ")))")
-
+                                                                                  "\n\t(INPUTS (MetallicElements " + str(
+            2 * amount) + ") "
+                          "(Renewable Energy " + str(3 * amount) + ") (Water " + str(3 * amount) + "))"
+                                                                                                   "\n\t(OUTPUTS (MetallicAlloys " + str(
+            amount) + ") (MetallicAlloysWaste " + str(amount) + ") "
+                                                                "(Water " + str(2 * amount) + ")))")
 
     # Requires 1 population
     def transform_electronics(self, transform_country, amount=1):
@@ -256,11 +261,12 @@ class World:
         transform_country.inc_resource("R25X", 1 * amount)  # ElectronicsWaste
 
         self.__actions_path.append("(TRANSFORM " + transform_country.get_name() + " "
-                            "\n\t(INPUTS (MetallicElements " + str(3 * amount) + ") "
-                            "(MetallicAlloys " + str(2 * amount) + ") (RenewableEnergyCapacity " + str(3 * amount) + ") "
+                                                                                  "\n\t(INPUTS (MetallicElements " + str(
+            3 * amount) + ") "
+                          "(MetallicAlloys " + str(2 * amount) + ") (RenewableEnergyCapacity " + str(3 * amount) + ") "
                                    + ") (Water " + str(3 * amount) + "))"
-                            "\n\t(OUTPUTS (Electronics " + str(2 * amount) + ") (ElectonicsWaste " + str(amount) + ")))")
-
+                                                                     "\n\t(OUTPUTS (Electronics " + str(
+            2 * amount) + ") (ElectonicsWaste " + str(amount) + ")))")
 
     # requires 2 population
     def transform_military(self, transform_country, amount=1):
@@ -275,10 +281,12 @@ class World:
         transform_country.inc_resource("R20X", 1 * amount)  # MilitaryWaste
 
         self.__actions_path.append("(TRANSFORM " + transform_country.get_name() + " "
-                            "\n\t(INPUTS (Electronics " + str(2 * amount) + ") "
-                            "(Housing " + str(2 * amount) + ") (Food " + str(2 * amount) + ") "
-                            "(Water " + str(amount) + "))"
-                            "\n\t(OUTPUTS (Military " + str(2 * amount) + ") (MilitaryWaste " + str(amount) + ")))")
+                                                                                  "\n\t(INPUTS (Electronics " + str(
+            2 * amount) + ") "
+                          "(Housing " + str(2 * amount) + ") (Food " + str(2 * amount) + ") "
+                                                                                         "(Water " + str(amount) + "))"
+                                                                                                                   "\n\t(OUTPUTS (Military " + str(
+            2 * amount) + ") (MilitaryWaste " + str(amount) + ")))")
 
     # requires 1 population
     def transform_food(self, transform_country, amount=1):
@@ -294,11 +302,14 @@ class World:
         transform_country.inc_resource("R23X", 2 * amount)  # FoodWaste
 
         self.__actions_path.append("(TRANSFORM " + transform_country.get_name() + " "
-                            "\n\t(INPUTS (AvailableLand " + str(3 * amount) + ") "
-                            "(FoodWaste " + str(amount) + ") (RenewableEnergyCapacity " + str(amount) + ") "
-                            "(Water " + str(3 * amount) + "))"
-                            "\n\t(OUTPUTS (Food " + str(4 * amount) + ") (Water " + str(amount) + ") "
-                            "(FoodWaste " + str(2 * amount) + ")))")
+                                                                                  "\n\t(INPUTS (AvailableLand " + str(
+            3 * amount) + ") "
+                          "(FoodWaste " + str(amount) + ") (RenewableEnergyCapacity " + str(amount) + ") "
+                                                                                                      "(Water " + str(
+            3 * amount) + "))"
+                          "\n\t(OUTPUTS (Food " + str(4 * amount) + ") (Water " + str(amount) + ") "
+                                                                                                "(FoodWaste " + str(
+            2 * amount) + ")))")
 
     # requires 2 population
     def transform_fossil_energy(self, transform_country, amount=1):
@@ -313,10 +324,13 @@ class World:
         transform_country.inc_resource("R24X", 2 * amount)  # FossilEnergyUsable
 
         self.__actions_path.append("(TRANSFORM " + transform_country.get_name() + " "
-                            "\n\t(INPUTS (AvailableLand " + str(3 * amount) + ") "
-                            "(Water " + str(3 * amount) + ") (Electronics " + str(2 * amount) + "))"
-                            "\n\t(OUTPUTS (Housing " + str(amount) + ") (HousingWaste " + str(amount) + ") "
-                            "(Population " + str(5 * amount) + ") (Water " + str(4 * amount) + ")))")
+                                                                                  "\n\t(INPUTS (AvailableLand " + str(
+            3 * amount) + ") "
+                          "(Water " + str(3 * amount) + ") (Electronics " + str(2 * amount) + "))"
+                                                                                              "\n\t(OUTPUTS (Housing " + str(
+            amount) + ") (HousingWaste " + str(amount) + ") "
+                                                         "(Population " + str(5 * amount) + ") (Water " + str(
+            4 * amount) + ")))")
 
     # requires 2 population
     def transform_renewable_energy(self, transform_country, amount=1):
@@ -334,9 +348,11 @@ class World:
         transform_country.inc_resource("R26X", 1 * amount)  # RenewableEnergyUsableWaste
 
         self.__actions_path.appent("(TRANSFORM " + transform_country.get_name() + " "
-                                   "\n\t(INPUTS (AvailableLand " + str(3 * amount) + ") "
-                                   "(Water " + str(2 * amount) + ") (FoodWaste " + str(amount) +
+                                                                                  "\n\t(INPUTS (AvailableLand " + str(
+            3 * amount) + ") "
+                          "(Water " + str(2 * amount) + ") (FoodWaste " + str(amount) +
                                    ") (Electronics " + str(2 * amount) + "))"
-                                   "\n\t(OUTPUTS (AvailableLand " + str(2 * amount) + ") (Water " + str(2 * amount) +
-                                    ") (Electronics " + str(amount) + + ") (RenewableEnergyUsable " + str(3 * amount) +
+                                                                         "\n\t(OUTPUTS (AvailableLand " + str(
+            2 * amount) + ") (Water " + str(2 * amount) +
+                                   ") (Electronics " + str(amount) + + ") (RenewableEnergyUsable " + str(3 * amount) +
                                    ") (RenewableEnergyUsableWaste " + str(amount) + ")))")
