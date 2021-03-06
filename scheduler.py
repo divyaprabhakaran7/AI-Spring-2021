@@ -7,7 +7,6 @@ TRANSFER_RESOURCES = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R20', 'R2
 UPPER_BOUND = 10
 LOWER_BOUND = 5
 
-# FIXME expected utility function can draw on depth from the private member fields of the world class
 
 def scheduler(world_object, country_name, num_output_schedules, depth_bound, frontier_max_size):
     frontier = DEPQ(maxlen=frontier_max_size)  # Successors
@@ -25,10 +24,10 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
 
             # insert successors by their expected utility
             for successor in successor_states:
-                frontier.insert(successor, successor.expected_utility(country_name, successor.get_depth()))
+                frontier.insert(successor, successor.expected_utility(country_name, initial_state))
         else:
             schedules.insert(current_state,
-                             current_state.expected_utility(country_name, current_state.get_depth()))
+                             current_state.expected_utility(country_name, initial_state))
     return schedules_to_string(schedules)  # Return Schedule as a list of strings
 
 

@@ -7,12 +7,21 @@ class World:
     # Resources: dict of resources and weights (Resource name: resource weight)
     # Resource_name: dict of resource abrv (as used in code) and resource string (necessary for printing)
     # path: list keeping track of all actions in the world (transfers/transform) for scheduler
+    # Depth: length of the path
     def __init__(self):
         self.__countries = {}
         self.__resources = {}
-        self.__resource_name = {}
+        self.__resource_names = {}
         self.__path = []
         self.__depth = 0
+        self.__active_countries = [] # FIXME gotta figure out a better way to do this (i was thinking scheduler object)
+
+    def get_active_countries(self):
+        return self.__active_countries
+
+    def set_active_country(self, country):
+        if country not in self.__active_countries:
+            self.__active_countries.append(country)
 
     def set_countries(self, countries):
         self.__countries = countries
@@ -150,6 +159,8 @@ class World:
             self.__path.append("(TRANSFER " + country1 + " " + country2 + " (("
                                              + self.get_resource_name(resource) + " " + str(amount) +"))")
             self.__depth += 1
+            self.set_active_country(country1) # FIXME is there a way to not repeat this call every time
+            self.set_active_country(country2)
             return True
         else:
             return False
@@ -166,47 +177,42 @@ class World:
         world += weights + countries
         return world
 
-    def get_undiscounted_reward(self, country, world2):
-        initial_utility = sq.state_quality(country, self)
-        final_utility = sq.state_quality(country, world2)
+    def get_undiscounted_reward(self, country, initial_world):
+        initial_utility = sq.state_quality(country, initial_world)
+        final_utility = sq.state_quality(country, self)
         return final_utility - initial_utility
 
-    def get_discounted_reward(self, country, depth):
+    def get_discounted_reward(self, country, initial_world):
         # DR(c_i, s_j) = gamma^N * Q_end(c_i, s_j) – Q_start(c_i, s_j)), where 0 <= gamma < 1
         gamma = 0.99
-        n = depth  # this is how many times the scheduler ran
+        n = self.__depth  # this is how many times the scheduler ran
 
-        discount_reward = gamma ** n * self.get_undiscounted_reward(country)
-        gamma -= .02
+        discount_reward = gamma ** n * self.get_undiscounted_reward(country, initial_world)
 
         return discount_reward
 
-    def country_accept_prob(self, country, depth):
-        l = 1
-        x0 = 0
-        k = 1
-        discount_reward = self.get_discounted_reward(country, depth)
-        prob = l / (1 + math.e ** (-k * (discount_reward - x0)))
+    def country_accept_prob(self, country, initial_world):
+        l = 1.0
+        x0 = 0.0
+        k = 1.0
+        discount_reward = self.get_discounted_reward(country, initial_world)
+        prob = l / (1.0 + math.e ** (-k * (discount_reward - x0)))
         return prob
 
-    def schedule_accept_prob(self, country, depth):
-        prob_product = 0
-        for x in range(depth - 1):
-            if x == 1:
-                prob_product = self.get_discounted_reward(country, depth)
-                return prob_product
-            else:
-                prob_product *= self.get_discounted_reward(country, depth)
+    def schedule_accept_prob(self, inital_world):
+        prob_product = 1
+        countries = self.get_active_countries()
+        for country in countries:
+            prob_product *= self.country_accept_prob(country, inital_world)
         return prob_product
 
-    def expected_utility(self, country, depth):
-        # c = -0.3  # can change later
-        # probability = self.schedule_accept_prob(country, depth)
-        # discount_reward = self.get_discounted_reward(country, depth)
-        #
-        # expected_util = probability * discount_reward + ((1 - probability) * c)
-        # return expected_util
-        return 1 + depth
+    def expected_utility(self, country, initial_world):
+        c = -10  # can change later
+        probability = self.schedule_accept_prob(initial_world)
+        discount_reward = self.get_discounted_reward(country, initial_world)
+
+        expected_util = probability * discount_reward + ((1 - probability) * c)
+        return expected_util
 
     # Default number of transforms is 1 (Population requirement is checked by verifying function)
     # Requires 5 population

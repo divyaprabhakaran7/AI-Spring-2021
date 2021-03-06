@@ -84,7 +84,7 @@ def generate_world(matrix, df_resources):
 
 def main():
     my_country_scheduler('Atlantis', 'data/resource_data.xlsx', 'data/country_data.xlsx',
-                         'data/output_data.xlsx', 10, 5, 100)
+                         'data/output_data.xlsx', 2, 3, 10)
 
 
 if __name__ == '__main__':
