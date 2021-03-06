@@ -34,7 +34,9 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
 
 # Load a data frame of an excel sheet
 def get_data_from_file(file_name):
-    df = pd.read_excel(file_name, engine='openpyxl')  # FIXME Need to install openpyxl package to run this
+
+    # FIXME somehow the loaded files give a warning here but when i create new ones there is no warning
+    df = pd.read_excel(file_name, engine='openpyxl')  # Need to install openpyxl package to run this
     df = df.loc[:df.last_valid_index()]  # This ensures that there are no trailing blank rows (weird bug with openpyxl)
     return df
 
@@ -82,7 +84,7 @@ def generate_world(matrix, df_resources):
 
 def main():
     my_country_scheduler('Atlantis', 'data/resource_data.xlsx', 'data/country_data.xlsx',
-                         'data/output_data.xlsx', 2, 3, 10)
+                         'data/output_data.xlsx', 10, 5, 100)
 
 
 if __name__ == '__main__':
