@@ -1,6 +1,7 @@
 import math
 import statequality as sq
 
+
 class World:
 
     # Countries: dict of countries (Country name: country object)
@@ -11,6 +12,7 @@ class World:
     def __init__(self):
         self.__countries = {}
         self.__resources = {}
+
         self.__resource_names = {}
         self.__path = []
         self.__depth = 0
@@ -41,9 +43,6 @@ class World:
     def get_resources(self):
         return self.__resources
 
-    def get_resource_names(self):
-        return self.__resource_names
-
     def set_resource_names(self, resource_names):
         self.__resource_names = resource_names
 
@@ -64,6 +63,7 @@ class World:
 
     def get_depth(self):
         return self.__depth
+
 
     def get_max_resource(self, resource):
         max_country = ""
@@ -161,6 +161,7 @@ class World:
             self.__depth += 1
             self.set_active_country(country1) # FIXME is there a way to not repeat this call every time
             self.set_active_country(country2)
+
             return True
         else:
             return False
@@ -211,6 +212,7 @@ class World:
         probability = self.schedule_accept_prob(initial_world)
         discount_reward = self.get_discounted_reward(country, initial_world)
 
+
         expected_util = probability * discount_reward + ((1 - probability) * c)
         return expected_util
 
@@ -239,6 +241,7 @@ class World:
                             "(Population " + str(5 * amount) + ") (Water " + str(4 * amount) + ")))")
         self.__depth += 1
 
+
     # Requires 1 population
     def transform_alloys(self, transform_country, amount=1):
         # Decrease inputs
@@ -257,6 +260,7 @@ class World:
                             "\n\t(OUTPUTS (MetallicAlloys " + str(amount) + ") (MetallicAlloysWaste " + str(amount) + ") "
                             "(Water " + str(2 * amount) + ")))")
         self.__depth += 1
+
 
     # Requires 1 population
     def transform_electronics(self, transform_country, amount=1):
@@ -317,6 +321,7 @@ class World:
                             "(FoodWaste " + str(2 * amount) + ")))")
         self.__depth += 1
 
+
     # requires 2 population
     def transform_fossil_energy(self, transform_country, amount=1):
         # Decrease inputs
@@ -335,6 +340,7 @@ class World:
                             "\n\t(OUTPUTS (Housing " + str(amount) + ") (HousingWaste " + str(amount) + ") "
                             "(Population " + str(5 * amount) + ") (Water " + str(4 * amount) + ")))")
         self.__depth += 1
+
 
     # requires 2 population
     def transform_renewable_energy(self, transform_country, amount=1):
@@ -359,3 +365,4 @@ class World:
                                     ") (Electronics " + str(amount) + + ") (RenewableEnergyUsable " + str(3 * amount) +
                                    ") (RenewableEnergyUsableWaste " + str(amount) + ")))")
         self.__depth += 1
+
