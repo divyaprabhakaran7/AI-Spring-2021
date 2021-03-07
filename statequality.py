@@ -6,9 +6,10 @@ import math
 # Manmade: MA(W+ +  W-) + E(W+ +  W-) + PRE(W+ +  W-) + PFE(W+ +  W-) + F(W+ +  W-) + M(W+ +  W-)
 
 def state_quality(country, world):
-    essential_val = essential_state(country)
-    land_val = land_state(country, world)
-    manmade_val = manmade_state(country, world)
+    quality_country = world.get_country(country)
+    essential_val = essential_state(quality_country)
+    land_val = land_state(quality_country, world)
+    manmade_val = manmade_state(quality_country, world)
 
     return essential_val + land_val + manmade_val
 
