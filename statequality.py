@@ -12,7 +12,7 @@ import math
 
 def state_quality(country, world):
     quality_country = world.get_country(country)
-    essential_val = essential_state(quality_country)
+    essential_val = essential_state(quality_country, world)
     land_val = land_state(quality_country, world)
     manmade_val = manmade_state(quality_country, world)
 
