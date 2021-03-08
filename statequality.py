@@ -25,7 +25,7 @@ def essential_state(country):
     quantity_water = country.get_resource_val('R7')  # water
     water_val = quantity_water / population
 
-    return food_val + housing_val + water_val
+    return math.log(food_val + housing_val + water_val)
 
 
 def land_state(country, world):
@@ -35,7 +35,7 @@ def land_state(country, world):
     renewable_energy_capacity_val = linear_value(world, country, 'R5', 'R5X')
     fossil_energy_capacity_val = linear_value(world, country, 'R6', 'R6X')
 
-    return timber_val + metallic_elements_val + land_val + fossil_energy_capacity_val + renewable_energy_capacity_val
+    return math.log(timber_val + metallic_elements_val + land_val + fossil_energy_capacity_val + renewable_energy_capacity_val)
 
 
 def manmade_state(country, world):
@@ -46,7 +46,7 @@ def manmade_state(country, world):
     farm_val = linear_value(world, country, 'R8', 'R8X')
     military_val = linear_value(world, country, 'R20', 'R20X')
 
-    return metallic_alloy_val + electronics_val + prep_renew_energy_val + prep_fossil_energy_val + farm_val + military_val
+    return math.log(metallic_alloy_val + electronics_val + prep_renew_energy_val + prep_fossil_energy_val + farm_val + military_val)
 
 
 def linear_value(world, country, resource, resource_waste):
