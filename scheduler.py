@@ -53,7 +53,7 @@ def get_successors(world_object, country_name):
             to_country_name = to_country.get_name()
 
             # no need to trade if everyone has in abundance
-            if to_country_name is not country_name:
+            if to_country_name != country_name:
                 tmp_world.transfer(country_name, to_country_name, resource, 1)
                 successors.append(tmp_world)
 
@@ -63,7 +63,7 @@ def get_successors(world_object, country_name):
             from_country_name = from_country.get_name()
 
             # no need to trade if everyone has in abundance
-            if from_country_name is not country_name:
+            if from_country_name != country_name:
                 tmp_world.transfer(from_country_name, country_name, resource, 1)
                 successors.append(tmp_world)
 
