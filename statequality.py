@@ -1,10 +1,5 @@
 import math
 
-
-# essential:  LogF / p * f  + h/(p/3)  +  LogW / p * w
-# Land:  T(W) + ME(W+ +  W-) + L(W+ +  W-) + REC(W+ +  W-) + FEC(W+ +  W-)  (linear)
-# Manmade: MA(W+ +  W-) + E(W+ +  W-) + PRE(W+ +  W-) + PFE(W+ +  W-) + F(W+ +  W-) + M(W+ +  W-)
-
 # threshold high = you don't need a lot of it to have a positive value
 # weight high = important if you have more or less than you need
 # threshold low = you need a lot of it for it to have a positive value
@@ -119,6 +114,7 @@ def manmade_state(country, world):
 def log_value(world, country, resource, threshold):
     quantity = country.get_resource_val(resource)  # food
     weight = world.get_resource_weight(resource)
+    # if there isn't 0 amount of a quantity, then return a negative value
     if quantity is 0:
         val = -1
     else:
