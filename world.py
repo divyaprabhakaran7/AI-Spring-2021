@@ -225,7 +225,7 @@ class World:
         transform_country.dec_resource("R2", 1 * amount)  # MetallicElements
         transform_country.dec_resource("R3", 5 * amount)  # Timber
         transform_country.dec_resource("R21", 3 * amount)  # MetallicAlloys
-        transform_country.dec_resource("R5", 3 * amount)  # PotentialEnergyUsable
+        transform_country.dec_resource("R24", 3 * amount)  # PreparedFossilEnergy
 
         # increase outputs (population unchanged)
         transform_country.inc_resource("R22", 1 * amount)  # Housing
@@ -246,7 +246,7 @@ class World:
     def transform_alloys(self, transform_country, amount=1):
         # Decrease inputs
         transform_country.dec_resource("R2", 2 * amount)  # MetallicElements
-        transform_country.dec_resource("R5", 3 * amount)  # PotentialUsableEnergy
+        transform_country.dec_resource("R24", 3 * amount)  # PreparedFossilEnergy
         transform_country.dec_resource("R7", 3 * amount)  # Water
 
         # increase outputs (population unchanged)
@@ -267,7 +267,7 @@ class World:
         # Decrease inputs
         transform_country.dec_resource("R2", 3 * amount)  # MetallicElements
         transform_country.dec_resource("R21", 2 * amount)  # MetallicAlloys
-        transform_country.dec_resource("R5", 3 * amount)  # PotentialEnergyUsable
+        transform_country.dec_resource("R24", 3 * amount)  # PreparedFossilEnergy
         transform_country.dec_resource("R7", 3 * amount)  # Water
 
         # increase outputs (population unchanged)
@@ -305,7 +305,7 @@ class World:
         # Decrease inputs
         transform_country.dec_resource("R4", 3 * amount)  # AvailableLand
         transform_country.dec_resource("R23X", 1 * amount)  # FoodWaste as fertilizer
-        transform_country.dec_resource("R5", 1 * amount)  # PotentialEnergyUsable
+        transform_country.dec_resource("R26", 1 * amount)  # PreparedRenewableEnergy
         transform_country.dec_resource("R7", 3 * amount)  # Water
 
         # increase outputs (population unchanged)
