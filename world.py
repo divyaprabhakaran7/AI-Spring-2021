@@ -100,7 +100,7 @@ class World:
 
         # Transform alloys, perform check for feasibility on amount
         if output_resource == 'R21':
-            alloys_dict = {'R1': 1 * amount, 'R2': 2 * amount, 'R5': 3 * amount, 'R7': 3 * amount}
+            alloys_dict = {'R1': 1 * amount, 'R2': 2 * amount, 'R24': 3 * amount, 'R7': 3 * amount}
             if transform_country.resource_check(alloys_dict):
                 self.transform_alloys(transform_country, amount)
                 return True
@@ -108,15 +108,14 @@ class World:
         # Transform housing
         if output_resource == 'R22':
             housing_dict = {'R1': 5 * amount, 'R2': 1 * amount, 'R3': 5 * amount, 'R4': 1 * amount,
-                            'R7': 5 * amount,
-                            'R21': 3 * amount, 'R5': 3 * amount}
+                            'R7': 5 * amount, 'R21': 3 * amount, 'R24': 3 * amount}
             if transform_country.resource_check(housing_dict):
                 self.transform_housing(transform_country, amount)
                 return True
 
         # Transform food
         if output_resource == 'R23':
-            food_dict = {'R1': 1 * amount, 'R4': 3 * amount, 'R23X': 1 * amount, 'R5': 1 * amount,
+            food_dict = {'R1': 1 * amount, 'R4': 3 * amount, 'R23X': 1 * amount, 'R26': 1 * amount,
                          'R7': 3 * amount}
             if transform_country.resource_check(food_dict):
                 self.transform_food(transform_country, amount)
@@ -132,7 +131,7 @@ class World:
 
         # Transform electronics
         if output_resource == 'R25':
-            elec_dict = {'R1': 1 * amount, 'R2': 3 * amount, 'R21': 2 * amount, 'R5': 3 * amount, 'R7': 3 * amount}
+            elec_dict = {'R1': 1 * amount, 'R2': 3 * amount, 'R21': 2 * amount, 'R24': 3 * amount, 'R7': 3 * amount}
             if transform_country.resource_check(elec_dict):
                 self.transform_electronics(transform_country, amount)
                 return True
