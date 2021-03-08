@@ -115,7 +115,7 @@ def log_value(world, country, resource, threshold):
     quantity = country.get_resource_val(resource)  # food
     weight = world.get_resource_weight(resource)
     # if there isn't 0 amount of a quantity, then return a negative value
-    if quantity is 0:
+    if quantity == 0:
         val = -1
     else:
         val = weight * math.log(threshold * quantity)
