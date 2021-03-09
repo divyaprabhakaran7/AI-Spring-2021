@@ -182,7 +182,7 @@ class World:
         return final_utility - initial_utility
 
     def get_discounted_reward(self, country, initial_world):
-        # DR(c_i, s_j) = gamma^N * Q_end(c_i, s_j) – Q_start(c_i, s_j)), where 0 <= gamma < 1
+        # DR(c_i, s_j) = gamma^N * (Q_end(c_i, s_j) – Q_start(c_i, s_j)), where 0 <= gamma < 1
         gamma = 0.99
         n = self.__depth  # this is how many times the scheduler ran
 
