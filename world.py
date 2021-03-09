@@ -61,6 +61,10 @@ class World:
             action_str += action + "\n"
         return action_str
 
+    def reset_path(self):
+        self.__depth = 0
+        self.__path = []
+
     def get_depth(self):
         return self.__depth
 
