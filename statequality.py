@@ -1,5 +1,6 @@
 import math
 
+
 # threshold high = you don't need a lot of it to have a positive value
 # weight high = important if you have more or less than you need
 # threshold low = you need a lot of it for it to have a positive value
@@ -25,7 +26,7 @@ def essential_state(country, world):
     # each member of population needs food
     food_val = log_value(world, country, 'R23', 1 / population)
     # 3 people per house would be ideal, but they can live with more than that
-    housing_val = log_value(world, country, 'R23', 1 / (population / 6))
+    housing_val = log_value(world, country, 'R22', 1 / (population / 6))
     # each member of population needs water
     water_val = log_value(world, country, 'R7', 1 / population)
 
@@ -88,7 +89,7 @@ def manmade_state(country, world):
     prepared_renewable_energy_val = log_value(world, country, 'R26', 2)
     electronics_val = log_value(world, country, 'R25', 2)
 
-    #waste calculations
+    # waste calculations
 
     farm_waste = country.get_resource_val('R8X') * world.get_resource_weight('R8X')
     final_farm = farm_val - farm_waste
@@ -115,8 +116,8 @@ def log_value(world, country, resource, threshold):
     quantity = country.get_resource_val(resource)  # food
     weight = world.get_resource_weight(resource)
     # if there isn't 0 amount of a quantity, then return a negative value
-    if quantity == 0:
-        val = -1
+    if quantity < 1/threshold:
+        val = 0
     else:
         val = weight * math.log(threshold * quantity)
     return val
