@@ -2,8 +2,8 @@ from depq import DEPQ  # double-ended queue
 import statequality as sq
 import copy # we need this to act as our copy constructor to avoid memory problems with lists
 
-TRANSFORM_RESOURCES = ['R20', 'R21', 'R22', 'R23', 'R24', 'R25', 'R26']
-TRANSFER_RESOURCES = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R20', 'R21', 'R22', 'R23', 'R24', 'R25', 'R26']
+TRANSFORM_RESOURCES = ['R21', 'R22', 'R23']
+TRANSFER_RESOURCES = ['R2', 'R3', 'R21', 'R22', 'R23']
 UPPER_BOUND = 10
 LOWER_BOUND = 5
 

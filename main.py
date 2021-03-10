@@ -83,7 +83,7 @@ def generate_world(matrix, df_resources):
 
 
 def main():
-    my_country_scheduler('Atlantis', 'data/resource_data.xlsx', 'data/country_data.xlsx',
+    my_country_scheduler('Atlantis', 'data/Example-Sample-Resources.xlsx', 'data/Example-Initial-Countries.xlsx',
                          'data/output_data.xlsx', 2, 3, 10)
 
 
