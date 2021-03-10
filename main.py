@@ -6,6 +6,15 @@ import scheduler as sd
 
 
 # Prototype function as described in the project spec (we'll initiate the scheduler from here)
+
+# This function initializes the date and passes it into the scheduler as well as printing the data to our output
+# @param your_country_name is the our country
+# @param resources_filename is the file for the resources to be read
+# @param initial_state_filename is the file that holds the initial world state
+# @param output_schedule_filename is the file to output the completed schedule to
+# @param num_output_schedules is the number of schedules to output
+# @param depth_bound is the depth of exploration that we want to bound our scheduler to
+# @param frontier_max_size is the maximum size of our frontier
 def my_country_scheduler(your_country_name, resources_filename, initial_state_filename, output_schedule_filename,
                          num_output_schedules, depth_bound, frontier_max_size):
     df_resources = get_data_from_file(resources_filename)  # load resources data frame
@@ -32,7 +41,9 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
     print_data_to_file(output_schedule_filename, world_object)
 
 
-# Load a data frame of an excel sheet
+# This function loads a data frame of an excel sheet
+# @param file_name is the file to load our data from
+# @return df is the data frame being returned
 def get_data_from_file(file_name):
 
     # FIXME somehow the loaded files give a warning here but when i create new ones there is no warning
@@ -42,6 +53,8 @@ def get_data_from_file(file_name):
 
 
 # Prints our output state into a .xlsx file
+# @param file_name is the name of the file to print the data to
+# @param world is the world object that we want to output to our file
 def print_data_to_file(file_name, world):
     resources = world.get_resources()
     countries = world.get_countries()
@@ -57,6 +70,9 @@ def print_data_to_file(file_name, world):
 
 
 # Create a matrix of countries and resources (used for initializing the country and world objects)
+# @param df_countries is the country in that given data frame
+# @param df_resources are the resources in the given data frame
+# @returns df_all returns the data frame of the whole world in its given state
 def create_matrix(df_countries, df_resources):
     resources = df_resources.Resource.tolist()  # Get a list of all resources in the world
     countries = df_countries.Country.tolist()  # Get a list of all countries in the world
@@ -70,6 +86,8 @@ def create_matrix(df_countries, df_resources):
 
 
 # Uses the country/resource matrix to create the country objects and load them into the world
+# @param matrix is the matrix used to create the country objects
+# @param df_resources are the resources from the given data frame
 def generate_world(matrix, df_resources):
     resource_dict = pd.Series(df_resources.Weight.values, index=df_resources.Resource).to_dict()
     names_dict = pd.Series(df_resources.Names.values, index=df_resources.Resource).to_dict()  # Get resource names
@@ -81,7 +99,7 @@ def generate_world(matrix, df_resources):
         world.add_country(new_country)
     return world
 
-
+# This is the main program that calls the scheduler to run
 def main():
     my_country_scheduler('Atlantis', 'data/resource_data.xlsx', 'data/country_data.xlsx',
                          'data/output_data.xlsx', 2, 3, 10)

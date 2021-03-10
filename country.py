@@ -68,8 +68,7 @@ class Country:
     # specified
     # @param self is the country itself
     # @param resource is the specific resource to check
-    # @param amount is the amount to check the resource value against
-
+    # @param amount is the amount to check the resource value against, default is none
     def resource_check(self, resource, amount=None):
         if amount is None:
             for x in resource:
@@ -79,6 +78,9 @@ class Country:
         else:
             return self.__resources[resource] >= amount
 
+    # This function allows us to return the name of the country along with the resources that it has
+    # @param self is the country itself
+    # @return country name and resources
     def __str__(self):
         name = self.get_name()
         resources = ""
