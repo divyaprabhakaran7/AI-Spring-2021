@@ -8,6 +8,13 @@ UPPER_BOUND = 10
 LOWER_BOUND = 5
 
 
+# This function creates the schedule of tranforms and transfers for the resources
+# @param world_object is the world state to be passed in for the schedule to start from
+# @param country_name is the name of our given country
+# @param num_output_schedules is the number of desired schedules to output
+# @param depth_bound is how deep to look for the schedule
+# @param frontier_max_size is the size of the frontier to explore
+# @return schedule as a list of strings
 def scheduler(world_object, country_name, num_output_schedules, depth_bound, frontier_max_size):
     frontier = DEPQ(maxlen=frontier_max_size)  # Successors
     schedules = DEPQ(maxlen=num_output_schedules)  # Output schedules
@@ -30,7 +37,10 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
                              current_state.expected_utility(country_name, initial_state))
     return schedules_to_string(schedules)  # Return Schedule as a list of strings
 
-
+# This function generates the successors for the schedule
+# @param world_object is the world state that it is currently in
+# @param country_name is the name of our country
+# @return successors are the successors that were found
 def get_successors(world_object, country_name):
     successors = []
 
@@ -69,7 +79,9 @@ def get_successors(world_object, country_name):
 
     return successors
 
-
+# This function takes the schedules and outputs it as a string
+# @param schedules are the schedules to put into a string
+# @return schedule_list is the list of schedules as strings
 def schedules_to_string(schedules):
     schedule_list = []
     for schedule, quality in schedules:
