@@ -1,6 +1,8 @@
 import math
 
 WASTE = ['R21X', 'R22X', 'R23X']
+LOWER_BOUND = 1
+UPPER_BOUND = 5
 
 # threshold high = you don't need a lot of it to have a positive value
 # weight high = important if you have more or less than you need
@@ -78,8 +80,12 @@ def log_value(world, country, resource, threshold):
     quantity = country.get_resource_val(resource)  # food
     weight = world.get_resource_weight(resource)
     # if there isn't 0 amount of a quantity, then return a negative value
-    if quantity < 1/threshold:
-        val = -1/10 * (threshold - quantity)
+    if quantity < LOWER_BOUND * weight:
+        val = 2 * quantity - (LOWER_BOUND * weight)/2
+
+    elif quantity > UPPER_BOUND * weight:
+        val = weight * math.log(UPPER_BOUND * weight)
+
     else:
-        val = weight * math.log(threshold * quantity)
+        val = weight * math.log(quantity)
     return val
