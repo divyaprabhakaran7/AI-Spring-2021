@@ -162,23 +162,24 @@ class World:
     def country_accept_prob(self, country, initial_world):
         l = 1.0
         x0 = 0.0
-        k = 1.0
+        k = 5.0 # set this to five bc our changes are small so we want a steeper function
         discount_reward = self.get_discounted_reward(country, initial_world)
         prob = l / (1.0 + math.e ** (-k * (discount_reward - x0)))
         return prob
 
-    def schedule_accept_prob(self, inital_world):
+    def schedule_accept_prob(self, inital_world, country_name):
         prob_product = 1
         countries = self.get_active_countries()
         for country in countries:
-            prob_product *= self.country_accept_prob(country, inital_world)
+            if country != country_name: # we will accept all of our schedules, as they are based on our EU
+                prob_product *= self.country_accept_prob(country, inital_world)
         return prob_product
 
-    def expected_utility(self, country, initial_world):
+    # country_name is our country
+    def expected_utility(self, country_name, initial_world):
         c = -.01  # can change later
-        probability = self.schedule_accept_prob(initial_world)
-        discount_reward = self.get_discounted_reward(country, initial_world)
-
+        probability = self.schedule_accept_prob(initial_world, country_name)
+        discount_reward = self.get_discounted_reward(country_name, initial_world)
         expected_util = probability * discount_reward + ((1 - probability) * c)
         return expected_util
 

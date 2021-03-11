@@ -4,7 +4,7 @@ import copy # we need this to act as our copy constructor to avoid memory proble
 
 TRANSFORM_RESOURCES = ['R21', 'R22', 'R23']
 TRANSFER_RESOURCES = ['R2', 'R3', 'R21', 'R22', 'R23']
-UPPER_BOUND = 10
+UPPER_BOUND = 5
 LOWER_BOUND = 5
 
 
@@ -36,7 +36,7 @@ def get_successors(world_object, country_name):
 
     # add transforms
     for resource in TRANSFORM_RESOURCES:
-        tmp_world = copy.deepcopy(world_object)
+        tmp_world = copy.deepcopy(world_object) # add bins to trasnforms
 
         # Transform is possible
         if tmp_world.transform(country_name, resource, 1) is True:
