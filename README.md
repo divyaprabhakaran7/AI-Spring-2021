@@ -10,7 +10,7 @@ Group 6 Part 1 Deliverable
 ## Setup
 Use a Python 3.7 interpreter (or above).
 Download the following packages into your project:
-- pandas
+- pandas v 1.1.3
 - xlrd v 1.2.0
 - depq
 - XlsxWriter
