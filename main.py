@@ -102,11 +102,24 @@ def generate_world(matrix, df_resources):
         world.add_country(new_country)
     return world
 
+# The 6 test cases we have created for our world
+def test_cases():
+    #
+    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_1.xlsx', 'data/output_data1.xlsx',
+                     5, 1, 10)
+
+    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_2.xlsx', 'data/output_data2.xlsx',
+                     7, 10, 10)
+
+    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_3.xlsx', 'data/output_data3.xlsx',
+                     5, 5, 10)
+
+    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_4.xlsx', 'data/output_data4.xlsx',
+                     7, 10, 10)
 
 # This is the main program that calls the scheduler to run
 def main():
-    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/country_data.xlsx',
-                         'data/output_data.xlsx', 10, 10, 50)
+    test_cases()
 
 
 if __name__ == '__main__':
