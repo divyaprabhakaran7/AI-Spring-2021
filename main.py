@@ -92,10 +92,11 @@ def create_matrix(df_countries, df_resources):
 # @param df_resources are the resources from the given data frame
 # @return a world object initialized with the countries, resources and resource weights that were provided
 def generate_world(matrix, df_resources):
+    # Create dict of resources
     resource_dict = pd.Series(df_resources.Weight.values, index=df_resources.Resource).to_dict()
     names_dict = pd.Series(df_resources.Names.values, index=df_resources.Resource).to_dict()  # Get resource names
     world = World()
-    world.set_resources(resource_dict)
+    world.set_resources(resource_dict) # Set up world with resources
     world.set_resource_names(names_dict)
     for country, resources in matrix.iterrows():
         new_country = Country(country, dict(resources))

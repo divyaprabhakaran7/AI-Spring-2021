@@ -10,11 +10,15 @@ UPPER_BOUND = 20  # Default upper bound for the piece-wise state-quality functio
 # @param world is the world in which the state-quality will be calculated
 # @return state-quality value
 def state_quality(country, world):
+    # Get information for country evaluating
     quality_country = world.get_country(country)
+
+    # Calculate state quality for each resource group
     essential_val = essential_state(quality_country, world)
     land_val = land_state(quality_country, world)
     manmade_val = manmade_state(quality_country, world)
     waste_val = waste_state(quality_country, world)
+
     return essential_val + land_val + manmade_val + waste_val
 
 
@@ -61,14 +65,21 @@ def manmade_state(country, world):
 # @param resource is the resource for which the current quality is evaluated
 # @return quality value for the current resource
 def piecewise_value(country, world, resource):
+    # Get the amount and the weight for each resource in the country
     quantity = country.get_resource_val(resource)
     weight = world.get_resource_weight(resource)
+
+    # For values less than the minimum desired value, calculate state quality contribution using this linear function
     if quantity < LOWER_BOUND * weight:
         val = 1 / 2 * quantity - (LOWER_BOUND * weight) / 2
+
+    # For values greater than the upper bound, function will be constant
     elif quantity > UPPER_BOUND * weight:
-        val = 5 * math.log(UPPER_BOUND * weight) - 10
+        val = 5 * math.ln(UPPER_BOUND * weight) - 10
+
+    # For values in between lower and upper bounds, utilize ln function to calculate increasing value
     else:
-        val = 5 * math.log(quantity) - 10
+        val = 5 * math.ln(quantity) - 10
     return val
 
 
@@ -79,6 +90,7 @@ def piecewise_value(country, world, resource):
 # @return quality value for the waste resources
 def waste_state(country, world):
     waste_sum = 0
+    # Calculates the value for each resource with waste
     for waste_res in WASTE:
         waste_sum += country.get_resource_val(waste_res) * world.get_resource_weight(waste_res)
     return waste_sum

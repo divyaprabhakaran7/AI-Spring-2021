@@ -254,10 +254,12 @@ class World:
     # @param intial_world is the world instance prior to the transfer
     # @return the probability
     def country_accept_prob(self, country, initial_world):
+        # Different constants, values determined through testing
         l = 1.0
         x0 = 0.0
-        k = 1.0
+        k = 5.0
         discount_reward = self.get_discounted_reward(country, initial_world)
+        # Logistic function
         prob = l / (1.0 + math.e ** (-k * (discount_reward - x0)))
         return prob
 
@@ -269,6 +271,8 @@ class World:
     def schedule_accept_prob(self, inital_world):
         prob_product = 1
         countries = self.get_active_countries()
+
+        # Calculate the product of all the countries' probabilities
         for country in countries:
             prob_product *= self.country_accept_prob(country, inital_world)
         return prob_product
@@ -278,7 +282,7 @@ class World:
     # @param country is the country that the utility is calculated for
     # @param initial_world is the world instance prior to changes
     def expected_utility(self, country, initial_world):
-        c = -.01  # can change later
+        c = -.01 # Low constant value since we have low expected utility values
         probability = self.schedule_accept_prob(initial_world)
         discount_reward = self.get_discounted_reward(country, initial_world)
 
