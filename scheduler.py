@@ -1,6 +1,6 @@
 from depq import DEPQ  # double-ended queue
 import statequality as sq
-import copy # we need this to act as our copy constructor to avoid memory problems with lists
+import copy  # we need this to act as our copy constructor to avoid memory problems with lists
 
 TRANSFORM_RESOURCES = ['R20', 'R21', 'R22', 'R23', 'R24', 'R25', 'R26']
 TRANSFER_RESOURCES = ['R2', 'R3', 'R21', 'R22', 'R23', 'R24']
@@ -36,6 +36,7 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
             schedules.insert(current_state,
                              current_state.expected_utility(country_name, initial_state))
     return schedules_to_string(schedules)  # Return Schedule as a list of strings
+
 
 # This function generates the successors for the schedule
 # @param world_object is the world state that it is currently in
@@ -80,11 +81,12 @@ def get_successors(world_object, country_name):
 
     return successors
 
+
 # This function takes the schedules and outputs it as a string
 # @param schedules are the schedules to put into a string
 # @return schedule_list is the list of schedules as strings
 def schedules_to_string(schedules):
     schedule_list = []
     for schedule, quality in schedules:
-        schedule_list.append("Expected Utility: " + str(quality) + "\nPath:\n" + schedule.get_path_as_string())
+        schedule_list.append("Expected Utility: " + str(quality) + "|" + schedule.get_path_as_string())
     return schedule_list

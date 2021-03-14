@@ -11,7 +11,6 @@ class Country:
     # @param self is the country
     # @param name is the country name
     # @param resources is the dictionary of resources and the amount present
-
     def __init__(self, name, resources):
         self.__name = name
         self.__resources = resources
