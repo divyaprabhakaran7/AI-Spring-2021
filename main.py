@@ -30,7 +30,7 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
     print_data_to_file(output_schedule_filename, world_object, schedules, depth_bound)
 
     # If this prints, scheduler completed successfully
-    print("Scheduling complete -- Check output_data file for results")
+    print("Scheduling complete -- Check " + output_schedule_filename + " file for results")
 
 
 # This function loads a data frame of an excel sheet
@@ -116,6 +116,9 @@ def test_cases():
 
     my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_4.xlsx', 'data/output_data4.xlsx',
                      7, 10, 10)
+
+    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_5.xlsx', 'data/output_data5.xlsx',
+                         5, 10, 10)
 
 # This is the main program that calls the scheduler to run
 def main():
