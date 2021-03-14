@@ -282,7 +282,7 @@ class World:
     # @param country is the country that the utility is calculated for
     # @param initial_world is the world instance prior to changes
     def expected_utility(self, country, initial_world):
-        c = -.01 # Low constant value since we have low expected utility values
+        c = -.01  # Low constant value since we have low expected utility values
         probability = self.schedule_accept_prob(initial_world)
         discount_reward = self.get_discounted_reward(country, initial_world)
 
@@ -312,7 +312,7 @@ class World:
                            ") (MetallicElements " + str(
             amount) + ") (Timber " + str(5 * amount) +
                            ") (MetallicAlloys " + str(3 * amount) + "))  (OUTPUTS (Population " + str(amount) +
-                            ") (Housing " + str(amount) + ") " + "(HousingWaste " + str(amount) + "))) EU: "
+                           ") (Housing " + str(amount) + ") " + "(HousingWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility('self', prior_world)) + "|")
         self.__depth += 1
 
@@ -332,7 +332,7 @@ class World:
         transform_country.inc_resource("R21X", 1 * amount)  # MetallicAlloysWaste
 
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount) +
-             ") (MetallicElements " + str(2 * amount) + "))  (OUTPUTS (Population " + str(amount) +
+                           ") (MetallicElements " + str(2 * amount) + "))  (OUTPUTS (Population " + str(amount) +
                            ") (MetallicAlloys " + str(amount) + ") (MetallicAlloysWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility('self', prior_world)) + "|")
         self.__depth += 1
@@ -353,10 +353,11 @@ class World:
         transform_country.inc_resource("R22", 2 * amount)  # Electronics
         transform_country.inc_resource("R22X", 1 * amount)  # ElectronicsWaste
 
-        self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(5*amount)
+        self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(5 * amount)
                            + ") (MetallicElements " + str(3 * amount) + ") (MetallicAlloys " + str(2 * amount) + "))"
-                           " (OUTPUTS (Population " + str(5*amount) + ") (Electronics " + str(2 * amount) + ") "
-                          "(ElectonicsWaste " + str(amount) +
+                                                                                                                 "(OUTPUTS (Population " + str(
+            5 * amount) + ") (Electronics " + str(2 * amount) + ") "
+                                                                "(ElectonicsWaste " + str(amount) +
                            "))) EU: " + str(self.expected_utility('self', prior_world)) + "|")
         self.__depth += 1
 
@@ -373,6 +374,6 @@ class World:
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount)
                            + ") (Timber " + str(3 * amount) + ") (Housing " + str(amount) +
                            "))  (OUTPUTS (Population " + str(amount) + ") (Food " + str(2 * amount) +
-                         ") (Housing " + str (amount) + ") (FoodWaste " + str(amount) + "))) EU: "
+                           ") (Housing " + str(amount) + ") (FoodWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility('self', prior_world)) + "|")
         self.__depth += 1
