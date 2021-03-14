@@ -13,6 +13,7 @@ Download the following packages into your project:
 - pandas
 - xlrd v 1.2.0
 - depq
+- XlsxWriter
 
 ## General Info
 This project is a modeling of a world that contains countries with different resources. Countries are able to transfer and transform these resources, and have a certain quality at a given state. A scheduler creates an output of different paths countries can take to do this, and the most beneficial one for the world is ideally chosen.
