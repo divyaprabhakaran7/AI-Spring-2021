@@ -1,6 +1,6 @@
 import math
 
-WASTE = ['R21X', 'R22X', 'R23X']
+WASTE = ['R21X', 'R22X', 'R23X', 'R24X']
 LOWER_BOUND = 10
 UPPER_BOUND = 20
 
@@ -29,7 +29,7 @@ def essential_state(country, world):
     # population must be proportional the other resources
     population = country.get_resource_val('R1')
     # 3 people per house would be ideal, but they can live with more than that
-    housing_val = log_value(world, country, 'R23', 1 / (population / 6))
+    housing_val = log_value(world, country, 'R23')
 
     return housing_val
 
@@ -38,31 +38,30 @@ def land_state(country, world):
     # threshold of 1/10 because it is a very standard resource
     # this allows you to have enough for transformations
     # would be better if you had more than this though
-    metallic_elements_val = log_value(world, country, 'R2', 1 / 5)
-    timber_val = log_value(world, country, 'R3', 1 / 5)
+    metallic_elements_val = log_value(world, country, 'R2')
+    timber_val = log_value(world, country, 'R3')
 
     return timber_val + metallic_elements_val
 
 
 def manmade_state(country, world):
-    metallic_alloys_val = log_value(world, country, 'R21', 2)
-    electronics_val = log_value(world, country, 'R22', 2)
+    metallic_alloys_val = log_value(world, country, 'R21')
+    electronics_val = log_value(world, country, 'R22')
 
     return metallic_alloys_val + electronics_val
 
 
-def log_value(world, country, resource, threshold):
+def log_value(world, country, resource):
     quantity = country.get_resource_val(resource)  # food
     weight = world.get_resource_weight(resource)
-    # if there isn't 0 amount of a quantity, then return a negative value
     if quantity < LOWER_BOUND * weight:
-        val = 2 * quantity - (LOWER_BOUND * weight) / 2
+        val = 1/2 * quantity - (LOWER_BOUND * weight) / 2
 
     elif quantity > UPPER_BOUND * weight:
-        val = weight * math.log(UPPER_BOUND * weight)
+        val = 5 * math.log(UPPER_BOUND * weight) - 10
 
     else:
-        val = weight * math.log(quantity)
+        val = 5 * math.log(quantity) - 10
     return val
 
 

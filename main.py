@@ -1,8 +1,8 @@
-import pandas as pd
 from country import Country
 from world import World
-import statequality as sq
+
 import scheduler as sd
+import pandas as pd
 
 
 # Prototype function as described in the project spec (we'll initiate the scheduler from here)
@@ -22,19 +22,6 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
     world_matrix = create_matrix(df_countries, df_resources)  # Get the two data frames into a matrix
     world_object = generate_world(world_matrix,
                                   df_resources)  # Create the world object with country objects and weights
-
-    # Simple transform/transfer tests
-    # print(world_object)
-    # print(world_object)
-    # print(sq.state_quality(world_object.get_country('Atlantis'), world_object))
-
-    # world_object.transform('Atlantis', 'R22', 3)
-    # world_object.transform('Atlantis', 'R22', 2)
-    # world_object.transform('Atlantis', 'R22', 1)
-    # world_object.transfer('Atlantis', 'Carpania', 'R22', 3)
-    # world_object.transform('Atlantis', 'R21', 10)
-    # world_object.transform('Atlantis', 'R22', 5)
-    # print(world_object.get_path_as_string())
     schedules = sd.scheduler(world_object, your_country_name, num_output_schedules, depth_bound, frontier_max_size)
     for x in schedules:
         print(x + "\n")
@@ -45,9 +32,7 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
 # @param file_name is the file to load our data from
 # @return df is the data frame being returned
 def get_data_from_file(file_name):
-
-    # FIXME somehow the loaded files give a warning here but when i create new ones there is no warning
-    df = pd.read_excel(file_name, engine='openpyxl')  # Need to install openpyxl package to run this
+    df = pd.read_excel(file_name)  # Need to install openpyxl package to run this
     df = df.loc[:df.last_valid_index()]  # This ensures that there are no trailing blank rows (weird bug with openpyxl)
     return df
 
@@ -88,6 +73,7 @@ def create_matrix(df_countries, df_resources):
 # Uses the country/resource matrix to create the country objects and load them into the world
 # @param matrix is the matrix used to create the country objects
 # @param df_resources are the resources from the given data frame
+# @return a world object initialized with the countries, resources and resource weights that were provided
 def generate_world(matrix, df_resources):
     resource_dict = pd.Series(df_resources.Weight.values, index=df_resources.Resource).to_dict()
     names_dict = pd.Series(df_resources.Names.values, index=df_resources.Resource).to_dict()  # Get resource names
@@ -98,6 +84,7 @@ def generate_world(matrix, df_resources):
         new_country = Country(country, dict(resources))
         world.add_country(new_country)
     return world
+
 
 # This is the main program that calls the scheduler to run
 def main():

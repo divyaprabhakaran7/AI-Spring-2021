@@ -192,13 +192,15 @@ class World:
     # @param resource is the desired resource to transfer
     # @amount is the desired amount of the resource to transfer
     def transfer(self, country1, country2, resource, amount):
+        tmp_world = copy.deepcopy(self)
         from_country = self.get_country(country1)
         to_country = self.get_country(country2)
         if from_country.resource_check(resource, amount):
             from_country.dec_resource(resource, amount)
             to_country.inc_resource(resource, amount)
             self.__path.append("(TRANSFER " + country1 + " " + country2 + " (("
-                               + self.get_resource_name(resource) + " " + str(amount) + "))")
+                               + self.get_resource_name(resource) + " " + str(amount) + "))"
+                               + " EU: " + str(tmp_world.expected_utility('Atlantis', tmp_world)))
             self.__depth += 1
             self.set_active_country(country1)  # FIXME is there a way to not repeat this call every time
             self.set_active_country(country2)
@@ -305,7 +307,7 @@ class World:
         self.__path.append("(TRANSFORM " + transform_country.get_name() + "\n\t(INPUTS ((MetallicElements " + str(
             amount) + ") (Timber " + str(5 * amount) +
                            ") (MetallicAlloys " + str(3 * amount) + ")))\n\t(OUTPUTS (Housing " + str(amount) + ") "
-                           + "(HousingWaste " + str(amount) + "))) with expected utility: "
+                           + "(HousingWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility('Atlantis', prior_world)))
         self.__depth += 1
 
@@ -326,7 +328,7 @@ class World:
 
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " \n\t(INPUTS (MetallicElements " + str(
             2 * amount) + ")))\n\t(OUTPUTS (MetallicAlloys " + str(amount) + ") (MetallicAlloysWaste " + str(amount) +
-                           "))) with expected utility: " + str(self.expected_utility('Atlantis', prior_world)))
+                           "))) EU: " + str(self.expected_utility('Atlantis', prior_world)))
         self.__depth += 1
 
     # This function does the work to transform electronics from resources
@@ -348,7 +350,7 @@ class World:
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " \n\t(INPUTS (MetallicElements " + str(
             3 * amount) + ") (MetallicAlloys " + str(2 * amount) + "))\n\t(OUTPUTS (Electronics " + str(
             2 * amount) + ") "
-                          "(ElectonicsWaste " + str(amount) + "))) with expected utility: "
+                          "(ElectonicsWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility('Atlantis', prior_world)))
         self.__depth += 1
 
@@ -365,7 +367,7 @@ class World:
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " \n\t(INPUTS (Timber " + str(
             3 * amount) + "))\n\t(OUTPUTS (Food " + str(2 * amount) + ") "
                                                                       "(FoodWaste " + str(
-            amount) + "))) with expected utility: "
+            amount) + "))) EU: "
                            + str(self.expected_utility('Atlantis', prior_world)))
         self.__depth += 1
 

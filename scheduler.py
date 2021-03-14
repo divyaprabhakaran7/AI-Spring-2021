@@ -3,7 +3,7 @@ import statequality as sq
 import copy # we need this to act as our copy constructor to avoid memory problems with lists
 
 TRANSFORM_RESOURCES = ['R20', 'R21', 'R22', 'R23', 'R24', 'R25', 'R26']
-TRANSFER_RESOURCES = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R20', 'R21', 'R22', 'R23', 'R24', 'R25', 'R26']
+TRANSFER_RESOURCES = ['R2', 'R3', 'R21', 'R22', 'R23', 'R24']
 UPPER_BOUND = 10
 LOWER_BOUND = 5
 
@@ -56,9 +56,10 @@ def get_successors(world_object, country_name):
     for resource in TRANSFER_RESOURCES:
         tmp_world = copy.deepcopy(world_object)
         resource_val = tmp_world.get_country(country_name).get_resource_val(resource)
+        resource_weight = tmp_world.get_resource_weight(resource)
 
         # We have resource in abundance
-        if resource_val > UPPER_BOUND:
+        if resource_val > UPPER_BOUND * resource_weight:
             to_country = tmp_world.get_min_resource(resource)
             to_country_name = to_country.get_name()
 
@@ -68,7 +69,7 @@ def get_successors(world_object, country_name):
                 successors.append(tmp_world)
 
         # We lack resource
-        elif resource_val < LOWER_BOUND:
+        elif resource_val < LOWER_BOUND * resource_weight:
             from_country = tmp_world.get_max_resource(resource)
             from_country_name = from_country.get_name()
 
