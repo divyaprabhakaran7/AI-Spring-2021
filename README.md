@@ -15,7 +15,7 @@ Download the following packages into your project:
 - depq
 
 ## General Info
-This project is a modeling of countries transferring and transforming resources in a world.
+This project is a modeling of a world that contains countries with different resources. Countries are able to transfer and transform resources, and have a certain quality at a given state. A scheduler creates an output of different paths countries can take to do this, and the most beneficial one for the world is ideally chosen.
 
 ## Navigation
 - country.py: generates a country and its attributes
