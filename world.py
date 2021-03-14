@@ -198,10 +198,10 @@ class World:
         if from_country.resource_check(resource, amount):
             from_country.dec_resource(resource, amount)
             to_country.inc_resource(resource, amount)
+            self.__depth += 1
             self.__path.append("(TRANSFER " + country1 + " " + country2 + " (("
                                + self.get_resource_name(resource) + " " + str(amount) + "))"
                                + " EU: " + str(self.expected_utility('self', tmp_world)) + "|")
-            self.__depth += 1
             self.set_active_country(country1)
             self.set_active_country(country2)
 
@@ -308,13 +308,14 @@ class World:
         transform_country.inc_resource("R23", 1 * amount)  # Housing
         transform_country.inc_resource("R23X", 1 * amount)  # HousingWaste
 
+        self.__depth += 1
+
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS ((Population " + str(amount) +
                            ") (MetallicElements " + str(
             amount) + ") (Timber " + str(5 * amount) +
                            ") (MetallicAlloys " + str(3 * amount) + "))  (OUTPUTS (Population " + str(amount) +
                            ") (Housing " + str(amount) + ") " + "(HousingWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility('self', prior_world)) + "|")
-        self.__depth += 1
 
     # This function does the work of transforming resources into metallic alloys
     # Requires 1 population
@@ -331,11 +332,12 @@ class World:
         transform_country.inc_resource("R21", 1 * amount)  # MetallicAlloys
         transform_country.inc_resource("R21X", 1 * amount)  # MetallicAlloysWaste
 
+        self.__depth += 1
+
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount) +
                            ") (MetallicElements " + str(2 * amount) + "))  (OUTPUTS (Population " + str(amount) +
                            ") (MetallicAlloys " + str(amount) + ") (MetallicAlloysWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility('self', prior_world)) + "|")
-        self.__depth += 1
 
     # This function does the work to transform electronics from resources
     # Requires 1 population
@@ -353,13 +355,14 @@ class World:
         transform_country.inc_resource("R22", 2 * amount)  # Electronics
         transform_country.inc_resource("R22X", 1 * amount)  # ElectronicsWaste
 
+        self.__depth += 1
+
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(5 * amount)
                            + ") (MetallicElements " + str(3 * amount) + ") (MetallicAlloys " + str(2 * amount) + "))"
                                                                                                                  "(OUTPUTS (Population " + str(
             5 * amount) + ") (Electronics " + str(2 * amount) + ") "
                                                                 "(ElectonicsWaste " + str(amount) +
                            "))) EU: " + str(self.expected_utility('self', prior_world)) + "|")
-        self.__depth += 1
 
     def transform_food(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
@@ -371,9 +374,10 @@ class World:
         transform_country.inc_resource("R24", 2 * amount)  # Food
         transform_country.inc_resource("R24X", 1 * amount)  # FoodWaste
 
+        self.__depth += 1
+
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount)
                            + ") (Timber " + str(3 * amount) + ") (Housing " + str(amount) +
                            "))  (OUTPUTS (Population " + str(amount) + ") (Food " + str(2 * amount) +
                            ") (Housing " + str(amount) + ") (FoodWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility('self', prior_world)) + "|")
-        self.__depth += 1

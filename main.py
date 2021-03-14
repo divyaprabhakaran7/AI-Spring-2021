@@ -37,8 +37,7 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
 # @param file_name is the file to load our data from
 # @return df is the data frame being returned
 def get_data_from_file(file_name):
-    df = pd.read_excel(file_name, engine="xlrd")  # Need to install openpyxl package to run this
-    df = df.loc[:df.last_valid_index()]  # This ensures that there are no trailing blank rows (weird bug with openpyxl)
+    df = pd.read_excel(file_name, engine="xlrd")
     return df
 
 
