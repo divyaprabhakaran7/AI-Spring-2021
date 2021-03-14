@@ -75,11 +75,11 @@ def piecewise_value(country, world, resource):
 
     # For values greater than the upper bound, function will be constant
     elif quantity > UPPER_BOUND * weight:
-        val = 5 * math.log(UPPER_BOUND * weight, e) - 10
+        val = 5 * math.log(UPPER_BOUND * weight, math.e) - 10
 
     # For values in between lower and upper bounds, utilize ln function to calculate increasing value
     else:
-        val = 5 * math.log(quantity, e) - 10
+        val = 5 * math.log(quantity, math.e) - 10
     return val
 
 
