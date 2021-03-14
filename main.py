@@ -102,9 +102,9 @@ def generate_world(matrix, df_resources):
         world.add_country(new_country)
     return world
 
-# The 6 test cases we have created for our world
+# The 7 test cases we have created for our world
+# Calls to the method my_county_scheduler to do all of this work.
 def test_cases():
-    #
     my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_1.xlsx', 'data/output_data1.xlsx',
                      5, 1, 10)
 
@@ -117,13 +117,21 @@ def test_cases():
     my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_4.xlsx', 'data/output_data4.xlsx',
                      7, 10, 10)
 
-    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_5.xlsx', 'data/output_data5.xlsx',
-                         5, 10, 10)
+    # These 3 test cases are for evaluation - showing how the computer generates schedules
+    # as compared to us (by hand) at different depths. The computer becomes more accurate
+    # as the depth bound increases.
+    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_5.xlsx', 'data/output_data5a.xlsx',
+                         5, 1, 10)
+
+    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_5.xlsx', 'data/output_data5b.xlsx',
+                         5, 3, 10)
+
+    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_5.xlsx', 'data/output_data5c.xlsx',
+                         5, 5, 10)
 
 # This is the main program that calls the scheduler to run
 def main():
     test_cases()
-
 
 if __name__ == '__main__':
     main()
