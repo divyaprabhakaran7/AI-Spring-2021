@@ -8,7 +8,7 @@ Group 6 Part 1 Deliverable
 * [Navigation](#navigation)
 
 ## Setup
-Use a Python 3.7 interpreter (or above)
+Use a Python 3.7 interpreter (or above).
 Download the following packages into your project:
 - pandas
 - xlrd v 1.2.0
