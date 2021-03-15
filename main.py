@@ -1,3 +1,13 @@
+# File name: main.py
+# Authors: Team 6 - Ludwik Huth, Mackenzie Macdonald, Divya Prabhakaran, Regan Siems, Kelly Wolfe
+# Class: CS4269
+# Date: March 14th, 2021
+# Honor statement: We pledge on our honor that we have neither given nor received any unauthorized aid
+# on this assignment.
+# Project Part: 1
+# Description: This file is the program driver, running the test cases, and loading/printing the data form/to files
+
+
 from country import Country  # To create the countries objects
 from world import World  # To create the world objects
 
@@ -5,8 +15,7 @@ import scheduler as sd  # To call the scheduler on a given set of parameters
 import pandas as pd  # To draw the data to and from the excel files
 
 
-# Prototype function as described in the project spec (we'll initiate the scheduler from here)
-
+# Prototype function as described in the project spec
 # This function initializes the date and passes it into the scheduler as well as printing the data to our output
 # @param your_country_name is the our country
 # @param resources_filename is the file for the resources to be read
@@ -73,7 +82,7 @@ def print_data_to_file(file_name, world, schedules, depth_bound):
 # Create a matrix of countries and resources (used for initializing the country and world objects)
 # @param df_countries is the country in that given data frame
 # @param df_resources are the resources in the given data frame
-# @returns df_all returns the data frame of the whole world in its given state
+# @return the data frame of the whole world in its given state
 def create_matrix(df_countries, df_resources):
     resources = df_resources.Resource.tolist()  # Get a list of all resources in the world
     countries = df_countries.Country.tolist()  # Get a list of all countries in the world

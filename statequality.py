@@ -1,8 +1,18 @@
+# File name: statequality.py
+# Authors: Team 6 - Ludwik Huth, Mackenzie Macdonald, Divya Prabhakaran, Regan Siems, Kelly Wolfe
+# Class: CS4269
+# Date: March 14th, 2021
+# Honor statement: We pledge on our honor that we have neither given nor received any unauthorized aid
+# on this assignment.
+# Project Part: 1
+# Description: This file implements the state quality functions which are used to calculate expected utility
+
+
 import math  # Used for log operations in the state-quality function
 
 WASTE = ['R21X', 'R22X', 'R23X', 'R24X']  # List of all waste resources
-LOWER_BOUND = 10  # Default lower bound for the piece-wise state-quality function
-UPPER_BOUND = 20  # Default upper bound for the piece-wise state-quality function
+UPPER_BOUND = 20  # Default upper bound for a resource (indicating abundance) - scaled by resource weight
+LOWER_BOUND = 10  # Default lower bound for a resource (indicating sufficiency) - scaled by resource weight
 
 
 # This function calculates the final state-quality. It does so by calling several sub-functions and summing their values
