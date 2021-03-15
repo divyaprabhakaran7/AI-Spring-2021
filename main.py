@@ -106,7 +106,7 @@ def generate_world(matrix, df_resources):
 # Calls to the method my_county_scheduler to do all of this work.
 def test_cases():
     my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_1.xlsx', 'data/output_data1.xlsx',
-                     5, 1, 10)
+                     10, 10, 10)
 
     my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_2.xlsx', 'data/output_data2.xlsx',
                      7, 10, 10)

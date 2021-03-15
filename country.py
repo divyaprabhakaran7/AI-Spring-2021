@@ -1,4 +1,4 @@
-# Group 6 - Ludwik Huth, Divya Prabhakaran, Kenzie McDonald, Kelly Wolfe
+# Group 6 - Ludwik Huth, Divya Prabhakaran, Kenzie Macdonald, Kelly Wolfe, Regan Seims
 # CS 4269 Project Part 1
 # Due March 14, 2021
 
