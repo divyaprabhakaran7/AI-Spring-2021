@@ -1,15 +1,27 @@
-import copy
-import math
-import statequality as sq
+# File name: world.py
+# Authors: Team 6 - Ludwik Huth, Mackenzie Macdonald, Divya Prabhakaran, Regan Siems, Kelly Wolfe
+# Class: CS4269
+# Date: March 14th, 2021
+# Honor statement: We pledge on our honor that we have neither given nor received any unauthorized aid
+# on this assignment.
+# Project Part: 1
+# Description: This file implements the World class
 
 
+import copy  # Used to make deep copies of world objects
+import math  # Used for the math operations in the expected utility function calculation
+import statequality as sq  # Used to implement the expected utility methods
+
+
+# The world class models a current state of a game
+# Its variables are the following:
+# Countries: dict of countries (Country name: country object)
+# Resources: dict of resources and weights (Resource name: resource weight)
+# Resource_names: dict of resource abbreviations (as used in code) and resource string (necessary for printing)
+# Path: a list keeping track of all actions in the world (transfers/transform) for scheduler
+# Depth: length of the path
+# Active_countries: a list of all countries that have been active (and thus need to accept a schedule)
 class World:
-
-    # Countries: dict of countries (Country name: country object)
-    # Resources: dict of resources and weights (Resource name: resource weight)
-    # Resource_name: dict of resource abrv (as used in code) and resource string (necessary for printing)
-    # path: list keeping track of all actions in the world (transfers/transform) for scheduler
-    # Depth: length of the path
 
     # Initializes the world and its attributes
     # self is the current instance of the world
@@ -23,7 +35,7 @@ class World:
 
     # This function gets the countries that are in this world
     # @param self is the current instance of the world
-    # returns the active countries
+    # @return the active countries
     def get_active_countries(self):
         return self.__active_countries
 
@@ -55,7 +67,7 @@ class World:
 
     # This function gets all of the countries in the world object
     # @param self is the current instance of the world
-    # @return returns the countries
+    # @return the countries dictionary
     def get_countries(self):
         return self.__countries
 
@@ -66,7 +78,7 @@ class World:
 
     # This function gets the resources of the world
     # @param self is the current instance of the world
-    # @return returns the resources
+    # @return the resources dictionary
     def get_resources(self):
         return self.__resources
 
@@ -79,24 +91,26 @@ class World:
     # This function gets the resource
     # @param self is the current instance of the world
     # @param resource is the specific resource to get
+    # @return the name of the resource in question (non-abbreviated)
     def get_resource_name(self, resource):
         return self.__resource_names[resource]
 
     # This function gets the weight of the resource
     # @param self is the current instance of the world
     # @param resource is the resource specified to get its weight
+    # @return the weight of the resource in question
     def get_resource_weight(self, resource):
         return self.__resources[resource]
 
     # This function gets the path and returns it
     # @param self is the current instance of the world
-    # @return is the path
+    # @return the current path of the world
     def get_path(self):
         return self.__path
 
     # This function gets the path as a string
     # @param self is the current instance of the world
-    # @return action_str is the string of actions for the path
+    # @return the string of actions for the current world
     def get_path_as_string(self):
         action_str = ""
         for action in self.__path:
@@ -111,7 +125,7 @@ class World:
 
     # This function returns the depth
     # @param self is the current instance of the world
-    # @return returns the depth
+    # @return current depth (length of the actions path)
     def get_depth(self):
         return self.__depth
 
@@ -149,7 +163,7 @@ class World:
     # @param country is the country to pass in for the transform
     # @param output_resource is the desired output of the transform
     # @param amount is the desired amount of the desired resource
-    # @return if the transform is successful
+    # @return true/false, indicating whether the transform is successful
     def transform(self, country, output_resource, amount):
         transform_country = self.get_country(country)
 
@@ -190,7 +204,8 @@ class World:
     # (i.e. country which the resource comes from)
     # @param country2 is the country that the resource is going to
     # @param resource is the desired resource to transfer
-    # @amount is the desired amount of the resource to transfer
+    # @param is the desired amount of the resource to transfer
+    # @return true/false indicating whether the transfer was successful
     def transfer(self, country1, country2, resource, amount):
         tmp_world = copy.deepcopy(self)
         from_country = self.get_country(country1)
@@ -199,7 +214,7 @@ class World:
             from_country.dec_resource(resource, amount)
             to_country.inc_resource(resource, amount)
             self.__depth += 1
-            self.__path.append("(TRANSFER " + country1 + " " + country2 + " (("
+            self.__path.append("(TRANSFER " + country1 + " " + country2 + " ("
                                + self.get_resource_name(resource) + " " + str(amount) + "))"
                                + " EU: " + str(self.expected_utility('self', tmp_world)) + "|")
             self.set_active_country(country1)
@@ -211,7 +226,7 @@ class World:
 
     # This function outputs the world state and the resources with their weights
     # @param self is the current instance of the world
-    # @return the return is the world
+    # @return a string representing the current state of the world
     def __str__(self):
         world = "Current world state:\n\n"
         weights = "Resources and weights:"
@@ -238,14 +253,11 @@ class World:
     # @self is the current instance of the world
     # @param country is the country for the reward calculation
     # @param intial_world is the world instance prior to the transfer
-    # @return discount_reward is the calculated reward
+    # @return the discounted calculated reward value
     def get_discounted_reward(self, country, initial_world):
-        # DR(c_i, s_j) = gamma^N * (Q_end(c_i, s_j) – Q_start(c_i, s_j)), where 0 <= gamma < 1
         gamma = 0.99
         n = self.__depth  # this is how many times the scheduler ran
-
         discount_reward = gamma ** n * self.get_undiscounted_reward(country, initial_world)
-
         return discount_reward
 
     # This function calculates the probability of a country accepting a transfer
@@ -259,15 +271,14 @@ class World:
         x0 = 0.0
         k = 5.0
         discount_reward = self.get_discounted_reward(country, initial_world)
-        # Logistic function
-        prob = l / (1.0 + math.e ** (-k * (discount_reward - x0)))
+        prob = l / (1.0 + math.e ** (-k * (discount_reward - x0)))  # Logistics function
         return prob
 
     # This function calculates the probability product of countries accepting the transfer for
     # the whole schedule
     # @param self is the current instance of the world
     # @param initial_world is the world instance prior to any changes
-    # @return the product of the probabilities
+    # @return the probability that the active countries will all accept the schedule
     def schedule_accept_prob(self, inital_world):
         prob_product = 1
         countries = self.get_active_countries()
@@ -281,6 +292,7 @@ class World:
     # @param self is the current instance of the world
     # @param country is the country that the utility is calculated for
     # @param initial_world is the world instance prior to changes
+    # @return the expected utility of the schedule
     def expected_utility(self, country, initial_world):
         c = -.5  # Low constant value since we have low expected utility values
         probability = self.schedule_accept_prob(initial_world)
@@ -288,8 +300,6 @@ class World:
 
         expected_util = probability * discount_reward + ((1 - probability) * c)
         return expected_util
-
-    # Default number of transforms is 1 (Population requirement is checked by verifying function)
 
     # This function does the work of transforming resources to housing
     # Requires 5 population
@@ -309,10 +319,8 @@ class World:
         transform_country.inc_resource("R23X", 1 * amount)  # HousingWaste
 
         self.__depth += 1
-
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS ((Population " + str(amount) +
-                           ") (MetallicElements " + str(
-            amount) + ") (Timber " + str(5 * amount) +
+                           ") (MetallicElements " + str(amount) + ") (Timber " + str(5 * amount) +
                            ") (MetallicAlloys " + str(3 * amount) + "))  (OUTPUTS (Population " + str(amount) +
                            ") (Housing " + str(amount) + ") " + "(HousingWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility('self', prior_world)) + "|")
@@ -333,7 +341,6 @@ class World:
         transform_country.inc_resource("R21X", 1 * amount)  # MetallicAlloysWaste
 
         self.__depth += 1
-
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount) +
                            ") (MetallicElements " + str(2 * amount) + "))  (OUTPUTS (Population " + str(amount) +
                            ") (MetallicAlloys " + str(amount) + ") (MetallicAlloysWaste " + str(amount) + "))) EU: "
@@ -356,12 +363,10 @@ class World:
         transform_country.inc_resource("R22X", 1 * amount)  # ElectronicsWaste
 
         self.__depth += 1
-
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(5 * amount)
-                           + ") (MetallicElements " + str(3 * amount) + ") (MetallicAlloys " + str(2 * amount) + "))"
-                                                                                                                 "(OUTPUTS (Population " + str(
-            5 * amount) + ") (Electronics " + str(2 * amount) + ") "
-                                                                "(ElectonicsWaste " + str(amount) +
+                           + ") (MetallicElements " + str(3 * amount) + ") (MetallicAlloys " + str(2 * amount) +
+                           ")) (OUTPUTS (Population " + str(5 * amount) + ") (Electronics " + str(2 * amount) +
+                           ") (ElectonicsWaste " + str(amount) +
                            "))) EU: " + str(self.expected_utility('self', prior_world)) + "|")
 
     def transform_food(self, transform_country, amount=1):
@@ -373,9 +378,7 @@ class World:
         # increase outputs (population unchanged)
         transform_country.inc_resource("R24", 2 * amount)  # Food
         transform_country.inc_resource("R24X", 1 * amount)  # FoodWaste
-
         self.__depth += 1
-
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount)
                            + ") (Timber " + str(3 * amount) + ") (Housing " + str(amount) +
                            "))  (OUTPUTS (Population " + str(amount) + ") (Food " + str(2 * amount) +

@@ -1,3 +1,13 @@
+# File name: main.py
+# Authors: Team 6 - Ludwik Huth, Mackenzie Macdonald, Divya Prabhakaran, Regan Siems, Kelly Wolfe
+# Class: CS4269
+# Date: March 14th, 2021
+# Honor statement: We pledge on our honor that we have neither given nor received any unauthorized aid
+# on this assignment.
+# Project Part: 1
+# Description: This file is the program driver, running the test cases, and loading/printing the data form/to files
+
+
 from country import Country  # To create the countries objects
 from world import World  # To create the world objects
 
@@ -5,8 +15,7 @@ import scheduler as sd  # To call the scheduler on a given set of parameters
 import pandas as pd  # To draw the data to and from the excel files
 
 
-# Prototype function as described in the project spec (we'll initiate the scheduler from here)
-
+# Prototype function as described in the project spec
 # This function initializes the date and passes it into the scheduler as well as printing the data to our output
 # @param your_country_name is the our country
 # @param resources_filename is the file for the resources to be read
@@ -30,7 +39,7 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
     print_data_to_file(output_schedule_filename, world_object, schedules, depth_bound)
 
     # If this prints, scheduler completed successfully
-    print("Scheduling complete -- Check output_data file for results")
+    print("Scheduling complete -- Check " + output_schedule_filename + " file for results")
 
 
 # This function loads a data frame of an excel sheet
@@ -73,7 +82,7 @@ def print_data_to_file(file_name, world, schedules, depth_bound):
 # Create a matrix of countries and resources (used for initializing the country and world objects)
 # @param df_countries is the country in that given data frame
 # @param df_resources are the resources in the given data frame
-# @returns df_all returns the data frame of the whole world in its given state
+# @return the data frame of the whole world in its given state
 def create_matrix(df_countries, df_resources):
     resources = df_resources.Resource.tolist()  # Get a list of all resources in the world
     countries = df_countries.Country.tolist()  # Get a list of all countries in the world
@@ -95,27 +104,41 @@ def generate_world(matrix, df_resources):
     resource_dict = pd.Series(df_resources.Weight.values, index=df_resources.Resource).to_dict()
     names_dict = pd.Series(df_resources.Names.values, index=df_resources.Resource).to_dict()  # Get resource names
     world = World()
-    world.set_resources(resource_dict) # Set up world with resources
+    world.set_resources(resource_dict)  # Set up world with resources
     world.set_resource_names(names_dict)
     for country, resources in matrix.iterrows():
         new_country = Country(country, dict(resources))
         world.add_country(new_country)
     return world
 
-# The 6 test cases we have created for our world
+
+# The 7 test cases we have created for our world
+# Calls to the method my_county_scheduler to do all of this work.
 def test_cases():
-    #
     my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_1.xlsx', 'data/output_data1.xlsx',
-                     5, 1, 10)
+                         10, 10, 10)
 
     my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_2.xlsx', 'data/output_data2.xlsx',
-                     7, 10, 10)
+                         7, 10, 10)
 
     my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_3.xlsx', 'data/output_data3.xlsx',
-                     5, 5, 10)
+                         5, 5, 10)
 
     my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_4.xlsx', 'data/output_data4.xlsx',
-                     7, 10, 10)
+                         7, 10, 10)
+
+    # These 3 test cases are for evaluation - showing how the computer generates schedules
+    # as compared to us (by hand) at different depths. The computer becomes more accurate
+    # as the depth bound increases.
+    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_5.xlsx', 'data/output_data5a.xlsx',
+                         5, 1, 10)
+
+    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_5.xlsx', 'data/output_data5b.xlsx',
+                         5, 3, 10)
+
+    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_5.xlsx', 'data/output_data5c.xlsx',
+                         5, 5, 10)
+
 
 # This is the main program that calls the scheduler to run
 def main():

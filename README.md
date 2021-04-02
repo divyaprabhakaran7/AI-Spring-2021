@@ -10,13 +10,15 @@ Group 6 Part 1 Deliverable
 ## Setup
 Use a Python 3.7 interpreter (or above).
 Download the following packages into your project:
-- pandas
+- pandas v 1.1.3
 - xlrd v 1.2.0
 - depq
 - XlsxWriter
 
 ## General Info
 This project is a modeling of a world that contains countries with different resources. Countries are able to transfer and transform these resources, and have a certain quality at a given state. A scheduler creates an output of different paths countries can take to do this, and the most beneficial one for the world is ideally chosen.
+
+We have put in 5 test case files as well as their output files in /data. If you would like to create your own test cases (initial states), feel free to add them to the data file and update the method test_cases() in main.py to account for them.
 
 ## Navigation
 - country.py: generates a country and its attributes
