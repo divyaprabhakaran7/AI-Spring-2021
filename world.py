@@ -282,7 +282,7 @@ class World:
     # @param country is the country that the utility is calculated for
     # @param initial_world is the world instance prior to changes
     def expected_utility(self, country, initial_world):
-        c = -.01  # Low constant value since we have low expected utility values
+        c = -.5  # Low constant value since we have low expected utility values
         probability = self.schedule_accept_prob(initial_world)
         discount_reward = self.get_discounted_reward(country, initial_world)
 
@@ -380,4 +380,21 @@ class World:
                            + ") (Timber " + str(3 * amount) + ") (Housing " + str(amount) +
                            "))  (OUTPUTS (Population " + str(amount) + ") (Food " + str(2 * amount) +
                            ") (Housing " + str(amount) + ") (FoodWaste " + str(amount) + "))) EU: "
+                           + str(self.expected_utility('self', prior_world)) + "|")
+
+    def transform_waste(self, transform_country, amount=1):
+        prior_world = copy.deepcopy(self)
+
+        # Decrease inputs
+        transform_country.dec_resource("R24X", 3 * amount)  # FoodWaste
+
+        # increase outputs (population unchanged)
+        transform_country.inc_resource("R26", 2 * amount)  # Fertilizer
+        transform_country.inc_resource("R26X", 1 * amount)  # FertilizerWaste
+
+        self.__depth += 1
+
+        self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount)
+                           + ") (FoodWaste " + str(3 * amount) + ")) (OUTPUTS (Population " + str(amount) + ") (Fertilizer " + str(2 * amount) +
+                           ") (FertilizerWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility('self', prior_world)) + "|")
