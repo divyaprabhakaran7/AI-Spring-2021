@@ -29,6 +29,7 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
         for country in countries:
             new_world = sd.scheduler(cur_world_object, country, 1, depth_bound, frontier_max_size)
             cur_world_object = new_world
+        cur_world_object.turn_resources() # Adds resources after every turn (I figured after made sense bc of 1st turn)
         print("Turn " + str(x + 1) + " Complete")
 
     print_game_output_to_file(output_filename, cur_world_object, num_turns, num_countries, countries)
@@ -99,7 +100,7 @@ def generate_world(matrix, df_resources):
 # The 7 test cases we have created for our world
 # Calls to the method my_county_scheduler to do all of this work.
 def test_cases():
-    my_world_scheduler('data/resource_data.xlsx', 'data/test_case_2.xlsx', 'data/output_data2.xlsx',
+    my_world_scheduler('data/resource_data.xlsx', 'data/test_case_3.xlsx', 'data/output_data3.xlsx',
                        3, 10, 10)
 
 

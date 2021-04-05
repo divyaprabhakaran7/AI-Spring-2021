@@ -12,6 +12,7 @@ import copy  # Used to make deep copies of world objects
 import math  # Used for the math operations in the expected utility function calculation
 import statequality as sq  # Used to implement the expected utility methods
 
+RAW_RESOURCES = ['R2', 'R3']
 
 # The world class models a current state of a game
 # Its variables are the following:
@@ -101,6 +102,10 @@ class World:
     # @return the weight of the resource in question
     def get_resource_weight(self, resource):
         return self.__resources[resource]
+
+    def set_path(self, path):
+        self.__path = path
+        self.__depth = len(path)
 
     # This function gets the path and returns it
     # @param self is the current instance of the world
@@ -409,6 +414,11 @@ class World:
 
     # FIXME do allocation of resources to everyone and then PASS is just an empty operation
     def country_passes(self, country):
-        for resource in self.__resources:
-            self.__countries[country].inc_resource(resource, 2)
-        self.__path.append("(PASSES " + country + " (Resources Added))")
+        self.__path.append("(PASSES " + country + " )")
+
+    # Adds ten percent of current value of all raw resources each turn (round function s.t. we don't get decmials)
+    def turn_resources(self):
+        for country in self.__countries:
+            cur = self.__countries[country]
+            for resource in RAW_RESOURCES:
+                cur.inc_resource(resource, round(0.1*cur.get_resource_val(resource)))

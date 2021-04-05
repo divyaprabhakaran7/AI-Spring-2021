@@ -29,7 +29,8 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
     frontier = DEPQ(maxlen=frontier_max_size)  # Successors
     schedules = DEPQ(maxlen=num_output_schedules)  # Output schedules
     initial_state = world_object
-    initial_state.reset_depth()
+    current_path = initial_state.get_path()
+    initial_state.reset_path()
 
     # Our queue is now keeps track of the first step and the final step (because we want to search for best
     # move several layers deep but only want the first move to be made)
@@ -55,13 +56,20 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
                              current_state.expected_utility(country_name, initial_state))
     # return schedules_to_string(schedules) this is what we used for our previous runs
     # There is a problem here where some countries seem to run out of schedules
+    # I am also resetting the path at the start of this method so countries act as if this was their first turn
+    final_state = initial_state
     if schedules.size() > 0:
         schedule_tuple = schedules.popfirst()[0]
-        return schedule_tuple[1]
+        final_state = schedule_tuple[1]
     else:
         initial_state.country_passes(country_name)
-        pass_step = copy.deepcopy(initial_state)
-        return pass_step
+        final_state = copy.deepcopy(initial_state)
+
+    # This adds back the old path + the move that was just made
+    new_path = final_state.get_path()
+    current_path.append(new_path)
+    final_state.set_path(current_path)
+    return final_state
 
 
 # This function generates the successors for the schedule
@@ -91,7 +99,8 @@ def get_successors(world_object, country_name):
             to_country_name = to_country.get_name()
 
             # no need to trade if everyone has in abundance
-            if to_country_name != country_name and verify_transfer(world_object, tmp_world, to_country_name):
+            # FIXME could use this: and verify_transfer(world_object, tmp_world, to_country_name):
+            if to_country_name != country_name:
                 tmp_world.transfer(country_name, to_country_name, resource, 1)
                 successors.append(tmp_world)
 
@@ -101,7 +110,8 @@ def get_successors(world_object, country_name):
             from_country_name = from_country.get_name()
 
             # no need to trade if everyone has in abundance
-            if from_country_name != country_name and verify_transfer(world_object, tmp_world, from_country_name):
+            # FIXME could use this: and verify_transfer(world_object, tmp_world, from_country_name):
+            if from_country_name != country_name:
                 tmp_world.transfer(from_country_name, country_name, resource, 1)
                 successors.append(tmp_world)
 
@@ -111,5 +121,5 @@ def get_successors(world_object, country_name):
 # FIXME not sure if we'll end up needing this or if this is already accounted for in the logisitcs equaition
 # Essentially I wanted to make sure that even if a transfer is the best action for a country it can only take this
 # action if its positive for the other country
-def verify_transfer(cur_world, proposed_new_world, other_country_name):
-    return proposed_new_world.get_undiscounted_reward(other_country_name, cur_world) > 0
+#def verify_transfer(cur_world, proposed_new_world, other_country_name):
+ #   return proposed_new_world.get_undiscounted_reward(other_country_name, cur_world) > 0
