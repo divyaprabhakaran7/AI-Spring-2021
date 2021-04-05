@@ -15,31 +15,44 @@ import scheduler as sd  # To call the scheduler on a given set of parameters
 import pandas as pd  # To draw the data to and from the excel files
 
 
-# Prototype function as described in the project spec
-# This function initializes the date and passes it into the scheduler as well as printing the data to our output
-# @param your_country_name is the our country
-# @param resources_filename is the file for the resources to be read
-# @param initial_state_filename is the file that holds the initial world state
-# @param output_schedule_filename is the file to output the completed schedule to
-# @param num_output_schedules is the number of schedules to output
-# @param depth_bound is the depth of exploration that we want to bound our scheduler to
-# @param frontier_max_size is the maximum size of our frontier
-def my_country_scheduler(your_country_name, resources_filename, initial_state_filename, output_schedule_filename,
-                         num_output_schedules, depth_bound, frontier_max_size):
+def my_world_scheduler(resources_filename, initial_state_filename, output_filename,
+                       num_turns, depth_bound, frontier_max_size):
     df_resources = get_data_from_file(resources_filename)  # Load resources data frame
     df_countries = get_data_from_file(initial_state_filename)  # Load country data frame
     world_matrix = create_matrix(df_countries, df_resources)  # Get the two data frames into a matrix
     world_object = generate_world(world_matrix,
                                   df_resources)  # Create the world object with country objects and weights
+    countries = world_object.get_countries()
+    num_countries = len(countries.keys())
+    cur_world_object = world_object
+    for x in range(num_turns):
+        for country in countries:
+            new_world = sd.scheduler(cur_world_object, country, 1, depth_bound, frontier_max_size)
+            cur_world_object = new_world
+        print("Turn " + str(x + 1) + " Complete")
 
-    # Call the scheduler on the created world object, with the specified parameters
-    schedules = sd.scheduler(world_object, your_country_name, num_output_schedules, depth_bound, frontier_max_size)
+    print_game_output_to_file(output_filename, cur_world_object, num_turns, num_countries, countries)
+    print("Scheduling complete -- Check " + output_filename + " file for results")
 
-    # Print output schedules to the output_data file
-    print_data_to_file(output_schedule_filename, world_object, schedules, depth_bound)
 
-    # If this prints, scheduler completed successfully
-    print("Scheduling complete -- Check " + output_schedule_filename + " file for results")
+def print_game_output_to_file(file_name, final_world, num_turns, num_countries, countries):
+    # Load schedules into a dictionary of schedule number and actual schedule
+    dict_moves = {}
+    moves_as_list = final_world.get_path()
+
+    for x in range(1, num_turns + 1):
+        for country in countries:
+            move_name = "Move #" + str(x) + ": " + country + ": "
+            dict_moves[move_name] = moves_as_list.pop(0)
+
+    # Turn this into a data frame (schedule number as index)
+    df_schedules = pd.DataFrame.from_dict(dict_moves, orient='index')
+    df_schedules.columns = ["Action Taken"]
+
+    # Write the schedule and world data frames into excel (using XlsxWriter and pandas)
+    writer = pd.ExcelWriter(file_name, engine='xlsxwriter')
+    df_schedules.to_excel(writer, sheet_name='Output Schedules')
+    writer.save()
 
 
 # This function loads a data frame of an excel sheet
@@ -48,35 +61,6 @@ def my_country_scheduler(your_country_name, resources_filename, initial_state_fi
 def get_data_from_file(file_name):
     df = pd.read_excel(file_name, engine="xlrd")
     return df
-
-
-# Prints our output state into a .xlsx file
-# @param file_name is the name of the file to print the data to
-# @param world is the world object that we want to output to our file
-# @param schedules is the list of all output-schedules to be printed to the file
-# @param depth_bound is the depth of the individual schedules (used to format the excel output file)
-def print_data_to_file(file_name, world, schedules, depth_bound):
-    # Load schedules into a dictionary of schedule number and actual schedule
-    dict_schedules = {}
-    schedule_num = 1
-    for schedule in schedules:
-        schedule_name = "Schedule " + str(schedule_num)
-        schedule_as_list = schedule.split("|")
-        schedule_as_list.pop()
-        dict_schedules[schedule_name] = schedule_as_list
-        schedule_num += 1
-
-    # Turn this into a data frame (schedule number as index)
-    cols = ["Expected Utility of Schedule"]
-    for x in range(1, depth_bound + 1):
-        cols.append("Depth " + str(x))
-    df_schedules = pd.DataFrame.from_dict(dict_schedules, orient='index')
-    df_schedules.columns = cols
-
-    # Write the schedule and world data frames into excel (using XlsxWriter and pandas)
-    writer = pd.ExcelWriter(file_name, engine='xlsxwriter')
-    df_schedules.to_excel(writer, sheet_name='Output Schedules')
-    writer.save()
 
 
 # Create a matrix of countries and resources (used for initializing the country and world objects)
@@ -115,29 +99,8 @@ def generate_world(matrix, df_resources):
 # The 7 test cases we have created for our world
 # Calls to the method my_county_scheduler to do all of this work.
 def test_cases():
-    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_1.xlsx', 'data/output_data1.xlsx',
-                         10, 10, 10)
-
-    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_2.xlsx', 'data/output_data2.xlsx',
-                         7, 10, 10)
-
-    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_3.xlsx', 'data/output_data3.xlsx',
-                         5, 5, 10)
-
-    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_4.xlsx', 'data/output_data4.xlsx',
-                         7, 10, 10)
-
-    # These 3 test cases are for evaluation - showing how the computer generates schedules
-    # as compared to us (by hand) at different depths. The computer becomes more accurate
-    # as the depth bound increases.
-    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_5.xlsx', 'data/output_data5a.xlsx',
-                         5, 1, 10)
-
-    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_5.xlsx', 'data/output_data5b.xlsx',
-                         5, 3, 10)
-
-    my_country_scheduler('self', 'data/resource_data.xlsx', 'data/test_case_5.xlsx', 'data/output_data5c.xlsx',
-                         5, 5, 10)
+    my_world_scheduler('data/resource_data.xlsx', 'data/test_case_2.xlsx', 'data/output_data2.xlsx',
+                       3, 10, 10)
 
 
 # This is the main program that calls the scheduler to run

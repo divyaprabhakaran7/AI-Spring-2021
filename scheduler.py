@@ -29,23 +29,39 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
     frontier = DEPQ(maxlen=frontier_max_size)  # Successors
     schedules = DEPQ(maxlen=num_output_schedules)  # Output schedules
     initial_state = world_object
-    frontier.insert(initial_state, sq.state_quality(country_name, initial_state))
+    initial_state.reset_depth()
+
+    # Our queue is now keeps track of the first step and the final step (because we want to search for best
+    # move several layers deep but only want the first move to be made)
+    frontier.insert((initial_state, initial_state), sq.state_quality(country_name, initial_state))
 
     # While there are states to explore and we still want more schedules
     while (frontier.is_empty() is not True) and (schedules.size() < num_output_schedules):
-        current_state = frontier.popfirst()[0]  # just the state not the tuple (state, util)
+        current_state, current_first_step = frontier.popfirst()[0]  # just the state not the tuple (state, util)
 
         # If we still want to explore further (if not add to list of finished schedules
         if current_state.get_depth() < depth_bound:
             successor_states = get_successors(current_state, country_name)  # Get successors
 
             # insert successors by their expected utility
-            for successor in successor_states:
-                frontier.insert(successor, successor.expected_utility(country_name, initial_state))
+            if len(successor_states) != 0 and successor_states[0].get_depth() == 1:
+                for successor in successor_states:
+                    frontier.insert((successor, successor), successor.expected_utility(country_name, initial_state))
+            else:
+                for successor in successor_states:
+                    frontier.insert((successor, current_first_step), successor.expected_utility(country_name, initial_state))
         else:
-            schedules.insert(current_state,
+            schedules.insert((current_state, current_first_step),
                              current_state.expected_utility(country_name, initial_state))
-    return schedules_to_string(schedules)
+    # return schedules_to_string(schedules) this is what we used for our previous runs
+    # There is a problem here where some countries seem to run out of schedules
+    if schedules.size() > 0:
+        schedule_tuple = schedules.popfirst()[0]
+        return schedule_tuple[1]
+    else:
+        initial_state.country_passes(country_name)
+        pass_step = copy.deepcopy(initial_state)
+        return pass_step
 
 
 # This function generates the successors for the schedule
@@ -75,7 +91,7 @@ def get_successors(world_object, country_name):
             to_country_name = to_country.get_name()
 
             # no need to trade if everyone has in abundance
-            if to_country_name != country_name:
+            if to_country_name != country_name and verify_transfer(world_object, tmp_world, to_country_name):
                 tmp_world.transfer(country_name, to_country_name, resource, 1)
                 successors.append(tmp_world)
 
@@ -85,18 +101,15 @@ def get_successors(world_object, country_name):
             from_country_name = from_country.get_name()
 
             # no need to trade if everyone has in abundance
-            if from_country_name != country_name:
+            if from_country_name != country_name and verify_transfer(world_object, tmp_world, from_country_name):
                 tmp_world.transfer(from_country_name, country_name, resource, 1)
                 successors.append(tmp_world)
 
     return successors
 
 
-# This function takes the schedules and outputs it as a string
-# @param schedules are the schedules to put into a string
-# @return the list of schedules as strings
-def schedules_to_string(schedules):
-    schedule_list = []
-    for schedule, quality in schedules:
-        schedule_list.append("Expected Utility: " + str(quality) + "|" + schedule.get_path_as_string())
-    return schedule_list
+# FIXME not sure if we'll end up needing this or if this is already accounted for in the logisitcs equaition
+# Essentially I wanted to make sure that even if a transfer is the best action for a country it can only take this
+# action if its positive for the other country
+def verify_transfer(cur_world, proposed_new_world, other_country_name):
+    return proposed_new_world.get_undiscounted_reward(other_country_name, cur_world) > 0

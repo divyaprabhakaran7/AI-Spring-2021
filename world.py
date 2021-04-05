@@ -123,6 +123,9 @@ class World:
         self.__depth = 0
         self.__path = []
 
+    def reset_depth(self):
+        self.__depth = 0
+
     # This function returns the depth
     # @param self is the current instance of the world
     # @return current depth (length of the actions path)
@@ -216,7 +219,7 @@ class World:
             self.__depth += 1
             self.__path.append("(TRANSFER " + country1 + " " + country2 + " ("
                                + self.get_resource_name(resource) + " " + str(amount) + "))"
-                               + " EU: " + str(self.expected_utility('self', tmp_world)) + "|")
+                               + " EU: " + str(self.expected_utility('self', tmp_world)))
             self.set_active_country(country1)
             self.set_active_country(country2)
 
@@ -323,7 +326,7 @@ class World:
                            ") (MetallicElements " + str(amount) + ") (Timber " + str(5 * amount) +
                            ") (MetallicAlloys " + str(3 * amount) + "))  (OUTPUTS (Population " + str(amount) +
                            ") (Housing " + str(amount) + ") " + "(HousingWaste " + str(amount) + "))) EU: "
-                           + str(self.expected_utility('self', prior_world)) + "|")
+                           + str(self.expected_utility('self', prior_world)))
 
     # This function does the work of transforming resources into metallic alloys
     # Requires 1 population
@@ -344,7 +347,7 @@ class World:
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount) +
                            ") (MetallicElements " + str(2 * amount) + "))  (OUTPUTS (Population " + str(amount) +
                            ") (MetallicAlloys " + str(amount) + ") (MetallicAlloysWaste " + str(amount) + "))) EU: "
-                           + str(self.expected_utility('self', prior_world)) + "|")
+                           + str(self.expected_utility('self', prior_world)))
 
     # This function does the work to transform electronics from resources
     # Requires 1 population
@@ -367,7 +370,7 @@ class World:
                            + ") (MetallicElements " + str(3 * amount) + ") (MetallicAlloys " + str(2 * amount) +
                            ")) (OUTPUTS (Population " + str(5 * amount) + ") (Electronics " + str(2 * amount) +
                            ") (ElectonicsWaste " + str(amount) +
-                           "))) EU: " + str(self.expected_utility('self', prior_world)) + "|")
+                           "))) EU: " + str(self.expected_utility('self', prior_world)))
 
     def transform_food(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
@@ -383,7 +386,7 @@ class World:
                            + ") (Timber " + str(3 * amount) + ") (Housing " + str(amount) +
                            "))  (OUTPUTS (Population " + str(amount) + ") (Food " + str(2 * amount) +
                            ") (Housing " + str(amount) + ") (FoodWaste " + str(amount) + "))) EU: "
-                           + str(self.expected_utility('self', prior_world)) + "|")
+                           + str(self.expected_utility('self', prior_world)))
 
     def transform_waste(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
@@ -398,6 +401,14 @@ class World:
         self.__depth += 1
 
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount)
-                           + ") (FoodWaste " + str(3 * amount) + ")) (OUTPUTS (Population " + str(amount) + ") (Fertilizer " + str(2 * amount) +
+                           + ") (FoodWaste " + str(3 * amount) + ")) (OUTPUTS (Population " + str(
+            amount) + ") (Fertilizer " + str(2 * amount) +
                            ") (FertilizerWaste " + str(amount) + "))) EU: "
-                           + str(self.expected_utility('self', prior_world)) + "|")
+                           + str(self.expected_utility('self', prior_world)))
+
+
+    # FIXME do allocation of resources to everyone and then PASS is just an empty operation
+    def country_passes(self, country):
+        for resource in self.__resources:
+            self.__countries[country].inc_resource(resource, 2)
+        self.__path.append("(PASSES " + country + " (Resources Added))")
