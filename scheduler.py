@@ -101,7 +101,7 @@ def get_successors(world_object, country_name):
             # no need to trade if everyone has in abundance
             # FIXME could use this: and verify_transfer(world_object, tmp_world, to_country_name):
             if to_country_name != country_name:
-                tmp_world.transfer(country_name, to_country_name, resource, 1)
+                tmp_world.transfer(country_name, to_country_name, resource, 1, country_name)
                 successors.append(tmp_world)
 
         # We lack resource
@@ -112,7 +112,7 @@ def get_successors(world_object, country_name):
             # no need to trade if everyone has in abundance
             # FIXME could use this: and verify_transfer(world_object, tmp_world, from_country_name):
             if from_country_name != country_name:
-                tmp_world.transfer(from_country_name, country_name, resource, 1)
+                tmp_world.transfer(from_country_name, country_name, resource, 1, country_name)
                 successors.append(tmp_world)
 
     return successors
