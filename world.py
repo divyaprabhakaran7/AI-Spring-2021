@@ -137,6 +137,41 @@ class World:
     def get_depth(self):
         return self.__depth
 
+    # This function simulates the affects of a tornado on a country
+    # Diminishes the housing and farm resources
+    # @param self is the current instance of the world
+    # @param country is the country where the tornado will take place
+    def tornado(self, country):
+        tornado_country = self.get_country(country)
+        tornado_country.set_resource('R26', math.floor(tornado_country.get_resource_val('R26') * 0.8))
+        tornado_country.set_resource('R23', math.floor(tornado_country.get_resource_val('R23') * 0.95))
+
+    # This function simulates the affects of an earthquake on a country
+    # Diminishes the housing resource
+    # @param self is the current instance of the world
+    # @param country is the country where the earthquake will take place
+    def earthquake(self, country):
+        earthquake_country = self.get_country(country)
+        earthquake_country.set_resource('R23', math.floor(earthquake_country.get_resource_val('R23') * 0.9))
+
+    # This function simulates the affects of a fire on a country
+    # Diminishes the timber resource
+    # @param self is the current instance of the world
+    # @param country is the country where the fire will take place
+    def fire(self, country):
+        fire_country = self.get_country(country)
+        fire_country.set_resource('R3', math.floor(fire_country.get_resource_val('R3') * 0.7))
+
+    # This function simulates the affects of a hurricane on a country
+    # Diminishes the electronics, housing, and farm resources
+    # @param self is the current instance of the world
+    # @param country is the country where the hurricane will take place
+    def hurricane(self, country):
+        hurricane_country = self.get_country(country)
+        hurricane_country.set_resource('R22', math.floor(hurricane_country.get_resource_val('R22') * 0.9))
+        hurricane_country.set_resource('R23', math.floor(hurricane_country.get_resource_val('R23') * 0.9))
+        hurricane_country.set_resource('R26', math.floor(hurricane_country.get_resource_val('R26') * 0.8))
+
     # This function gets the country that has the most of the specified resource
     # @param self is the current instance of the world
     # @param resource is the resource to compare amounts of

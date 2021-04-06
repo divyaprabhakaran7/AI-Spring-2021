@@ -7,7 +7,7 @@
 # Project Part: 1
 # Description: This file is the program driver, running the test cases, and loading/printing the data form/to files
 
-
+from random import randint
 from country import Country  # To create the countries objects
 from world import World  # To create the world objects
 
@@ -27,6 +27,9 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
     cur_world_object = world_object
     for x in range(num_turns):
         for country in countries:
+            disaster = disaster_prob()
+            if disaster:
+                run_disaster(world_object, country)
             new_world = sd.scheduler(cur_world_object, country, 1, depth_bound, frontier_max_size)
             cur_world_object = new_world
         cur_world_object.turn_resources() # Adds resources after every turn (I figured after made sense bc of 1st turn)
@@ -34,6 +37,36 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
 
     print_game_output_to_file(output_filename, cur_world_object, num_turns, num_countries, countries)
     print("Scheduling complete -- Check " + output_filename + " file for results")
+
+
+# This function determines if a disaster will take place or not
+# if you are working on other parts of the code and don't want any disasters just change this to "return False".
+# FIXME currently is hard coded to 10%
+def disaster_prob():
+    num = randint(0, 10)
+    if num == 0:
+        return True
+    return False
+
+
+# This function decided which disaster is going to be run in a country
+# and then runs the chosen disaster.
+# @param world_object is our world
+# @param country is the country which the disaster will take place in
+def run_disaster(world_object, country):
+    num = randint(0, 4)
+    if num == 0:
+        world_object.tornado(country)
+        print("A tornado has taken place in " + country)
+    elif num == 1:
+        world_object.earthquake(country)
+        print("An earthquake has taken place in " + country)
+    elif num == 2:
+        world_object.fire(country)
+        print("A fire has taken place in " + country)
+    else:
+        world_object.hurricane(country)
+        print("A hurricane has taken place in " + country)
 
 
 def print_game_output_to_file(file_name, final_world, num_turns, num_countries, countries):
