@@ -29,9 +29,16 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
         for country in countries:
             disaster = disaster_prob()
             if disaster:
-                run_disaster(world_object, country)
+                disaster_str = run_disaster(world_object, country)
             new_world = sd.scheduler(cur_world_object, country, 1, depth_bound, frontier_max_size)
             cur_world_object = new_world
+            # if a disaster happened, append it to the path
+            if disaster:
+                # append the disaster to the path
+                new_path = cur_world_object.get_path()
+                temp = new_path[len(new_path) - 1]
+                new_path[len(new_path) - 1] = [disaster_str + temp[0]]
+                cur_world_object.set_path(new_path)
         cur_world_object.turn_resources() # Adds resources after every turn (I figured after made sense bc of 1st turn)
         print("Turn " + str(x + 1) + " Complete")
 
@@ -55,18 +62,23 @@ def disaster_prob():
 # @param country is the country which the disaster will take place in
 def run_disaster(world_object, country):
     num = randint(0, 4)
+    disaster_str = ""
+
     if num == 0:
         world_object.tornado(country)
-        print("A tornado has taken place in " + country)
+        disaster_str = "A tornado has taken place in " + country
     elif num == 1:
         world_object.earthquake(country)
-        print("An earthquake has taken place in " + country)
+        disaster_str = "An earthquake has taken place in " + country
     elif num == 2:
         world_object.fire(country)
-        print("A fire has taken place in " + country)
+        disaster_str = "A fire has taken place in " + country
     else:
         world_object.hurricane(country)
-        print("A hurricane has taken place in " + country)
+        disaster_str = "A hurricane has taken place in " + country
+
+    print(disaster_str)
+    return disaster_str
 
 
 def print_game_output_to_file(file_name, final_world, num_turns, num_countries, countries):
