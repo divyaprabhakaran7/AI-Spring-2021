@@ -17,7 +17,8 @@ import pandas as pd  # To draw the data to and from the excel files
 
 def my_world_scheduler(resources_filename, initial_state_filename, output_filename,
                        num_turns, depth_bound, frontier_max_size):
-    df_resources = get_data_from_file(resources_filename)  # Load resources data frame
+    choice_num = prompt_user_choice() # Get user's game setting choice
+    df_resources = get_data_from_file(resources_filename)  # Load resources data from data frame
     df_countries = get_data_from_file(initial_state_filename)  # Load country data frame
     world_matrix = create_matrix(df_countries, df_resources)  # Get the two data frames into a matrix
     world_object = generate_world(world_matrix,
@@ -27,20 +28,15 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
     cur_world_object = world_object
     for x in range(num_turns):
         for country in countries:
-            disaster = disaster_prob()
-            if disaster:
-                disaster_str = run_disaster(world_object, country)
+            if(choice_num == 4): # Run disaster mode if user selects option 4
+                disaster = disaster_prob()
+                if disaster:
+                    run_disaster(world_object, country)
             new_world = sd.scheduler(cur_world_object, country, 1, depth_bound, frontier_max_size)
             cur_world_object = new_world
-            # if a disaster happened, append it to the path
-            if disaster:
-                # append the disaster to the path
-                new_path = cur_world_object.get_path()
-                temp = new_path[len(new_path) - 1]
-                new_path[len(new_path) - 1] = [disaster_str + temp[0]]
-                cur_world_object.set_path(new_path)
-        cur_world_object.turn_resources() # Adds resources after every turn (I figured after made sense bc of 1st turn)
+        cur_world_object.turn_resources()  # Adds resources after every turn (I figured after made sense bc of 1st turn)
         print("Turn " + str(x + 1) + " Complete")
+
 
     print_game_output_to_file(output_filename, cur_world_object, num_turns, num_countries, countries)
     print("Scheduling complete -- Check " + output_filename + " file for results")
