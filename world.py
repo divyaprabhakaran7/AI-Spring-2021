@@ -12,7 +12,7 @@ import copy  # Used to make deep copies of world objects
 import math  # Used for the math operations in the expected utility function calculation
 import statequality as sq  # Used to implement the expected utility methods
 
-RAW_RESOURCES = ['R2', 'R3']
+RAW_RESOURCES = ['R2', 'R3', 'R5']
 
 
 # The world class models a current state of a game
@@ -244,12 +244,14 @@ class World:
             fossil_dict = {'R1': 3 * amount, 'R22': 2 * amount, 'R5': 1 * amount}
             if transform_country.resource_check(fossil_dict):
                 self.transform_fossil(transform_country, amount)
+                return True
 
         # Transform weapons
         if output_resource == 'R26':
             weapons_dict = {'R1': 6 * amount, 'R22': 2 * amount, 'R2': 3 * amount}
             if transform_country.resource_check(weapons_dict):
                 self.transform_weapons(transform_country, amount)
+                return True
 
         # Transform military
         if output_resource == 'R27':
@@ -257,24 +259,29 @@ class World:
                              'R24': 10 * amount, 'R30': 5 * amount, 'R29': 3 * amount}
             if transform_country.resource_check(military_dict):
                 self.transform_military(transform_country, amount)
+                return True
 
         # Transform medicine
         if output_resource == 'R28':
             medicine_dict = {'R1': 5 * amount, 'R22': 6 * amount, 'R29': 2 * amount}
             if transform_country.resource_check(medicine_dict):
                 self.transform_medicine(transform_country, amount)
+                return True
 
         # Transform telecommunications
         if output_resource == 'R29':
             telecomm_dict = {'R1': 2 * amount, 'R22': 4 * amount, 'R21': 6 * amount}
             if transform_country.resource_check(telecomm_dict):
                 self.transform_telecomm(transform_country, amount)
+                return True
 
         # Transform transportation
         if output_resource == 'R30':
             transportation_dict = {'R1': 2 * amount, 'R25': 3 * amount, 'R22': 2 * amount}
             if transform_country.resource_check(transportation_dict):
                 self.transform_transportation(transform_country, amount)
+                return True
+
         return False
 
     # This function checks if a given transfer is feasible for a certain country:
