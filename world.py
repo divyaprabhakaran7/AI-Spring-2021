@@ -463,8 +463,16 @@ class World:
         transform_country.dec_resource("R3", 3 * amount)  # Timber
 
         # increase outputs (population unchanged)
-        transform_country.inc_resource("R24", 2 * amount)  # Food
-        transform_country.inc_resource("R24X", 1 * amount)  # FoodWaste
+        if (transform_country.get_resource_val('R31') >= 1):
+            transform_country.inc_resource("R24", 4 * amount)  # Food
+            transform_country.inc_resource("R24X", 1 * amount)  # FoodWaste
+            transform_country.dec_resource("R31", amount) # Fertilizer
+
+        else:
+            transform_country.inc_resource("R24", 2 * amount)  # Food
+            transform_country.inc_resource("R24X", 1 * amount)  # FoodWaste
+
+
         self.__depth += 1
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount)
                            + ") (Timber " + str(3 * amount) + ") (Housing " + str(amount) +
@@ -476,11 +484,11 @@ class World:
         prior_world = copy.deepcopy(self)
 
         # Decrease inputs
-        transform_country.dec_resource("R24X", 3 * amount)  # FoodWaste
+        transform_country.dec_resource("R3", 3 * amount)  # Timber
 
         # increase outputs (population unchanged)
-        transform_country.inc_resource("R26", 2 * amount)  # Fertilizer
-        transform_country.inc_resource("R26X", 1 * amount)  # FertilizerWaste
+        transform_country.inc_resource("R31", 2 * amount)  # Fertilizer
+        transform_country.inc_resource("R31X", 1 * amount)  # FertilizerWaste
 
         self.__depth += 1
 
@@ -490,11 +498,31 @@ class World:
                            ") (FertilizerWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
-        # This function does the work of transforming resources to fossil fuel
-        # Requires 3 population
-        # @param self is the current instance of the world
-        # @param transform_country is the country performing the transform
-        # @param amount is the desired amount, defaulted to 1
+    def transform_farm(self, transform_country, amount=1):
+        prior_world = copy.deepcopy(self)
+
+        # Decrease inputs
+        transform_country.dec_resource("R3", 3 * amount)  # Timber
+        transform_country.dec_resource("R4", 3 * amount)  # Water
+
+        # increase outputs (population unchanged)
+        transform_country.inc_resource("R32", 1 * amount)  # Housing
+        transform_country.inc_resource("R32X", 1 * amount)  # HousingWaste
+
+        self.__depth += 1
+
+        self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount)
+                           + ") (Water " + str(3 * amount)
+                           + ") (Timber " + str(3 * amount) + ")) (OUTPUTS (Population " + str(
+            amount) + ") (Farm " + str(amount) +
+                           ") (FarmWaste " + str(amount) + "))) EU: "
+                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+
+    # This function does the work of transforming resources to fossil fuel
+    # Requires 3 population
+    # @param self is the current instance of the world
+    # @param transform_country is the country performing the transform
+    # @param amount is the desired amount, defaulted to 1
 
     def transform_fossil(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)

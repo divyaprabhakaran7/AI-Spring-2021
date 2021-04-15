@@ -68,7 +68,9 @@ def manmade_state(country, world):
     medicine_val = piecewise_value(country, world, 'R28')
     telecomm_val = piecewise_value(country, world, 'R29')
     transport_val = piecewise_value(country, world, 'R30')
-    return metallic_alloys_val + electronics_val + fossil_val + weapons_val + military_val + medicine_val + telecomm_val + transport_val
+    fertilizer_val = piecewise_value(country, world, 'R31')
+    farm_val = piecewise_value(country, world, 'R32')
+    return metallic_alloys_val + electronics_val + fossil_val + weapons_val + military_val + medicine_val + telecomm_val + transport_val + farm_val + fertilizer_val
 
 
 # This function implements the piecewise function, which is the backbone of the state-quality function. It has three
