@@ -140,6 +140,28 @@ def generate_world(matrix, df_resources):
         new_country = Country(country, dict(resources))
         world.add_country(new_country)
     return world
+  
+# Displays welcome message to the game and instructs user to enter their game mode choice
+# @return the user input choice corresponding to one of the four game settings
+def prompt_user_choice():
+    valid = False
+    print("Welcome to the country simulation! You, the player, will rule your own country. Your objective is to"
+          " come out on top above all the other countries by making moves that will benefit your country. "
+          "In this game, you have four settings you can play through: environmental, high-tech, war, or disaster.")
+    selection = int(input(
+        "Make your choice: 1 for the environmentally-conscious mode, " "2 for the technologically-focused mode"
+        " 3 for the war-mode, and 4 for the disaster-mode."))
+    #Check that user enters valid input, otherwise prompt user to choose a valid game setting
+    while not valid:
+        if selection <= 0 or selection > 4:
+            print("Please choose a valid input.")
+            selection = int(input(
+                "Make your choice: 1 for the environmentally-conscious mode, " "2 for the technologically-focused mode"
+                " 3 for the war-mode, 4 for the disaster-mode."))
+        else:
+            valid = True
+            print("You have chosen game mode " + str(selection))
+    return selection  
 
 
 # The 7 test cases we have created for our world
