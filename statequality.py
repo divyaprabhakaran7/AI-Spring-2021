@@ -10,7 +10,7 @@
 
 import math  # Used for log operations in the state-quality function
 
-WASTE = ['R21X', 'R22X', 'R23X', 'R24X']  # List of all waste resources
+WASTE = ['R21X', 'R22X', 'R23X', 'R24X', 'R25X', 'R26X', 'R27X', 'R28X', 'R29X', 'R30X']  # List of all waste resources
 UPPER_BOUND = 20  # Default upper bound for a resource (indicating abundance) - scaled by resource weight
 LOWER_BOUND = 10  # Default lower bound for a resource (indicating sufficiency) - scaled by resource weight
 
@@ -62,7 +62,13 @@ def land_state(country, world):
 def manmade_state(country, world):
     metallic_alloys_val = piecewise_value(country, world, 'R21')
     electronics_val = piecewise_value(country, world, 'R22')
-    return metallic_alloys_val + electronics_val
+    fossil_val = piecewise_value(country, world, 'R25')
+    weapons_val = piecewise_value(country, world, 'R26')
+    military_val = piecewise_value(country, world, 'R27')
+    medicine_val = piecewise_value(country, world, 'R28')
+    telecomm_val = piecewise_value(country, world, 'R29')
+    transport_val = piecewise_value(country, world, 'R30')
+    return metallic_alloys_val + electronics_val + fossil_val + weapons_val + military_val + medicine_val + telecomm_val + transport_val
 
 
 # This function implements the piecewise function, which is the backbone of the state-quality function. It has three
