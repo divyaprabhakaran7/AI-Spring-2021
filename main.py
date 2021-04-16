@@ -17,7 +17,7 @@ import pandas as pd  # To draw the data to and from the excel files
 
 def my_world_scheduler(resources_filename, initial_state_filename, output_filename,
                        num_turns, depth_bound, frontier_max_size):
-    choice_num = prompt_user_choice()  # Get user's game setting choice
+    choice_num = prompt_user_choice() # Get user's game setting choice
     df_resources = get_data_from_file(resources_filename)  # Load resources data from data frame
     df_countries = get_data_from_file(initial_state_filename)  # Load country data frame
     world_matrix = create_matrix(df_countries, df_resources)  # Get the two data frames into a matrix
@@ -25,11 +25,10 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
                                   df_resources)  # Create the world object with country objects and weights
     countries = world_object.get_countries()
     num_countries = len(countries.keys())
-    # have user input their resources, one method that goes through the raw resources
     cur_world_object = world_object
     for x in range(num_turns):
         for country in countries:
-            if choice_num == 4:  # Run disaster mode if user selects option 4
+            if(choice_num == 4): # Run disaster mode if user selects option 4
                 disaster = disaster_prob()
                 if disaster:
                     run_disaster(world_object, country)
@@ -37,6 +36,7 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
             cur_world_object = new_world
         cur_world_object.turn_resources()  # Adds resources after every turn (I figured after made sense bc of 1st turn)
         print("Turn " + str(x + 1) + " Complete")
+
 
     print_game_output_to_file(output_filename, cur_world_object, num_turns, num_countries, countries)
     print("Scheduling complete -- Check " + output_filename + " file for results")
@@ -136,8 +136,7 @@ def generate_world(matrix, df_resources):
         new_country = Country(country, dict(resources))
         world.add_country(new_country)
     return world
-
-
+  
 # Displays welcome message to the game and instructs user to enter their game mode choice
 # @return the user input choice corresponding to one of the four game settings
 def prompt_user_choice():
@@ -148,7 +147,7 @@ def prompt_user_choice():
     selection = int(input(
         "Make your choice: 1 for the environmentally-conscious mode, " "2 for the technologically-focused mode"
         " 3 for the war-mode, and 4 for the disaster-mode."))
-    # Check that user enters valid input, otherwise prompt user to choose a valid game setting
+    #Check that user enters valid input, otherwise prompt user to choose a valid game setting
     while not valid:
         if selection <= 0 or selection > 4:
             print("Please choose a valid input.")
@@ -158,7 +157,7 @@ def prompt_user_choice():
         else:
             valid = True
             print("You have chosen game mode " + str(selection))
-    return selection
+    return selection  
 
 
 # The 7 test cases we have created for our world
