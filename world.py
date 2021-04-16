@@ -301,7 +301,18 @@ class World:
             if transform_country.resource_check(transportation_dict):
                 self.transform_transportation(transform_country, amount)
                 return True
-
+        # Fertilizer
+        if output_resource == 'R31':
+            fertilizer_dict = {'R24X': 3 * amount}
+            if transform_country.resource_check(fertilizer_dict):
+                self.transform_fertilizer(transform_country, amount)
+                return True
+        # Housing
+        if output_resource == 'R32':
+            housing_dict = {'R2': 3 * amount, 'R3': 3 * amount}
+            if transform_country.resource_check(housing_dict):
+                self.transform_telecomm(transform_country, amount)
+                return True
         return False
 
     # This function checks if a given transfer is feasible for a certain country:
@@ -547,11 +558,11 @@ class World:
                            ") (Housing " + str(amount) + ") (FoodWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
-    def transform_waste(self, transform_country, amount=1):
+    def transform_fertilizer(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
 
         # Decrease inputs
-        transform_country.dec_resource("R3", 3 * amount)  # Timber
+        transform_country.dec_resource("R24X", 3 * amount)  # FoodWaste
 
         # increase outputs (population unchanged)
         transform_country.inc_resource("R31", 2 * amount)  # Fertilizer
@@ -578,8 +589,7 @@ class World:
 
         self.__depth += 1
 
-        self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount)
-                           + ") (Water " + str(3 * amount)
+        self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Water " + str(3 * amount)
                            + ") (Timber " + str(3 * amount) + ")) (OUTPUTS (Population " + str(
             amount) + ") (Farm " + str(amount) +
                            ") (FarmWaste " + str(amount) + "))) EU: "
