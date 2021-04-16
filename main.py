@@ -42,6 +42,42 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
     print("Scheduling complete -- Check " + output_filename + " file for results")
 
 
+def user_resource_input(world_object, country):
+    valid = False
+    total = 100
+    print("It is time to select what resources you want your country to have! You have" + str(total) + "units to "
+                                                                                                       "divide evenly among your basic resources (population, timber, metallic elements). Select wisely!")
+    selection = int(input(
+        "How much population do you want? " + str(total) + " units of resources remaining"))
+    # Check that user enters valid input, otherwise prompt user to choose a valid game setting
+    input_check(selection, total, "Population")
+    total = total - selection
+    selectionTimber = int(input(
+        "How much timber do you want? " + str(total) + " units of resources remaining"))
+    # Check that user enters valid input, otherwise prompt user to choose a valid game setting
+    input_check(selectionTimber, total, "Timber")
+    total = total - selectionTimber
+    selectionME = int(input(
+        "How much Metallic Elements do you want? " + str(total) + " units of resources remaining"))
+    # Check that user enters valid input, otherwise prompt user to choose a valid game setting
+    input_check(selectionME, total, "Metallic Elements")
+    total = total - selectionME
+
+    print("Thank you for entering your resources! Good luck!")
+
+
+def input_check(selection, total, resource):
+    valid = False
+    while not valid:
+        if selection < 0 or selection > total:
+            print("Please choose a valid input.")
+            selection = int(input(
+                "How much " + resource + " do you want? 100 units of resources remaining"))
+        else:
+            valid = True
+            print("You have chosen " + str(selection) + "units of " + resource + str(total) + " remaining")
+
+
 # This function determines if a disaster will take place or not
 # if you are working on other parts of the code and don't want any disasters just change this to "return False".
 # FIXME currently is hard coded to 10%
