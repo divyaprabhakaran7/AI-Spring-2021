@@ -158,7 +158,22 @@ def prompt_user_choice():
             valid = True
             print("You have chosen game mode " + str(selection))
     return selection  
-
+  
+# FIXME RESOURCES TO REMOVE AND KEEP, KEEP ALl RESOURCES FOR MILITARY
+# Remove resources from resources file depending on user choice of game setting
+# @param resources_filename the resources data file to modify
+# @return the modified dataframe to work with
+def modify_resources(resources_filename, user_choice):
+    df_resources = get_data_from_file(resources_filename)
+    if (user_choice == 1):
+        df_resources.drop(index=[17, 18, 19, 20, 23, 24], axis=0, inplace=True)
+        # Keep Housing, Metallics, Electronics, Food,Transportation, Fertilizer, Farm, FossilFuels
+        # Delete Weapons, Military, Telecommunications, Medicine
+    elif (user_choice == 2 or user_choice == 4):
+        df_resources.drop(index=[17, 18, 19, 20, 21, 22], axis=0, inplace=True)
+        #  Keep Housing, Metallics, Electronics, Food,Transportation, Fertilizer, Farm, FossilFuels, Telecommunications
+        #  Delete Weapons, Military, Medicine
+    return df_resources
 
 # The 7 test cases we have created for our world
 # Calls to the method my_county_scheduler to do all of this work.
