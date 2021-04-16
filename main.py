@@ -19,6 +19,7 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
                        num_turns, depth_bound, frontier_max_size):
     choice_num = prompt_user_choice() # Get user's game setting choice
     df_resources = get_data_from_file(resources_filename)  # Load resources data from data frame
+    # df_resources = modify_resources(resources_filename, choice_num) # Modify dataframe according to selection
     df_countries = get_data_from_file(initial_state_filename)  # Load country data frame
     world_matrix = create_matrix(df_countries, df_resources)  # Get the two data frames into a matrix
     world_object = generate_world(world_matrix,
@@ -166,9 +167,9 @@ def prompt_user_choice():
 def modify_resources(resources_filename, user_choice):
     df_resources = get_data_from_file(resources_filename)
     if (user_choice == 1):
-        df_resources.drop(index=[17, 18, 19, 20, 23, 24], axis=0, inplace=True)
-        # Keep Housing, Metallics, Electronics, Food,Transportation, Fertilizer, Farm, FossilFuels
-        # Delete Weapons, Military, Telecommunications, Medicine
+        df_resources.drop(index=[17, 18, 19, 20], axis=0, inplace=True)
+        # Keep Housing, Metallics, Electronics, Food,Transportation, Fertilizer, Farm, FossilFuels, Telecommunications
+        # Delete Weapons, Military, Medicine
     elif (user_choice == 2 or user_choice == 4):
         df_resources.drop(index=[17, 18, 19, 20, 21, 22], axis=0, inplace=True)
         #  Keep Housing, Metallics, Electronics, Food,Transportation, Fertilizer, Farm, FossilFuels, Telecommunications
