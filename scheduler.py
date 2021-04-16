@@ -12,8 +12,6 @@ from depq import DEPQ  # Provides the double-ended queue functionality
 import statequality as sq  # To run the state quality functions
 import copy  # Used to make deep copies of world objects
 
-TRANSFORM_RESOURCES = ['R21', 'R22', 'R23', 'R24']  # List of resources which may be created
-TRANSFER_RESOURCES = ['R2', 'R3', 'R21', 'R22', 'R23', 'R24']  # List of resources which may be transferred
 UPPER_BOUND = 10  # Default upper bound for a resource (indicating abundance) - scaled by resource weight
 LOWER_BOUND = 5  # Default lower bound for a resource (indicating sufficiency) - scaled by resource weight
 
@@ -25,7 +23,7 @@ LOWER_BOUND = 5  # Default lower bound for a resource (indicating sufficiency) -
 # @param depth_bound is how deep to look for the schedule
 # @param frontier_max_size is the size of the frontier to explore
 # @return schedule as a list of strings
-def scheduler(world_object, country_name, num_output_schedules, depth_bound, frontier_max_size):
+def scheduler(world_object, country_name, num_output_schedules, depth_bound, frontier_max_size, transforms, transfers):
     frontier = DEPQ(maxlen=frontier_max_size)  # Successors
     schedules = DEPQ(maxlen=num_output_schedules)  # Output schedules
     initial_state = world_object
@@ -42,7 +40,7 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
 
         # If we still want to explore further (if not add to list of finished schedules
         if current_state.get_depth() < depth_bound:
-            successor_states = get_successors(current_state, country_name)  # Get successors
+            successor_states = get_successors(current_state, country_name, transforms, transfers)  # Get successors
 
             # insert successors by their expected utility
             if len(successor_states) != 0 and successor_states[0].get_depth() == 1:
@@ -50,7 +48,8 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
                     frontier.insert((successor, successor), successor.expected_utility(country_name, initial_state))
             else:
                 for successor in successor_states:
-                    frontier.insert((successor, current_first_step), successor.expected_utility(country_name, initial_state))
+                    frontier.insert((successor, current_first_step),
+                                    successor.expected_utility(country_name, initial_state))
         else:
             schedules.insert((current_state, current_first_step),
                              current_state.expected_utility(country_name, initial_state))
@@ -76,11 +75,11 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
 # @param world_object is the world state that it is currently in
 # @param country_name is the name of our country
 # @return the successors that were found
-def get_successors(world_object, country_name):
+def get_successors(world_object, country_name, transforms, transfers):
     successors = []
 
     # add transforms
-    for resource in TRANSFORM_RESOURCES:
+    for resource in transforms:
         tmp_world = copy.deepcopy(world_object)
 
         # Transform is possible
@@ -88,7 +87,7 @@ def get_successors(world_object, country_name):
             successors.append(tmp_world)
 
     # add transfers
-    for resource in TRANSFER_RESOURCES:
+    for resource in transfers:
         tmp_world = copy.deepcopy(world_object)
         resource_val = tmp_world.get_country(country_name).get_resource_val(resource)
         resource_weight = tmp_world.get_resource_weight(resource)
@@ -99,8 +98,7 @@ def get_successors(world_object, country_name):
             to_country_name = to_country.get_name()
 
             # no need to trade if everyone has in abundance
-            # FIXME could use this: and verify_transfer(world_object, tmp_world, to_country_name):
-            if to_country_name != country_name:
+            if to_country_name != country_name and verify_transfer(world_object, tmp_world, to_country_name):
                 tmp_world.transfer(country_name, to_country_name, resource, 1, country_name)
                 successors.append(tmp_world)
 
@@ -110,16 +108,14 @@ def get_successors(world_object, country_name):
             from_country_name = from_country.get_name()
 
             # no need to trade if everyone has in abundance
-            # FIXME could use this: and verify_transfer(world_object, tmp_world, from_country_name):
-            if from_country_name != country_name:
+            if from_country_name != country_name and verify_transfer(world_object, tmp_world, from_country_name):
                 tmp_world.transfer(from_country_name, country_name, resource, 1, country_name)
                 successors.append(tmp_world)
 
     return successors
 
 
-# FIXME not sure if we'll end up needing this or if this is already accounted for in the logisitcs equaition
 # Essentially I wanted to make sure that even if a transfer is the best action for a country it can only take this
 # action if its positive for the other country
-#def verify_transfer(cur_world, proposed_new_world, other_country_name):
- #   return proposed_new_world.get_undiscounted_reward(other_country_name, cur_world) > 0
+def verify_transfer(cur_world, proposed_new_world, other_country_name):
+    return proposed_new_world.get_undiscounted_reward(other_country_name, cur_world) > 0

@@ -17,57 +17,91 @@ import pandas as pd  # To draw the data to and from the excel files
 
 def my_world_scheduler(resources_filename, initial_state_filename, output_filename,
                        num_turns, depth_bound, frontier_max_size):
-    choice_num = prompt_user_choice() # Get user's game setting choice
+    choice_num = prompt_user_choice()  # Get user's game setting choice
     df_resources = get_data_from_file(resources_filename)  # Load resources data from data frame
     df_countries = get_data_from_file(initial_state_filename)  # Load country data frame
     world_matrix = create_matrix(df_countries, df_resources)  # Get the two data frames into a matrix
     world_object = generate_world(world_matrix,
                                   df_resources)  # Create the world object with country objects and weights
+    valid_transforms, valid_transfers = initialize_resources_list(
+        choice_num)  # Set of resources which will be valid in this mode
     countries = world_object.get_countries()
-    user_resource_input(world_object)
+    country_name, population, timber, metallic_elements = user_resource_input(world_object)
     num_countries = len(countries.keys())
     cur_world_object = world_object
+
+    # Updates user country according to user preferences
+    update_user_country(cur_world_object, country_name, population, timber, metallic_elements)
+
     for x in range(num_turns):
         for country in countries:
-            if(choice_num == 4): # Run disaster mode if user selects option 4
+            if (choice_num == 4):  # Run disaster mode if user selects option 4
                 disaster = disaster_prob()
                 if disaster:
                     run_disaster(world_object, country)
-            new_world = sd.scheduler(cur_world_object, country, 1, depth_bound, frontier_max_size)
+            new_world = sd.scheduler(cur_world_object, country, 1, depth_bound
+                                     , frontier_max_size, valid_transforms, valid_transfers)
             cur_world_object = new_world
         cur_world_object.turn_resources()  # Adds resources after every turn (I figured after made sense bc of 1st turn)
-        print("Turn " + str(x + 1) + " Complete")
-
 
     print_game_output_to_file(output_filename, cur_world_object, num_turns, num_countries, countries)
-    print("Scheduling complete -- Check " + output_filename + " file for results")
+    print("\n\nScheduling complete -- Check " + output_filename + " file for results")
+
+
+# Returns a tuple of lists. First list is the list of transformable resources.
+# Second list is the list of transferrable resources
+def initialize_resources_list(choice):
+    if choice is 1:
+        return ['R21', 'R22', 'R23', 'R24'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24']
+    elif choice is 2:
+        return [], []
+    elif choice is 3:
+        return [], []
+    else:  # choice is 4
+        return [], []
+
+
+def update_user_country(cur_world, country_name, population, timber, metallic_elements):
+    user_country = cur_world.get_country("self")
+    cur_world.delete_country("self")
+    user_country.set_name(country_name) # set name
+
+    # set resources
+    user_country.set_resource("R1", population)
+    user_country.set_resource("R2", timber)
+    user_country.set_resource("R3", metallic_elements)
+
+    # Add country back into the list of countries
+    cur_world.add_country(user_country)
 
 
 def user_resource_input(world_object):
     valid = False
     total = 100
-    print("It is time to select what resources you want your country to have! You have" + str(total) + "units to "
-          "divide evenly among your basic resources (population, timber, metallic elements). Select wisely!")
-    selection = int(input(
-        "How much population do you want? " + str(total) + " units of resources remaining"))
+    country_name = str(input("First, you must name your country. What should it be called?\n"))
+    print("Now, it is time to select what resources you want your country to have!\nYou have " + str(total) + " units to "
+           "divide evenly among your basic resources (population, timber, metallic elements).\nSelect wisely!")
+    selection_pop = int(input(
+        "\nHow much population do you want? " + str(total) + " units of resources remaining\n"))
     # Check that user enters valid input, otherwise prompt user to choose a valid game setting
-    input_check(selection, total, "Population")
-    total = total - selection
+    input_check(selection_pop, total, "Population")
+    total = total - selection_pop
     # world_object.set_resources("R1")
-    selectionTimber = int(input(
-        "How much timber do you want? " + str(total) + " units of resources remaining"))
+    selection_timber = int(input(
+        "How much timber do you want? " + str(total) + " units of resources remaining\n"))
     # Check that user enters valid input, otherwise prompt user to choose a valid game setting
-    input_check(selectionTimber, total, "Timber")
-    total = total - selectionTimber
+    input_check(selection_timber, total, "Timber")
+    total = total - selection_timber
     # world_object.set_resources("R2")
-    selectionME = int(input(
-        "How much Metallic Elements do you want? " + str(total) + " units of resources remaining"))
+    selection_ME = int(input(
+        "How much Metallic Elements do you want? " + str(total) + " units of resources remaining\n"))
     # Check that user enters valid input, otherwise prompt user to choose a valid game setting
-    input_check(selectionME, total, "Metallic Elements")
-    total = total - selectionME
+    input_check(selection_ME, total, "Metallic Elements")
+    total = total - selection_ME
     # world_object.set_resources("R3")
 
     print("Thank you for entering your resources! Good luck!")
+    return country_name, selection_pop, selection_timber, selection_ME
 
 
 def input_check(selection, total, resource):
@@ -79,7 +113,7 @@ def input_check(selection, total, resource):
                 "How much " + resource + " do you want? 100 units of resources remaining"))
         else:
             valid = True
-            print("You have chosen " + str(selection) + "units of " + resource + str(total) + " remaining")
+            print("You have chosen " + str(selection) + " units of " + resource)
 
 
 # This function determines if a disaster will take place or not
@@ -123,9 +157,12 @@ def print_game_output_to_file(file_name, final_world, num_turns, num_countries, 
     moves_as_list = final_world.get_path()
 
     for x in range(1, num_turns + 1):
+        print("\n----- Turn # " + str(x) + " -----\n")
         for country in countries:
-            move_name = "Move #" + str(x) + ": " + country + ": "
-            dict_moves[move_name] = moves_as_list.pop(0)
+            move_name = "Turn #" + str(x) + ": " + country + ": "
+            cur_move = moves_as_list.pop(0)
+            dict_moves[move_name] = cur_move
+            print(move_name + str(cur_move))
 
     # Turn this into a data frame (schedule number as index)
     df_schedules = pd.DataFrame.from_dict(dict_moves, orient='index')
@@ -176,28 +213,30 @@ def generate_world(matrix, df_resources):
         new_country = Country(country, dict(resources))
         world.add_country(new_country)
     return world
-  
+
+
 # Displays welcome message to the game and instructs user to enter their game mode choice
 # @return the user input choice corresponding to one of the four game settings
 def prompt_user_choice():
     valid = False
-    print("Welcome to the country simulation! You, the player, will rule your own country. Your objective is to"
+    print("Welcome to the country simulation! You, the player, will rule your own country. \nYour objective is to"
           " come out on top above all the other countries by making moves that will benefit your country. "
-          "In this game, you have four settings you can play through: environmental, high-tech, war, or disaster.")
+          "\nIn this game, you have four settings you can play through: environmental, high-tech, war, or disaster.\n\n")
     selection = int(input(
-        "Make your choice: 1 for the environmentally-conscious mode, " "2 for the technologically-focused mode"
-        " 3 for the war-mode, and 4 for the disaster-mode."))
-    #Check that user enters valid input, otherwise prompt user to choose a valid game setting
+        "Make your choice: \n1. for the environmentally-conscious mode, " "\n2. for the technologically-focused mode"
+        " \n3. for the war-mode, and \n4. for the disaster-mode.\n"))
+    # Check that user enters valid input, otherwise prompt user to choose a valid game setting
     while not valid:
         if selection <= 0 or selection > 4:
-            print("Please choose a valid input.")
+            print("\nPlease choose a valid input.\n")
             selection = int(input(
-                "Make your choice: 1 for the environmentally-conscious mode, " "2 for the technologically-focused mode"
-                " 3 for the war-mode, 4 for the disaster-mode."))
+                "Make your choice: \n1. for the environmentally-conscious mode, "
+                "\n2. for the technologically-focused mode"
+                "\n3. for the war-mode, \n4. for the disaster-mode.\n"))
         else:
             valid = True
-            print("You have chosen game mode " + str(selection))
-    return selection  
+            print("\nYou have chosen game mode " + str(selection) + "\n")
+    return selection
 
 
 # The 7 test cases we have created for our world

@@ -67,6 +67,9 @@ class World:
     def add_country(self, country):
         self.__countries[country.get_name()] = country
 
+    def delete_country(self, country_name):
+        del self.__countries[country_name]
+
     # This function gets all of the countries in the world object
     # @param self is the current instance of the world
     # @return the countries dictionary
@@ -823,7 +826,6 @@ class World:
             3 * amount) + ") (TransportWaste " + str(1 * amount) + "))) EU: " + str(
             self.expected_utility(transform_country.get_name(), prior_world)))
 
-    # FIXME do allocation of resources to everyone and then PASS is just an empty operation
     def country_passes(self, country):
         self.__path.append("(PASSES " + country + " )")
 

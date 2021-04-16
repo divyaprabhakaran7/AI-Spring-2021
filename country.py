@@ -70,6 +70,9 @@ class Country:
     def get_name(self):
         return self.__name
 
+    def set_name(self, new_name):
+        self.__name = new_name
+
     # This function looks into country's resources and checks if meets the amount of resources specified
     # It is set up to accept either a dictionary of resource value pairs (when amount is not specified) or just one
     # resource and a value (specified as amount)
