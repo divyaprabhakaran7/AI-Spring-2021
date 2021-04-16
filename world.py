@@ -463,15 +463,14 @@ class World:
         transform_country.dec_resource("R3", 3 * amount)  # Timber
 
         # increase outputs (population unchanged)
-        if (transform_country.get_resource_val('R31') >= 1):
+        if transform_country.get_resource_val('R31') >= 1:
             transform_country.inc_resource("R24", 4 * amount)  # Food
             transform_country.inc_resource("R24X", 1 * amount)  # FoodWaste
-            transform_country.dec_resource("R31", amount) # Fertilizer
+            transform_country.dec_resource("R31", amount)  # Fertilizer
 
         else:
             transform_country.inc_resource("R24", 2 * amount)  # Food
             transform_country.inc_resource("R24X", 1 * amount)  # FoodWaste
-
 
         self.__depth += 1
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount)
@@ -506,8 +505,8 @@ class World:
         transform_country.dec_resource("R4", 3 * amount)  # Water
 
         # increase outputs (population unchanged)
-        transform_country.inc_resource("R32", 1 * amount)  # Housing
-        transform_country.inc_resource("R32X", 1 * amount)  # HousingWaste
+        transform_country.inc_resource("R32", 1 * amount)  # Farm
+        transform_country.inc_resource("R32X", 1 * amount)  # Farm
 
         self.__depth += 1
 
@@ -538,9 +537,11 @@ class World:
         self.__depth += 1
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS ((Population " + str(3 * amount) +
                            ") (Electronics " + str(2 * amount) + ") (Renewable Energy " + str(1 * amount) + "))"
-                            "(OUTPUTS (Population " + str(3 * amount) + ") (Electronics" + str(amount) + ") "
-                            "(Renewable Energy " + str(amount) + ") (Fossil Energy" + str(4 * amount) + ") "
-                            "(FossilWaste " + str(amount) + "))) EU: "
+                                                                                                            "(OUTPUTS (Population " + str(
+            3 * amount) + ") (Electronics" + str(amount) + ") "
+                                                           "(Renewable Energy " + str(
+            amount) + ") (Fossil Energy" + str(4 * amount) + ") "
+                                                             "(FossilWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
     # This function does the work of transforming resources to weapons
@@ -562,8 +563,9 @@ class World:
         self.__depth += 1
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS ((Population " + str(6 * amount) +
                            ") (Electronics " + str(2 * amount) + ") (Metallic Alloys " + str(3 * amount) + "))"
-                           "(OUTPUTS (Population " + str(6 * amount) + ") (Weapons" + str(5 * amount) + ") "
-                           "(WeaponsWaste " + str(3 * amount) + "))) EU: "
+                                                                                                           "(OUTPUTS (Population " + str(
+            6 * amount) + ") (Weapons" + str(5 * amount) + ") "
+                                                           "(WeaponsWaste " + str(3 * amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
     # This function does the work of transforming into a military
@@ -599,7 +601,7 @@ class World:
                            ")(Telecommunications " + str(3 * amount) + "))" "(OUTPUTS (Population " + str(7 * amount) +
                            ") (Electronics " + str(8 * amount) + ") (Weapons " + str(6 * amount) + ") (Housing " +
                            str(3 * amount) + ") (Transportation " + str(3 * amount) + ") (Telecommunications " +
-                           str(2* amount) + ") (MilitaryWaste " + str(4 * amount) + "))) EU: "
+                           str(2 * amount) + ") (MilitaryWaste " + str(4 * amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
         # This function does the work of transforming resources to telecommunications
@@ -607,6 +609,7 @@ class World:
         # @param self is the current instance of the world
         # @param transform_country is the country performing the transform
         # @param amount is the desired amount, defaulted to 1
+
     def transform_telecomm(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
 
@@ -617,15 +620,19 @@ class World:
         # increase outputs (population unchanged)
         transform_country.inc_resource("R22", 2 * amount)  # Electronics
         transform_country.inc_resource("R21", 4 * amount)  # Metallic Alloys
-        transform_country.inc_resource ("R29", 3 * amount)  # Telecommunications
+        transform_country.inc_resource("R29", 3 * amount)  # Telecommunications
         transform_country.inc_resource("R29X", 1 * amount)  # Telecommunications Waste
 
         self.__depth += 1
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS ((Population " + str(2 * amount) +
                            ") (Electronics " + str(4 * amount) + ") (Metallic Alloys " + str(6 * amount) + "))"
-                           "(OUTPUTS (Population " + str(2 * amount) + ") (Electronics" + str(2 * amount) + ") "
-                           "(Metallic Alloys " + str(4 * amount) + ") (Telecommunications " + str(3 * amount) + ") "
-                            "(TelecommunicationsWaste " + str(1 * amount) + "))) EU: "
+                                                                                                           "(OUTPUTS "
+                                                                                                           "(Population " + str(
+            2 * amount) + ") (Electronics" + str(2 * amount) + ") "
+                                                               "(Metallic Alloys " + str(
+            4 * amount) + ") (Telecommunications " + str(3 * amount) + ") "
+                                                                       "(TelecommunicationsWaste " + str(
+            1 * amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
     # This function does the work of transforming resources to medicine
@@ -649,12 +656,14 @@ class World:
         self.__depth += 1
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS ((Population " + str(5 * amount) +
                            ") (Electronics " + str(6 * amount) + ") (Telecommunications " + str(2 * amount) + "))"
-                           "(OUTPUTS (Population " + str(5 * amount) + ") (Electronics" + str(5 * amount) + ") "
-                           "(Telecommunications " + str(2 * amount) + ") (Medicine " + str(4 * amount) + ") "
-                            "(MedicineWaste " + str(1 * amount) + "))) EU: "
+                                                                                                              "(OUTPUTS (Population " + str(
+            5 * amount) + ") (Electronics" + str(5 * amount) + ") "
+                                                               "(Telecommunications " + str(
+            2 * amount) + ") (Medicine " + str(4 * amount) + ") "
+                                                             "(MedicineWaste " + str(1 * amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
-# This function does the work of transforming resources to transportation
+    # This function does the work of transforming resources to transportation
     # Requires 2 population
     # @param self is the current instance of the world
     # @param transform_country is the country performing the transform
@@ -674,20 +683,19 @@ class World:
         self.__depth += 1
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS ((Population " + str(2 * amount) +
                            ") (Electronics " + str(2 * amount) + "))"
-                           "(OUTPUTS (Population " + str(2 * amount) + ") (Electronics" + str(1 * amount) + ") "
-                           "(Transportation " + str(3 * amount) + ") (TransportWaste " + str(1 * amount) + "))) EU: "
+                                                                 "(OUTPUTS (Population " + str(
+            2 * amount) + ") (Electronics" + str(1 * amount) + ") "
+                                                               "(Transportation " + str(
+            3 * amount) + ") (TransportWaste " + str(1 * amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
+    # FIXME do allocation of resources to everyone and then PASS is just an empty operation
+    def country_passes(self, country):
+        self.__path.append("(PASSES " + country + " )")
 
-# FIXME do allocation of resources to everyone and then PASS is just an empty operation
-def country_passes(self, country):
-    self.__path.append("(PASSES " + country + " )")
-
-
-# Adds ten percent of current value of all raw resources each turn (round function s.t. we don't get decmials)
-def turn_resources(self):
-    for country in self.__countries:
-        cur = self.__countries[country]
-        for resource in RAW_RESOURCES:
-            cur.inc_resource(resource, round(0.1 * cur.get_resource_val(resource)))
-
+    # Adds ten percent of current value of all raw resources each turn (round function s.t. we don't get decmials)
+    def turn_resources(self):
+        for country in self.__countries:
+            cur = self.__countries[country]
+            for resource in RAW_RESOURCES:
+                cur.inc_resource(resource, round(0.1 * cur.get_resource_val(resource)))
