@@ -52,13 +52,17 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
 # Second list is the list of transferrable resources
 def initialize_resources_list(choice):
     if choice is 1:
-        return ['R21', 'R22', 'R23', 'R24'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24']
+        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24', 'R25',
+                                                                                 'R29', 'R30', 'R31', 'R32']
     elif choice is 2:
-        return [], []
+        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R28', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24', 'R25', 'R28', 
+                                                                                        'R29', 'R30', 'R31', 'R32']
     elif choice is 3:
-        return [], []
+        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R26', 'R27', 'R28', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3','R21', 'R22', 'R23', 
+                                                                                                      'R24', 'R25', 'R26', 'R27', 'R28', 'R29', 'R30', 'R31', 'R32']
     else:  # choice is 4
-        return [], []
+        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24', 'R25',
+                                                                                 'R29', 'R30', 'R31', 'R32']
 
 
 def update_user_country(cur_world, country_name, population, timber, metallic_elements):
