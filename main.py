@@ -1,7 +1,7 @@
 # File name: main.py
 # Authors: Team 6 - Ludwik Huth, Mackenzie Macdonald, Divya Prabhakaran, Regan Siems, Kelly Wolfe
 # Class: CS4269
-# Date: March 14th, 2021
+# Date: April 18, 2021
 # Honor statement: We pledge on our honor that we have neither given nor received any unauthorized aid
 # on this assignment.
 # Project Part: 1
@@ -26,6 +26,7 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
     valid_transforms, valid_transfers = initialize_resources_list(
         choice_num)  # Set of resources which will be valid in this mode
     countries = world_object.get_countries()
+    world_object.set_user_setting(choice_num)
     country_name, population, timber, metallic_elements = user_resource_input(world_object)
     num_countries = len(countries.keys())
     cur_world_object = world_object
@@ -52,23 +53,31 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
 # Second list is the list of transferrable resources
 def initialize_resources_list(choice):
     if choice is 1:
-        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24', 'R25',
+        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24',
+                                                                                 'R25',
                                                                                  'R29', 'R30', 'R31', 'R32']
     elif choice is 2:
-        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R28', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24', 'R25', 'R28', 
+        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R28', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23',
+                                                                                        'R24', 'R25', 'R28',
                                                                                         'R29', 'R30', 'R31', 'R32']
     elif choice is 3:
-        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R26', 'R27', 'R28', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3','R21', 'R22', 'R23', 
-                                                                                                      'R24', 'R25', 'R26', 'R27', 'R28', 'R29', 'R30', 'R31', 'R32']
+        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R26', 'R27', 'R28', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21',
+                                                                                                      'R22', 'R23',
+                                                                                                      'R24', 'R25',
+                                                                                                      'R26', 'R27',
+                                                                                                      'R28', 'R29',
+                                                                                                      'R30', 'R31',
+                                                                                                      'R32']
     else:  # choice is 4
-        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24', 'R25',
+        return ['R21', 'R22', 'R23', 'R24', 'R25', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24',
+                                                                                 'R25',
                                                                                  'R29', 'R30', 'R31', 'R32']
 
 
 def update_user_country(cur_world, country_name, population, timber, metallic_elements):
     user_country = cur_world.get_country("self")
     cur_world.delete_country("self")
-    user_country.set_name(country_name) # set name
+    user_country.set_name(country_name)  # set name
 
     # set resources
     user_country.set_resource("R1", population)
@@ -83,8 +92,9 @@ def user_resource_input(world_object):
     valid = False
     total = 100
     country_name = str(input("First, you must name your country. What should it be called?\n"))
-    print("Now, it is time to select what resources you want your country to have!\nYou have " + str(total) + " units to "
-           "divide evenly among your basic resources (population, timber, metallic elements).\nSelect wisely!")
+    print(
+        "Now, it is time to select what resources you want your country to have!\nYou have " + str(total) + " units to "
+                                                                                                            "divide evenly among your basic resources (population, timber, metallic elements).\nSelect wisely!")
     selection_pop = int(input(
         "\nHow much population do you want? " + str(total) + " units of resources remaining\n"))
     # Check that user enters valid input, otherwise prompt user to choose a valid game setting
@@ -243,7 +253,7 @@ def prompt_user_choice():
     return selection
 
 
-# The 7 test cases we have created for our world
+# The test cases we have created for our world
 # Calls to the method my_county_scheduler to do all of this work.
 def test_cases():
     my_world_scheduler('data/resource_data.xlsx', 'data/test_case_3.xlsx', 'data/output_data3.xlsx',
