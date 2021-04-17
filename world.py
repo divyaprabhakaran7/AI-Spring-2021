@@ -1,7 +1,7 @@
 # File name: world.py
 # Authors: Team 6 - Ludwik Huth, Mackenzie Macdonald, Divya Prabhakaran, Regan Siems, Kelly Wolfe
 # Class: CS4269
-# Date: March 14th, 2021
+# Date: April 18, 2021
 # Honor statement: We pledge on our honor that we have neither given nor received any unauthorized aid
 # on this assignment.
 # Project Part: 1
@@ -13,7 +13,6 @@ import math  # Used for the math operations in the expected utility function cal
 import statequality as sq  # Used to implement the expected utility methods
 
 RAW_RESOURCES = ['R2', 'R3', 'R5']
-ENV_MODE = 0  # FIXME need to turn environmental transforms on and off (1 for on), setting as a game state var?
 
 # The world class models a current state of a game
 # Its variables are the following:
@@ -34,6 +33,19 @@ class World:
         self.__path = []
         self.__depth = 0
         self.__active_countries = []
+        self.__user_setting = 0
+
+    # This function sets the user setting choice for the game
+    # @param self is the current instance of the world
+    # @param user_choice is the user's input for game mode
+    def set_user_setting(self, user_choice):
+        self.__user_setting = user_choice
+
+    # This function gets the user setting of this world
+    # @param self is the current instance of the world
+    # @return the user setting
+    def get_user_setting(self):
+        return self.__user_setting
 
     # This function gets the countries that are in this world
     # @param self is the current instance of the world
@@ -221,30 +233,29 @@ class World:
                 self.transform_alloys(transform_country, amount)
                 return True
 
-       # Transform electronics
+        # Transform electronics
         if output_resource == 'R22':
             elec_dict = {'R1': 1 * amount, 'R2': 3 * amount, 'R21': 2 * amount}
             elec_env_dict = {'R1': 1 * amount, 'R2': 2 * amount, 'R21': 1 * amount, 'R22X': 2 * amount}
-            if ENV_MODE == 1:
+            if self.get_user_setting() == 1:
                 if transform_country.resource_check(elec_env_dict):
-                    self.transform_telecomm(transform_country, amount)
+                    self.transform_electronics_env(transform_country, amount)
                     return True
             if transform_country.resource_check(elec_dict):
-                self.transform_telecomm(transform_country, amount)
+                self.transform_electronics(transform_country, amount)
                 return True
         # Transform housing
         if output_resource == 'R23':
             housing_dict = {'R1': 5 * amount, 'R2': 1 * amount, 'R3': 5 * amount, 'R21': 3 * amount}
             housing_env_dict = {'R1': 5 * amount, 'R2': 1 * amount, 'R3': 3 * amount, 'R21': 1 * amount,
                                 'R21X': 2 * amount, 'R23X': 2 * amount}
-            if ENV_MODE == 1:
+            if self.get_user_setting() == 1:
                 if transform_country.resource_check(housing_env_dict):
-                    self.transform_telecomm(transform_country, amount)
+                    self.transform_housing_env(transform_country, amount)
                     return True
             if transform_country.resource_check(housing_dict):
-                self.transform_telecomm(transform_country, amount)
+                self.transform_housing(transform_country, amount)
                 return True
-
         # Transform food
         if output_resource == 'R24':
             food_dict = {'R1': 1 * amount, 'R3': 3 * amount, 'R23': 1 * amount}
@@ -281,14 +292,14 @@ class World:
                 self.transform_medicine(transform_country, amount)
                 return True
 
-       # Transform telecommunications
+        # Transform telecommunications
         if output_resource == 'R29':
             telecomm_dict = {'R1': 2 * amount, 'R22': 4 * amount, 'R21': 6 * amount}
             telecomm_env_dict = {'R1': 2 * amount, 'R22': 3 * amount, 'R22X': 1 * amount, 'R21': 4 * amount,
                                  'R21X': 2 * amount}
-            if ENV_MODE == 1:
+            if self.get_user_setting() == 1:
                 if transform_country.resource_check(telecomm_env_dict):
-                    self.transform_telecomm(transform_country, amount)
+                    self.transform_telecomm_env(transform_country, amount)
                     return True
             if transform_country.resource_check(telecomm_dict):
                 self.transform_telecomm(transform_country, amount)
@@ -297,9 +308,9 @@ class World:
         if output_resource == 'R30':
             transportation_dict = {'R1': 2 * amount, 'R25': 3 * amount, 'R22': 2 * amount}
             transportation_env_dict = {'R1': 2 * amount, 'R25': 2 * amount, 'R22': 1 * amount, 'R22X': 1 * amount}
-            if ENV_MODE == 1:
+            if self.get_user_setting() == 1:
                 if transform_country.resource_check(transportation_env_dict):
-                    self.transform_transportation(transform_country, amount)
+                    self.transform_transportation_env(transform_country, amount)
                     return True
             if transform_country.resource_check(transportation_dict):
                 self.transform_transportation(transform_country, amount)
@@ -309,12 +320,6 @@ class World:
             fertilizer_dict = {'R24X': 3 * amount}
             if transform_country.resource_check(fertilizer_dict):
                 self.transform_fertilizer(transform_country, amount)
-                return True
-        # Housing
-        if output_resource == 'R32':
-            housing_dict = {'R2': 3 * amount, 'R3': 3 * amount}
-            if transform_country.resource_check(housing_dict):
-                self.transform_telecomm(transform_country, amount)
                 return True
         return False
 
@@ -451,7 +456,7 @@ class World:
     # @param self is the current instance of the world
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
-    def transform_housing(self, transform_country, amount=1):
+    def transform_housing_env(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
         # Decrease inputs
         transform_country.dec_resource("R2", 1 * amount)  # MetallicElements
@@ -469,7 +474,6 @@ class World:
             2 * amount) + ") (HousingWaste" + str(2 * amount) + ")) (OUTPUTS (Population " + str(amount) +
                            ") (Housing " + str(amount) + ") " + "(HousingWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
-        
 
     # This function does the work of transforming resources into metallic alloys
     # Requires 1 population
@@ -514,6 +518,7 @@ class World:
                            ")) (OUTPUTS (Population " + str(5 * amount) + ") (Electronics " + str(2 * amount) +
                            ") (ElectonicsWaste " + str(amount) +
                            "))) EU: " + str(self.expected_utility(transform_country.get_name(), prior_world)))
+
     # This function does the work to transform electronics from resources in the environmental mode
     # Requires 1 population
     # @param self is the current instance of the world
@@ -536,7 +541,6 @@ class World:
             5 * amount) + ") (Electronics " + str(2 * amount) +
                            ") (ElectonicsWaste " + str(amount) +
                            "))) EU: " + str(self.expected_utility(transform_country.get_name(), prior_world)))
-
 
     def transform_food(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
@@ -715,7 +719,7 @@ class World:
                                                                        "(TelecommunicationsWaste " + str(
             1 * amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
-        
+
     # This function does the work of transforming resources to telecommunications in the environmental mode
     # Requires 2 population
     # @param self is the current instance of the world
@@ -744,7 +748,6 @@ class World:
             2 * amount) + ") ""(Metallic Alloys " + str(4 * amount) + ") (Telecommunications " + str(
             3 * amount) + ") ""(TelecommunicationsWaste " + str(1 * amount) + "))) EU: " + str(
             self.expected_utility(transform_country.get_name(), prior_world)))
-
 
     # This function does the work of transforming resources to medicine
     # Requires 5 population
@@ -799,6 +802,7 @@ class World:
                                                                "(Transportation " + str(
             3 * amount) + ") (TransportWaste " + str(1 * amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
+
     # This function does the work of transforming resources to transportation in the environmental mode
     # Requires 2 population
     # @param self is the current instance of the world
