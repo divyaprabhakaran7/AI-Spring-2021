@@ -12,8 +12,8 @@ from depq import DEPQ  # Provides the double-ended queue functionality
 import statequality as sq  # To run the state quality functions
 import copy  # Used to make deep copies of world objects
 
-UPPER_BOUND = 10  # Default upper bound for a resource (indicating abundance) - scaled by resource weight
-LOWER_BOUND = 5  # Default lower bound for a resource (indicating sufficiency) - scaled by resource weight
+UPPER_BOUND = 20  # Default upper bound for a resource (indicating abundance) - scaled by resource weight
+LOWER_BOUND = 10 # Default lower bound for a resource (indicating sufficiency) - scaled by resource weight
 
 
 # This function creates the schedule of tranforms and transfers for the resources
