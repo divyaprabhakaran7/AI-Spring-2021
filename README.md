@@ -1,11 +1,12 @@
 ## AI-Spring-2021
 AI Project Course - Vanderbilt Spring 2021
-Group 6 Part 1 Deliverable
+Group 6 Part 2 Deliverable
 
 ## Table of Contents
 * [Setup](#setup)
 * [Genral Info](#general-info)
 * [Navigation](#navigation)
+* [How To Run](#how-to-run)
 
 ## Setup
 Use a Python 3.7 interpreter (or above).
@@ -26,3 +27,14 @@ We have put in 5 test case files as well as their output files in /data. If you 
 - world.py: the backbone of our project; contains transform and transfer functions; contains expected utility functions
 - scheduler.py: contains the main scheduler function along with its necessary helper functions
 - statequality.py: calculation of a country's given state
+
+## How To Run
+1. Navigate to the project folder in Terminal
+2. Activate a virtual environment with the appropriate packages installed (see Setup). Example using conda: 
+```
+conda activate virtual_env_name
+```
+3. Run main.py. Example (depending on the version of python installed): 
+```
+python main.py OR python3 main.py 
+```
