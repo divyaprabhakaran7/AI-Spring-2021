@@ -151,6 +151,7 @@ class World:
     def reset_path(self):
         self.__depth = 0
         self.__path = []
+        self.__active_countries = []
 
     def reset_depth(self):
         self.__depth = 0

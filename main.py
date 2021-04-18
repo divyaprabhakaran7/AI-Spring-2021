@@ -33,12 +33,12 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
         choice_num)  # Set of resources which will be valid in this mode
     countries = world_object.get_countries()
     world_object.set_user_setting(choice_num) # set the world object into user's desired mode
-    country_name, population, timber, metallic_elements = user_resource_input(world_object)
+    country_name, population, timber, metallic_elements, disaster_prob = user_resource_input(world_object, choice_num)
     num_countries = len(countries.keys())
     cur_world_object = world_object
 
     # Updates user country according to user preferences
-    update_user_country(cur_world_object, country_name, population, timber, metallic_elements)
+    update_user_country(cur_world_object, country_name, population, timber, metallic_elements, disaster_prob)
 
     dict_moves = {}
 
@@ -87,7 +87,7 @@ def initialize_resources_list(choice):
                                                                                  'R29', 'R30', 'R31', 'R32']
 
 
-def update_user_country(cur_world, country_name, population, timber, metallic_elements):
+def update_user_country(cur_world, country_name, population, timber, metallic_elements, disaster_prob):
     user_country = cur_world.get_country("self")
     cur_world.delete_country("self")
     user_country.set_name(country_name)  # set name
@@ -97,11 +97,15 @@ def update_user_country(cur_world, country_name, population, timber, metallic_el
     user_country.set_resource("R2", timber)
     user_country.set_resource("R3", metallic_elements)
 
+    # Set disaster prob - value will be -1 if it should not be changed
+    if disaster_prob is not -1:
+        user_country.set_disaster_prob(disaster_prob)
+
     # Add country back into the list of countries
     cur_world.add_country(user_country)
 
 
-def user_resource_input(world_object):
+def user_resource_input(world_object, choice_num):
     total = 100
     country_name = str(input("First, you must name your country. What should it be called?\n"))
     print(
@@ -127,8 +131,17 @@ def user_resource_input(world_object):
     total = total - selection_ME
     # world_object.set_resources("R3")
 
+    disaster_prob = -1
+    if choice_num is 4:
+        user_disaster_prob = str(input(
+            "\nWould? you like to change your country's default disaster probability?. Type 'yes' or 'no'.\n"))
+        if user_disaster_prob.upper() == 'YES':
+            new_disaster_prob = float(input("\nWhat would you like to change your country's disaster probability to?"
+                                            " Input as a decimal (ie if 50% then type 0.50)\n"))
+            disaster_prob = new_disaster_prob
+
     print("Thank you for entering your resources! Good luck!")
-    return country_name, selection_pop, selection_timber, selection_ME
+    return country_name, selection_pop, selection_timber, selection_ME, disaster_prob
 
 
 def input_check(selection, total, resource):

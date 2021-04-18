@@ -77,6 +77,9 @@ class Country:
     def get_disaster_prob(self):
         return self.__disaster_prob
 
+    def set_disaster_prob(self, new_prob):
+        self.__disaster_prob = new_prob
+
     # This function looks into country's resources and checks if meets the amount of resources specified
     # It is set up to accept either a dictionary of resource value pairs (when amount is not specified) or just one
     # resource and a value (specified as amount)
