@@ -37,5 +37,8 @@ conda activate virtual_env_name
 3. Run main.py. Example (depending on the version of python installed): 
 ```
 python main.py
+```
+OR
+```
 python3 main.py 
 ```
