@@ -22,6 +22,8 @@ LOWER_BOUND = 10  # Default lower bound for a resource (indicating sufficiency) 
 # @param num_output_schedules is the number of desired schedules to output
 # @param depth_bound is how deep to look for the schedule
 # @param frontier_max_size is the size of the frontier to explore
+# @param transforms is the list of available transforms
+# @param transfers is the list of available transfers
 # @return schedule as a list of strings
 def scheduler(world_object, country_name, num_output_schedules, depth_bound, frontier_max_size, transforms, transfers):
     frontier = DEPQ(maxlen=frontier_max_size)  # Successors
@@ -74,6 +76,8 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
 # This function generates the successors for the schedule
 # @param world_object is the world state that it is currently in
 # @param country_name is the name of our country
+# @param transforms is the list of available transforms
+# @param transfers is the list of available transfers
 # @return the successors that were found
 def get_successors(world_object, country_name, transforms, transfers):
     successors = []
@@ -115,7 +119,9 @@ def get_successors(world_object, country_name, transforms, transfers):
     return successors
 
 
-# Essentially I wanted to make sure that even if a transfer is the best action for a country it can only take this
-# action if its positive for the other country
+# Make sure that the transfer is helpful for both countries before performing it
+# @param cur_world is the current world being used
+# @param proposed_new_world is the world that would happen is the transfer took place
+# @param other_country_name is the country being transferred with
 def verify_transfer(cur_world, proposed_new_world, other_country_name):
     return proposed_new_world.get_undiscounted_reward(other_country_name, cur_world) >= 0

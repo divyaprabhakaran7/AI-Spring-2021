@@ -57,13 +57,14 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
             print(move_name + str(cur_move))
         cur_world_object.turn_resources()  # Adds resources after every turn (I figured after made sense bc of 1st turn)
 
-    print_game_output_to_file(output_filename, cur_world_object, num_turns, countries, dict_moves)
+    print_game_output_to_file(output_filename, dict_moves)
     print("\n\nScheduling complete -- Check " + output_filename + " file for results")
 
 
-# Returns a tuple of lists. First list is the list of transformable resources.
+# Initialize the resource list given the chosen game mode
+# @param choice is the user-selected mode choice
+# @return a tuple of lists - First list is the list of transformable resources.
 # Second list is the list of transferrable resources
-# @param choice is the choice that the user selects
 def initialize_resources_list(choice):
     if choice == 1:
         return ['R21', 'R22', 'R23', 'R24', 'R25', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24',
@@ -86,7 +87,13 @@ def initialize_resources_list(choice):
                                                                                  'R25',
                                                                                  'R29', 'R30', 'R31', 'R32']
 
-
+# Required for gamification - updates the user country's resources and disaster probability to their inputs
+# @param cur_world is the current state of the world
+# @param country_name is the name of the country being updated (the user's country)
+# @param population is the new population value
+# @param timber is the new timber value
+# @param metallic_elements is the new metallic elements value
+# @param disaster_prob is the new probability of disaster (or -1, in which case it is not updated)
 def update_user_country(cur_world, country_name, population, timber, metallic_elements, disaster_prob):
     user_country = cur_world.get_country("self")
     cur_world.delete_country("self")
@@ -105,6 +112,13 @@ def update_user_country(cur_world, country_name, population, timber, metallic_el
     cur_world.add_country(user_country)
 
 
+# Get the user's resource value inputs for their country
+# @param choice_num is the mode the user chose
+# @return country_name is the name of the user's country
+# @return selection_pop is the inputted population resource value
+# @return selection_timber is the inputted timber resource value
+# @return selection_ME is the inputted metallic elements resource value
+# @return disaster_prob is the inputted probability of disaster (or -1 if not updated)
 def user_resource_input(choice_num):
     total = 100
     country_name = str(input("First, you must name your country. What should it be called?\n"))
@@ -144,6 +158,11 @@ def user_resource_input(choice_num):
     return country_name, selection_pop, selection_timber, selection_ME, disaster_prob
 
 
+# Validate the user's inputs and make sure they are under the allowed amount units
+# @param selection is the user's value selection for a resource
+# @param total is the total allowed amount of units for a user's inputted resources
+# @param resource is the resource which is being validated
+# @return true or false based on if the input value is valid
 def input_check(selection, total, resource):
     valid = False
     while not valid:
@@ -156,7 +175,10 @@ def input_check(selection, total, resource):
             print("You have chosen " + str(selection) + " units of " + resource)
 
 
-def print_game_output_to_file(file_name, final_world, num_turns, countries, dict_moves):
+# Print the game schedule to a file
+# @param file_name is the file to print the output to
+# @param dict_moves is the dictionary which contains all game moves
+def print_game_output_to_file(file_name, dict_moves):
     # Turn schedule into a data frame (schedule number as index)
     df_schedules = pd.DataFrame.from_dict(dict_moves, orient='index')
     df_schedules.columns = ["Action Taken"]

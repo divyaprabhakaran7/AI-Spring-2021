@@ -162,6 +162,10 @@ class World:
     def get_depth(self):
         return self.__depth
 
+    # This function is the driver of disasters and decides if one will take
+    # place, then if so, simulates a random disaster on a country and adds it to the path
+    # @param self is the world itself
+    # @param country is the country where the disaster may take place
     def disaster(self, country):
         disaster_range = round(1/(self.get_country(country).get_disaster_prob()))
         disaster_val = randint(0, disaster_range)
@@ -183,6 +187,9 @@ class World:
 
             self.add_to_cur_path(disaster_str)
 
+    # Adds a string to the beginning of the last element of a path
+    # @param self is the world itself
+    # @param new_str is the string to append
     def add_to_cur_path(self, new_str):
         if len(self.__path) > 0:
             new_path = self.get_path()
@@ -370,6 +377,7 @@ class World:
     # @param country2 is the country that the resource is going to
     # @param resource is the desired resource to transfer
     # @param is the desired amount of the resource to transfer
+    # @param cur_country is the state of the country before the transfer takes place
     # @return true/false indicating whether the transfer was successful
     def transfer(self, country1, country2, resource, amount, cur_country):
         tmp_world = copy.deepcopy(self)

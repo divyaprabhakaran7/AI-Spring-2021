@@ -71,12 +71,21 @@ class Country:
     def get_name(self):
         return self.__name
 
+    # Set the name of the country
+    # @param self is the country itself
+    # @param new_name is the new name for the country
     def set_name(self, new_name):
         self.__name = new_name
 
+    # Get the disaster probability of a country
+    # @param self is the country itself
+    # @return is the country's probability of disaster
     def get_disaster_prob(self):
         return self.__disaster_prob
 
+    # Set the disaster probability of a country
+    # @param self is the country itself
+    # @param new_prob is the new probability of disaster
     def set_disaster_prob(self, new_prob):
         self.__disaster_prob = new_prob
 
