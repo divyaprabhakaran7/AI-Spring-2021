@@ -118,4 +118,5 @@ def get_successors(world_object, country_name, transforms, transfers):
 # Essentially I wanted to make sure that even if a transfer is the best action for a country it can only take this
 # action if its positive for the other country
 def verify_transfer(cur_world, proposed_new_world, other_country_name):
-    return proposed_new_world.get_undiscounted_reward(other_country_name, cur_world) > 0
+    # proposed_new_world.get_undiscounted_reward(other_country_name, cur_world) >= 0
+    return False

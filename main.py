@@ -219,7 +219,7 @@ def prompt_user_choice():
           "\nIn this game, you have four settings you can play through: environmental, high-tech, war, or disaster.\n\n")
     selection = int(input(
         "Make your choice: \n1. for the environmentally-conscious mode, " "\n2. for the technologically-focused mode"
-        " \n3. for the war-mode, and \n4. for the disaster-mode.\n"))
+        " \n3. for the military, and \n4. for the disaster-mode.\n"))
     # Check that user enters valid input, otherwise prompt user to choose a valid game setting
     while not valid:
         if selection <= 0 or selection > 4:
@@ -227,7 +227,7 @@ def prompt_user_choice():
             selection = int(input(
                 "Make your choice: \n1. for the environmentally-conscious mode, "
                 "\n2. for the technologically-focused mode"
-                "\n3. for the war-mode, \n4. for the disaster-mode.\n"))
+                "\n3. for the military, \n4. for the disaster-mode.\n"))
         else:
             valid = True
             print("\nYou have chosen game mode " + str(selection) + "\n")
