@@ -103,7 +103,7 @@ def get_successors(world_object, country_name, transforms, transfers):
 
             # no need to trade if everyone has in abundance
             if to_country_name != country_name and verify_transfer(world_object, tmp_world, to_country_name):
-                if tmp_world.transfer(country_name, to_country_name, resource, 1, country_name):
+                if tmp_world.transfer(country_name, to_country_name, resource, 1):
                     successors.append(tmp_world)
 
         # We lack resource
@@ -113,7 +113,7 @@ def get_successors(world_object, country_name, transforms, transfers):
 
             # no need to trade if everyone lacks
             if from_country_name != country_name and verify_transfer(world_object, tmp_world, from_country_name):
-                if tmp_world.transfer(from_country_name, country_name, resource, 1, country_name):
+                if tmp_world.transfer(from_country_name, country_name, resource, 1):
                     successors.append(tmp_world)
 
     return successors
