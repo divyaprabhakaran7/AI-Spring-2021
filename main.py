@@ -40,16 +40,24 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
     # Updates user country according to user preferences
     update_user_country(cur_world_object, country_name, population, timber, metallic_elements)
 
+    dict_moves = {}
+
     for x in range(num_turns):
+        print("\n----- Turn # " + str(x+1) + " -----\n")
         for country in countries:
+            move_name = "Turn #" + str(x+1) + ": " + country + ": "
             new_world = sd.scheduler(cur_world_object, country, 1, depth_bound
                                      ,frontier_max_size, valid_transforms, valid_transfers)
             cur_world_object = new_world
             if choice_num is 4:  # Run disaster mode if user selects option 4
                 cur_world_object.disaster(country) # Whether disaster was called or not (necessary for path)
+            moves_as_list = cur_world_object.get_path()
+            cur_move = moves_as_list[len(moves_as_list) - 1]
+            dict_moves[move_name] = cur_move
+            print(move_name + str(cur_move))
         cur_world_object.turn_resources()  # Adds resources after every turn (I figured after made sense bc of 1st turn)
 
-    print_game_output_to_file(output_filename, cur_world_object, num_turns, num_countries, countries)
+    print_game_output_to_file(output_filename, cur_world_object, num_turns, countries, dict_moves)
     print("\n\nScheduling complete -- Check " + output_filename + " file for results")
 
 
@@ -135,20 +143,8 @@ def input_check(selection, total, resource):
             print("You have chosen " + str(selection) + " units of " + resource)
 
 
-def print_game_output_to_file(file_name, final_world, num_turns, num_countries, countries):
-    # Load schedules into a dictionary of schedule number and actual schedule
-    dict_moves = {}
-    moves_as_list = final_world.get_path()
-
-    for x in range(1, num_turns + 1):
-        print("\n----- Turn # " + str(x) + " -----\n")
-        for country in countries:
-            move_name = "Turn #" + str(x) + ": " + country + ": "
-            cur_move = moves_as_list.pop(0)
-            dict_moves[move_name] = cur_move
-            print(move_name + str(cur_move))
-
-    # Turn this into a data frame (schedule number as index)
+def print_game_output_to_file(file_name, final_world, num_turns, countries, dict_moves):
+    # Turn schedule into a data frame (schedule number as index)
     df_schedules = pd.DataFrame.from_dict(dict_moves, orient='index')
     df_schedules.columns = ["Action Taken"]
 
