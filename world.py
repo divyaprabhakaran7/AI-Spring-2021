@@ -4,7 +4,7 @@
 # Date: April 18, 2021
 # Honor statement: We pledge on our honor that we have neither given nor received any unauthorized aid
 # on this assignment.
-# Project Part: 1
+# Project Part: 2
 # Description: This file implements the World class
 
 
@@ -13,6 +13,7 @@ import math  # Used for the math operations in the expected utility function cal
 import statequality as sq  # Used to implement the expected utility methods
 
 RAW_RESOURCES = ['R2', 'R3', 'R5']
+
 
 # The world class models a current state of a game
 # Its variables are the following:
@@ -79,6 +80,9 @@ class World:
     def add_country(self, country):
         self.__countries[country.get_name()] = country
 
+    # This function deletes the country from the world
+    # @param self is the current instance of the world
+    # @param country_name is the country to be deleted
     def delete_country(self, country_name):
         del self.__countries[country_name]
 
@@ -119,6 +123,9 @@ class World:
     def get_resource_weight(self, resource):
         return self.__resources[resource]
 
+    # This function sets the path for the country
+    # @param self is the current instance of the world
+    # @param path is the path for the country
     def set_path(self, path):
         self.__path = path
         self.__depth = len(path)
@@ -236,24 +243,24 @@ class World:
         # Transform electronics
         if output_resource == 'R22':
             elec_dict = {'R1': 1 * amount, 'R2': 3 * amount, 'R21': 2 * amount}
-            elec_env_dict = {'R1': 1 * amount, 'R2': 2 * amount, 'R21': 1 * amount, 'R22X': 2 * amount}
-            if self.get_user_setting() == 1:
+            elec_env_dict = {'R1': 1 * amount, 'R2': 2 * amount, 'R21': 1 * amount, 'R22X': 2 * amount}  # environmental
+            if self.get_user_setting() == 1:  # environmentally-conscious mode allows for recycling
                 if transform_country.resource_check(elec_env_dict):
                     self.transform_electronics_env(transform_country, amount)
                     return True
-            if transform_country.resource_check(elec_dict):
+            if transform_country.resource_check(elec_dict):  # used for the other modes
                 self.transform_electronics(transform_country, amount)
                 return True
         # Transform housing
         if output_resource == 'R23':
             housing_dict = {'R1': 5 * amount, 'R2': 1 * amount, 'R3': 5 * amount, 'R21': 3 * amount}
             housing_env_dict = {'R1': 5 * amount, 'R2': 1 * amount, 'R3': 3 * amount, 'R21': 1 * amount,
-                                'R21X': 2 * amount, 'R23X': 2 * amount}
-            if self.get_user_setting() == 1:
+                                'R21X': 2 * amount, 'R23X': 2 * amount}  # environmental transform
+            if self.get_user_setting() == 1:  # selected environmental mode
                 if transform_country.resource_check(housing_env_dict):
                     self.transform_housing_env(transform_country, amount)
                     return True
-            if transform_country.resource_check(housing_dict):
+            if transform_country.resource_check(housing_dict):  # other modes are being played
                 self.transform_housing(transform_country, amount)
                 return True
         # Transform food
@@ -296,26 +303,26 @@ class World:
         if output_resource == 'R29':
             telecomm_dict = {'R1': 2 * amount, 'R22': 4 * amount, 'R21': 6 * amount}
             telecomm_env_dict = {'R1': 2 * amount, 'R22': 3 * amount, 'R22X': 1 * amount, 'R21': 4 * amount,
-                                 'R21X': 2 * amount}
-            if self.get_user_setting() == 1:
+                                 'R21X': 2 * amount}  # environmental mode needs
+            if self.get_user_setting() == 1:  # environmental mode selected by user
                 if transform_country.resource_check(telecomm_env_dict):
                     self.transform_telecomm_env(transform_country, amount)
                     return True
-            if transform_country.resource_check(telecomm_dict):
+            if transform_country.resource_check(telecomm_dict):  # the other modes
                 self.transform_telecomm(transform_country, amount)
                 return True
         # Transform transportation
         if output_resource == 'R30':
             transportation_dict = {'R1': 2 * amount, 'R25': 3 * amount, 'R22': 2 * amount}
             transportation_env_dict = {'R1': 2 * amount, 'R25': 2 * amount, 'R22': 1 * amount, 'R22X': 1 * amount}
-            if self.get_user_setting() == 1:
+            if self.get_user_setting() == 1:  # environmental mode
                 if transform_country.resource_check(transportation_env_dict):
                     self.transform_transportation_env(transform_country, amount)
                     return True
-            if transform_country.resource_check(transportation_dict):
+            if transform_country.resource_check(transportation_dict):  # other modes
                 self.transform_transportation(transform_country, amount)
                 return True
-        # Fertilizer
+        # Fertilizer used for food recycling
         if output_resource == 'R31':
             fertilizer_dict = {'R24X': 3 * amount}
             if transform_country.resource_check(fertilizer_dict):
@@ -524,7 +531,6 @@ class World:
     # @param self is the current instance of the world
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
-
     def transform_electronics_env(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
         # Decrease inputs
@@ -542,6 +548,11 @@ class World:
                            ") (ElectonicsWaste " + str(amount) +
                            "))) EU: " + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
+    # This function does the work to transform food from resources
+    # Requires 1 population
+    # @param self is the current instance of the world
+    # @param transform_country is the country performing the transform
+    # @param amount is the desired amount, defaulted to 1
     def transform_food(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
 
@@ -565,6 +576,11 @@ class World:
                            ") (Housing " + str(amount) + ") (FoodWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
+    # This function does the work to transform fertilizer from the resources of the world
+    # Requires 1 population
+    # @param self is the current instance of the world
+    # @param transform_country is the country performing the transform
+    # @param amount is the desired amount, defaulted to 1
     def transform_fertilizer(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
 
@@ -583,6 +599,11 @@ class World:
                            ") (FertilizerWaste " + str(amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
+    # This function does the work to transform farm land from resources
+    # Requires 1 population
+    # @param self is the current instance of the world
+    # @param transform_country is the country performing the transform
+    # @param amount is the desired amount, defaulted to 1
     def transform_farm(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
 
@@ -607,7 +628,6 @@ class World:
     # @param self is the current instance of the world
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
-
     def transform_fossil(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
 
@@ -689,12 +709,11 @@ class World:
                            str(2 * amount) + ") (MilitaryWaste " + str(4 * amount) + "))) EU: "
                            + str(self.expected_utility(transform_country.get_name(), prior_world)))
 
-        # This function does the work of transforming resources to telecommunications
-        # Requires 2population
-        # @param self is the current instance of the world
-        # @param transform_country is the country performing the transform
-        # @param amount is the desired amount, defaulted to 1
-
+    # This function does the work of transforming resources to telecommunications
+    # Requires 2population
+    # @param self is the current instance of the world
+    # @param transform_country is the country performing the transform
+    # @param amount is the desired amount, defaulted to 1
     def transform_telecomm(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
 
@@ -808,7 +827,6 @@ class World:
     # @param self is the current instance of the world
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
-
     def transform_transportation_env(self, transform_country, amount=1):
         prior_world = copy.deepcopy(self)
 
@@ -830,10 +848,14 @@ class World:
             3 * amount) + ") (TransportWaste " + str(1 * amount) + "))) EU: " + str(
             self.expected_utility(transform_country.get_name(), prior_world)))
 
+    # This is the function for a country to pass for their turn
+    # @param self is the current instance of the world
+    # @param country is the country that is taking a pass
     def country_passes(self, country):
         self.__path.append("(PASSES " + country + " )")
 
     # Adds ten percent of current value of all raw resources each turn (round function s.t. we don't get decmials)
+    # @param self is the current instance of the world
     def turn_resources(self):
         for country in self.__countries:
             cur = self.__countries[country]

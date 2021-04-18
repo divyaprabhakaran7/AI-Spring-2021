@@ -1,10 +1,10 @@
 # File name: statequality.py
 # Authors: Team 6 - Ludwik Huth, Mackenzie Macdonald, Divya Prabhakaran, Regan Siems, Kelly Wolfe
 # Class: CS4269
-# Date: March 14th, 2021
+# Date: April 18, 2021
 # Honor statement: We pledge on our honor that we have neither given nor received any unauthorized aid
 # on this assignment.
-# Project Part: 1
+# Project Part: 2
 # Description: This file implements the state quality functions which are used to calculate expected utility
 
 
@@ -32,7 +32,7 @@ def state_quality(country, world):
     return essential_val + land_val + manmade_val + waste_val
 
 
-# This function calculates the value of the essential state resources. Currently, this consists of only housing.
+# This function calculates the value of the essential state resources. It consists of only housing based on our choices.
 # The value for housing is scaled by 1/3 of the population, as, on average, a household has size of 3.
 # @param country represents the country for which the function calculates the state-quality
 # @param world is the world in which the state-quality will be calculated
@@ -43,7 +43,7 @@ def essential_state(country, world):
     return housing_val
 
 
-# This function calculates the value of the land state resources. Currently, this consists of only metallic elements
+# This function calculates the value of the land state resources. This consists of metallic elements
 # and timber.
 # @param country represents the country for which the function calculates the state-quality
 # @param world is the world in which the state-quality will be calculated
@@ -54,8 +54,8 @@ def land_state(country, world):
     return timber_val + metallic_elements_val
 
 
-# This function calculates the value of the man-made state resources. Currently, this consists of only metallic alloys
-# and electronics.
+# This function calculates the value of the man-made state resources. This originally consisted of only metallic
+# alloys and electronics. Many of our part 2 transforms are included here as well.
 # @param country represents the country for which the function calculates the state-quality
 # @param world is the world in which the state-quality will be calculated
 # @return quality value for the man-made state resources
@@ -70,7 +70,8 @@ def manmade_state(country, world):
     transport_val = piecewise_value(country, world, 'R30')
     fertilizer_val = piecewise_value(country, world, 'R31')
     farm_val = piecewise_value(country, world, 'R32')
-    return metallic_alloys_val + electronics_val + fossil_val + weapons_val + military_val + medicine_val + telecomm_val + transport_val + farm_val + fertilizer_val
+    return metallic_alloys_val + electronics_val + fossil_val + weapons_val + military_val + medicine_val + \
+           telecomm_val + transport_val + farm_val + fertilizer_val
 
 
 # This function implements the piecewise function, which is the backbone of the state-quality function. It has three

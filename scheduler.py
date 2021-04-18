@@ -1,10 +1,10 @@
 # File name: scheduler.py
 # Authors: Team 6 - Ludwik Huth, Mackenzie Macdonald, Divya Prabhakaran, Regan Siems, Kelly Wolfe
 # Class: CS4269
-# Date: March 14th, 2021
+# Date: April 18, 2021
 # Honor statement: We pledge on our honor that we have neither given nor received any unauthorized aid
 # on this assignment.
-# Project Part: 1
+# Project Part: 2
 # Description: This file implements the scheduler, which is used to generate the output schedules for a given world
 
 

@@ -4,7 +4,7 @@
 # Date: April 18, 2021
 # Honor statement: We pledge on our honor that we have neither given nor received any unauthorized aid
 # on this assignment.
-# Project Part: 1
+# Project Part: 2
 # Description: This file is the program driver, running the test cases, and loading/printing the data form/to files
 
 from random import randint
@@ -15,6 +15,13 @@ import scheduler as sd  # To call the scheduler on a given set of parameters
 import pandas as pd  # To draw the data to and from the excel files
 
 
+# This function runs the world scheduler, which will print out the schedule produced
+# @param resources_filename is the file name to be read in for the resources
+# @param initial_state_filename is the file name that has the initial world state
+# @param output_filename is the file to write out the results
+# @param num_turns are the number of turns to be taken for the players
+# @param depth_bound is the bound for the depth of the search
+# @frontier_max_size is the maximum size of the frontier
 def my_world_scheduler(resources_filename, initial_state_filename, output_filename,
                        num_turns, depth_bound, frontier_max_size):
     choice_num = prompt_user_choice()  # Get user's game setting choice
@@ -51,16 +58,17 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
 
 # Returns a tuple of lists. First list is the list of transformable resources.
 # Second list is the list of transferrable resources
+# @param choice is the choice that the user selects
 def initialize_resources_list(choice):
-    if choice is 1:
+    if choice == 1:
         return ['R21', 'R22', 'R23', 'R24', 'R25', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23', 'R24',
                                                                                  'R25',
                                                                                  'R29', 'R30', 'R31', 'R32']
-    elif choice is 2:
+    elif choice == 2:
         return ['R21', 'R22', 'R23', 'R24', 'R25', 'R28', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21', 'R22', 'R23',
                                                                                         'R24', 'R25', 'R28',
                                                                                         'R29', 'R30', 'R31', 'R32']
-    elif choice is 3:
+    elif choice == 3:
         return ['R21', 'R22', 'R23', 'R24', 'R25', 'R26', 'R27', 'R28', 'R29', 'R30', 'R31', 'R32'], ['R2', 'R3', 'R21',
                                                                                                       'R22', 'R23',
                                                                                                       'R24', 'R25',
@@ -93,8 +101,9 @@ def user_resource_input(world_object):
     total = 100
     country_name = str(input("First, you must name your country. What should it be called?\n"))
     print(
-        "Now, it is time to select what resources you want your country to have!\nYou have " + str(total) + " units to "
-                                                                                                            "divide evenly among your basic resources (population, timber, metallic elements).\nSelect wisely!")
+            "Now, it is time to select what resources you want your country to have!\nYou have " + str(
+        total) + " units to "
+                 "divide evenly among your basic resources (population, timber, metallic elements).\nSelect wisely!")
     selection_pop = int(input(
         "\nHow much population do you want? " + str(total) + " units of resources remaining\n"))
     # Check that user enters valid input, otherwise prompt user to choose a valid game setting
