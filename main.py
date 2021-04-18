@@ -7,7 +7,6 @@
 # Project Part: 2
 # Description: This file is the program driver, running the test cases, and loading/printing the data form/to files
 
-from random import randint
 from country import Country  # To create the countries objects
 from world import World  # To create the world objects
 
@@ -29,11 +28,11 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
     df_countries = get_data_from_file(initial_state_filename)  # Load country data frame
     world_matrix = create_matrix(df_countries, df_resources)  # Get the two data frames into a matrix
     world_object = generate_world(world_matrix,
-                                  df_resources)  # Create the world object with country objects and weights
+                                  df_resources, df_countries)  # Create the world object with country objects and weights
     valid_transforms, valid_transfers = initialize_resources_list(
         choice_num)  # Set of resources which will be valid in this mode
     countries = world_object.get_countries()
-    world_object.set_user_setting(choice_num)
+    world_object.set_user_setting(choice_num) # set the world object into user's desired mode
     country_name, population, timber, metallic_elements = user_resource_input(world_object)
     num_countries = len(countries.keys())
     cur_world_object = world_object
@@ -43,13 +42,11 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
 
     for x in range(num_turns):
         for country in countries:
-            if (choice_num == 4):  # Run disaster mode if user selects option 4
-                disaster = disaster_prob()
-                if disaster:
-                    run_disaster(world_object, country)
             new_world = sd.scheduler(cur_world_object, country, 1, depth_bound
-                                     , frontier_max_size, valid_transforms, valid_transfers)
+                                     ,frontier_max_size, valid_transforms, valid_transfers)
             cur_world_object = new_world
+            if choice_num is 4:  # Run disaster mode if user selects option 4
+                cur_world_object.disaster(country) # Whether disaster was called or not (necessary for path)
         cur_world_object.turn_resources()  # Adds resources after every turn (I figured after made sense bc of 1st turn)
 
     print_game_output_to_file(output_filename, cur_world_object, num_turns, num_countries, countries)
@@ -97,7 +94,6 @@ def update_user_country(cur_world, country_name, population, timber, metallic_el
 
 
 def user_resource_input(world_object):
-    valid = False
     total = 100
     country_name = str(input("First, you must name your country. What should it be called?\n"))
     print(
@@ -137,41 +133,6 @@ def input_check(selection, total, resource):
         else:
             valid = True
             print("You have chosen " + str(selection) + " units of " + resource)
-
-
-# This function determines if a disaster will take place or not
-# if you are working on other parts of the code and don't want any disasters just change this to "return False".
-# FIXME currently is hard coded to 10%
-def disaster_prob():
-    num = randint(0, 10)
-    if num == 0:
-        return True
-    return False
-
-
-# This function decided which disaster is going to be run in a country
-# and then runs the chosen disaster.
-# @param world_object is our world
-# @param country is the country which the disaster will take place in
-def run_disaster(world_object, country):
-    num = randint(0, 4)
-    disaster_str = ""
-
-    if num == 0:
-        world_object.tornado(country)
-        disaster_str = "A tornado has taken place in " + country
-    elif num == 1:
-        world_object.earthquake(country)
-        disaster_str = "An earthquake has taken place in " + country
-    elif num == 2:
-        world_object.fire(country)
-        disaster_str = "A fire has taken place in " + country
-    else:
-        world_object.hurricane(country)
-        disaster_str = "A hurricane has taken place in " + country
-
-    print(disaster_str)
-    return disaster_str
 
 
 def print_game_output_to_file(file_name, final_world, num_turns, num_countries, countries):
@@ -225,15 +186,17 @@ def create_matrix(df_countries, df_resources):
 # @param matrix is the matrix used to create the country objects
 # @param df_resources are the resources from the given data frame
 # @return a world object initialized with the countries, resources and resource weights that were provided
-def generate_world(matrix, df_resources):
+def generate_world(matrix, df_resources, df_countries):
     # Create dict of resources
+    disaster_dict = pd.Series(df_countries.Disaster.values, index=df_countries.Country).to_dict() # extract disaster coeff.
+    del df_countries["Disaster"] # drop disaster col
     resource_dict = pd.Series(df_resources.Weight.values, index=df_resources.Resource).to_dict()
     names_dict = pd.Series(df_resources.Names.values, index=df_resources.Resource).to_dict()  # Get resource names
     world = World()
     world.set_resources(resource_dict)  # Set up world with resources
     world.set_resource_names(names_dict)
     for country, resources in matrix.iterrows():
-        new_country = Country(country, dict(resources))
+        new_country = Country(country, dict(resources), disaster_dict[country])
         world.add_country(new_country)
     return world
 

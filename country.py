@@ -18,9 +18,10 @@ class Country:
     # @param self is the country
     # @param name is the country name
     # @param resources is the dictionary of resources and the amount present
-    def __init__(self, name, resources):
+    def __init__(self, name, resources, disaster_prob):
         self.__name = name
         self.__resources = resources
+        self.__disaster_prob = disaster_prob
 
     # This function sets the value for the resource
     # @param self is the country itself
@@ -72,6 +73,9 @@ class Country:
 
     def set_name(self, new_name):
         self.__name = new_name
+
+    def get_disaster_prob(self):
+        return self.__disaster_prob
 
     # This function looks into country's resources and checks if meets the amount of resources specified
     # It is set up to accept either a dictionary of resource value pairs (when amount is not specified) or just one

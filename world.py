@@ -11,6 +11,7 @@
 import copy  # Used to make deep copies of world objects
 import math  # Used for the math operations in the expected utility function calculation
 import statequality as sq  # Used to implement the expected utility methods
+from random import randint # For disaster probability
 
 RAW_RESOURCES = ['R2', 'R3', 'R5']
 
@@ -159,6 +160,36 @@ class World:
     # @return current depth (length of the actions path)
     def get_depth(self):
         return self.__depth
+
+    def disaster(self, country):
+        disaster_range = round(1/(self.get_country(country).get_disaster_prob()))
+        disaster_val = randint(0, disaster_range)
+        disaster_type = randint(0, 4)
+
+        if disaster_val is 0:
+            if disaster_type is 0:
+                self.tornado(country)
+                disaster_str = "(DISASTER " + country + " (Tornado))"
+            elif disaster_type is 1:
+                self.earthquake(country)
+                disaster_str = "(DISASTER " + country + " (Earthquake))"
+            elif disaster_type is 2:
+                self.fire(country)
+                disaster_str = "(DISASTER " + country + " (Fire))"
+            else:
+                self.hurricane(country)
+                disaster_str = "(DISASTER " + country + " (Hurricane))"
+
+            self.add_to_cur_path(disaster_str)
+
+    def add_to_cur_path(self, new_str):
+        if len(self.__path) > 0:
+            new_path = self.get_path()
+            temp_path = new_path[len(new_path) - 1]
+            new_path[len(new_path) - 1] = [new_str + " " + temp_path[0]]
+            self.set_path(new_path)
+        else:
+            self.__path.append(new_str)
 
     # This function simulates the affects of a tornado on a country
     # Diminishes the housing and farm resources
