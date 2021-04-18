@@ -28,13 +28,13 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
     df_countries = get_data_from_file(initial_state_filename)  # Load country data frame
     world_matrix = create_matrix(df_countries, df_resources)  # Get the two data frames into a matrix
     world_object = generate_world(world_matrix,
-                                  df_resources, df_countries)  # Create the world object with country objects and weights
+                                  df_resources,
+                                  df_countries)  # Create the world object with country objects and weights
     valid_transforms, valid_transfers = initialize_resources_list(
         choice_num)  # Set of resources which will be valid in this mode
     countries = world_object.get_countries()
-    world_object.set_user_setting(choice_num) # set the world object into user's desired mode
+    world_object.set_user_setting(choice_num)  # set the world object into user's desired mode
     country_name, population, timber, metallic_elements, disaster_prob = user_resource_input(choice_num)
-    num_countries = len(countries.keys())
     cur_world_object = world_object
 
     # Updates user country according to user preferences
@@ -43,14 +43,14 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
     dict_moves = {}
 
     for x in range(num_turns):
-        print("\n----- Turn # " + str(x+1) + " -----\n")
+        print("\n----- Turn # " + str(x + 1) + " -----\n")
         for country in countries:
-            move_name = "Turn #" + str(x+1) + ": " + country + ": "
+            move_name = "Turn #" + str(x + 1) + ": " + country + ": "
             new_world = sd.scheduler(cur_world_object, country, 1, depth_bound
-                                     ,frontier_max_size, valid_transforms, valid_transfers)
+                                     , frontier_max_size, valid_transforms, valid_transfers)
             cur_world_object = new_world
             if choice_num is 4:  # Run disaster mode if user selects option 4
-                cur_world_object.disaster(country) # Whether disaster was called or not (necessary for path)
+                cur_world_object.disaster(country)  # Whether disaster was called or not (necessary for path)
             moves_as_list = cur_world_object.get_path()
             cur_move = moves_as_list[len(moves_as_list) - 1]
             dict_moves[move_name] = cur_move
@@ -109,9 +109,9 @@ def user_resource_input(choice_num):
     total = 100
     country_name = str(input("First, you must name your country. What should it be called?\n"))
     print(
-            "Now, it is time to select what resources you want your country to have!\nYou have " + str(
-        total) + " units to "
-                 "divide evenly among your basic resources (population, timber, metallic elements).\nSelect wisely!")
+        "Now, it is time to select what resources you want your country to have!\nYou have " + str(
+            total) + " units to "
+                     "divide evenly among your basic resources (population, timber, metallic elements).\nSelect wisely!")
     selection_pop = int(input(
         "\nHow much population do you want? " + str(total) + " units of resources remaining\n"))
     # Check that user enters valid input, otherwise prompt user to choose a valid game setting
@@ -197,8 +197,9 @@ def create_matrix(df_countries, df_resources):
 # @return a world object initialized with the countries, resources and resource weights that were provided
 def generate_world(matrix, df_resources, df_countries):
     # Create dict of resources
-    disaster_dict = pd.Series(df_countries.Disaster.values, index=df_countries.Country).to_dict() # extract disaster coeff.
-    del df_countries["Disaster"] # drop disaster col
+    disaster_dict = pd.Series(df_countries.Disaster.values,
+                              index=df_countries.Country).to_dict()  # extract disaster coeff.
+    del df_countries["Disaster"]  # drop disaster col
     resource_dict = pd.Series(df_resources.Weight.values, index=df_resources.Resource).to_dict()
     names_dict = pd.Series(df_resources.Names.values, index=df_resources.Resource).to_dict()  # Get resource names
     world = World()
@@ -216,10 +217,12 @@ def prompt_user_choice():
     valid = False
     print("Welcome to the country simulation! You, the player, will rule your own country. \nYour objective is to"
           " come out on top above all the other countries by making moves that will benefit your country. "
-          "\nIn this game, you have four settings you can play through: environmental, high-tech, war, or disaster.\n\n")
+          "\nIn this game, you have four settings you can play through: "
+          "environmental, high-tech, war, or disaster.\n\n")
     selection = int(input(
         "Make your choice: \n1. for the environmentally-conscious mode, " "\n2. for the technologically-focused mode"
         " \n3. for the military, and \n4. for the disaster-mode.\n"))
+
     # Check that user enters valid input, otherwise prompt user to choose a valid game setting
     while not valid:
         if selection <= 0 or selection > 4:
@@ -237,8 +240,7 @@ def prompt_user_choice():
 # The test cases we have created for our world
 # Calls to the method my_county_scheduler to do all of this work.
 def test_cases():
-    my_world_scheduler('data/resource_data.xlsx', 'data/test_case_3.xlsx', 'data/output_data3.xlsx',
-                       3, 10, 10)
+    my_world_scheduler('data/resource_data.xlsx', 'data/test_case_3.xlsx', 'data/output_data3.xlsx', 3, 5, 10)
 
 
 # This is the main program that calls the scheduler to run

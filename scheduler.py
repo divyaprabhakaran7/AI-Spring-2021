@@ -13,7 +13,7 @@ import statequality as sq  # To run the state quality functions
 import copy  # Used to make deep copies of world objects
 
 UPPER_BOUND = 20  # Default upper bound for a resource (indicating abundance) - scaled by resource weight
-LOWER_BOUND = 10 # Default lower bound for a resource (indicating sufficiency) - scaled by resource weight
+LOWER_BOUND = 10  # Default lower bound for a resource (indicating sufficiency) - scaled by resource weight
 
 
 # This function creates the schedule of tranforms and transfers for the resources
@@ -32,7 +32,7 @@ def scheduler(world_object, country_name, num_output_schedules, depth_bound, fro
 
     # Our queue is now keeps track of the first step and the final step (because we want to search for best
     # move several layers deep but only want the first move to be made)
-    frontier.insert((initial_state, initial_state), sq.state_quality(country_name, initial_state))
+    frontier.insert((initial_state, initial_state), 0)
 
     # While there are states to explore and we still want more schedules
     while (frontier.is_empty() is not True) and (schedules.size() < num_output_schedules):
@@ -83,7 +83,7 @@ def get_successors(world_object, country_name, transforms, transfers):
         tmp_world = copy.deepcopy(world_object)
 
         # Transform is possible
-        if tmp_world.transform(country_name, resource, 1) is True:
+        if tmp_world.transform(country_name, resource, 1):
             successors.append(tmp_world)
 
     # add transfers
@@ -99,18 +99,18 @@ def get_successors(world_object, country_name, transforms, transfers):
 
             # no need to trade if everyone has in abundance
             if to_country_name != country_name and verify_transfer(world_object, tmp_world, to_country_name):
-                tmp_world.transfer(country_name, to_country_name, resource, 1, country_name)
-                successors.append(tmp_world)
+                if tmp_world.transfer(country_name, to_country_name, resource, 1, country_name):
+                    successors.append(tmp_world)
 
         # We lack resource
         elif resource_val < LOWER_BOUND * resource_weight:
             from_country = tmp_world.get_max_resource(resource)
             from_country_name = from_country.get_name()
 
-            # no need to trade if everyone has in abundance
+            # no need to trade if everyone lacks
             if from_country_name != country_name and verify_transfer(world_object, tmp_world, from_country_name):
-                tmp_world.transfer(from_country_name, country_name, resource, 1, country_name)
-                successors.append(tmp_world)
+                if tmp_world.transfer(from_country_name, country_name, resource, 1, country_name):
+                    successors.append(tmp_world)
 
     return successors
 
@@ -118,5 +118,4 @@ def get_successors(world_object, country_name, transforms, transfers):
 # Essentially I wanted to make sure that even if a transfer is the best action for a country it can only take this
 # action if its positive for the other country
 def verify_transfer(cur_world, proposed_new_world, other_country_name):
-    # proposed_new_world.get_undiscounted_reward(other_country_name, cur_world) >= 0
-    return False
+    return proposed_new_world.get_undiscounted_reward(other_country_name, cur_world) >= 0
