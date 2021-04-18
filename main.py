@@ -33,7 +33,7 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
         choice_num)  # Set of resources which will be valid in this mode
     countries = world_object.get_countries()
     world_object.set_user_setting(choice_num) # set the world object into user's desired mode
-    country_name, population, timber, metallic_elements, disaster_prob = user_resource_input(world_object, choice_num)
+    country_name, population, timber, metallic_elements, disaster_prob = user_resource_input(choice_num)
     num_countries = len(countries.keys())
     cur_world_object = world_object
 
@@ -105,7 +105,7 @@ def update_user_country(cur_world, country_name, population, timber, metallic_el
     cur_world.add_country(user_country)
 
 
-def user_resource_input(world_object, choice_num):
+def user_resource_input(choice_num):
     total = 100
     country_name = str(input("First, you must name your country. What should it be called?\n"))
     print(
