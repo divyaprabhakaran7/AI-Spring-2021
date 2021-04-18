@@ -379,8 +379,7 @@ class World:
     # @param is the desired amount of the resource to transfer
     # @param cur_country is the state of the country before the transfer takes place
     # @return true/false indicating whether the transfer was successful
-    def transfer(self, country1, country2, resource, amount, cur_country):
-        tmp_world = copy.deepcopy(self)
+    def transfer(self, country1, country2, resource, amount):
         from_country = self.get_country(country1)
         to_country = self.get_country(country2)
         if from_country.resource_check(resource, amount):
@@ -388,11 +387,9 @@ class World:
             to_country.inc_resource(resource, amount)
             self.__depth += 1
             self.__path.append("(TRANSFER " + country1 + " " + country2 + " ("
-                               + self.get_resource_name(resource) + " " + str(amount) + "))"
-                               + " EU: " + str(self.expected_utility(cur_country, tmp_world)))
+                               + self.get_resource_name(resource) + " " + str(amount) + "))")
             self.set_active_country(country1)
             self.set_active_country(country2)
-
             return True
         else:
             return False
@@ -480,8 +477,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_housing(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R2", 1 * amount)  # MetallicElements
         transform_country.dec_resource("R3", 5 * amount)  # Timber
@@ -495,8 +490,7 @@ class World:
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS ((Population " + str(amount) +
                            ") (MetallicElements " + str(amount) + ") (Timber " + str(5 * amount) +
                            ") (MetallicAlloys " + str(3 * amount) + "))  (OUTPUTS (Population " + str(amount) +
-                           ") (Housing " + str(amount) + ") " + "(HousingWaste " + str(amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                           ") (Housing " + str(amount) + ") " + "(HousingWaste " + str(amount) + ")))")
 
     # This function does the work of transforming resources to housing in the environmental mode
     # Requires 5 population
@@ -504,7 +498,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_housing_env(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
         # Decrease inputs
         transform_country.dec_resource("R2", 1 * amount)  # MetallicElements
         transform_country.dec_resource("R3", 3 * amount)  # Timber
@@ -519,8 +512,7 @@ class World:
                            ") (MetallicElements " + str(amount) + ") (Timber " + str(3 * amount) +
                            ") (MetallicAlloys " + str(1 * amount) + ") (MetallicAlloysWaste" + str(
             2 * amount) + ") (HousingWaste" + str(2 * amount) + ")) (OUTPUTS (Population " + str(amount) +
-                           ") (Housing " + str(amount) + ") " + "(HousingWaste " + str(amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                           ") (Housing " + str(amount) + ") " + "(HousingWaste " + str(amount) + ")))")
 
     # This function does the work of transforming resources into metallic alloys
     # Requires 1 population
@@ -528,8 +520,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_alloys(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R2", 2 * amount)  # MetallicElements
 
@@ -540,8 +530,7 @@ class World:
         self.__depth += 1
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount) +
                            ") (MetallicElements " + str(2 * amount) + "))  (OUTPUTS (Population " + str(amount) +
-                           ") (MetallicAlloys " + str(amount) + ") (MetallicAlloysWaste " + str(amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                           ") (MetallicAlloys " + str(amount) + ") (MetallicAlloysWaste " + str(amount) + ")))")
 
     # This function does the work to transform electronics from resources
     # Requires 1 population
@@ -549,8 +538,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_electronics(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R2", 3 * amount)  # MetallicElements
         transform_country.dec_resource("R21", 2 * amount)  # MetallicAlloys
@@ -564,7 +551,7 @@ class World:
                            + ") (MetallicElements " + str(3 * amount) + ") (MetallicAlloys " + str(2 * amount) +
                            ")) (OUTPUTS (Population " + str(5 * amount) + ") (Electronics " + str(2 * amount) +
                            ") (ElectonicsWaste " + str(amount) +
-                           "))) EU: " + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                           ")))")
 
     # This function does the work to transform electronics from resources in the environmental mode
     # Requires 1 population
@@ -572,7 +559,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_electronics_env(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
         # Decrease inputs
         transform_country.dec_resource("R2", 2 * amount)  # MetallicElements
         transform_country.dec_resource("R21", 1 * amount)  # MetallicAlloys
@@ -586,7 +572,7 @@ class World:
                            ") (ElectronicsWaste" + str(2 * amount) + ")) (OUTPUTS (Population " + str(
             5 * amount) + ") (Electronics " + str(2 * amount) +
                            ") (ElectonicsWaste " + str(amount) +
-                           "))) EU: " + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                           ")))")
 
     # This function does the work to transform food from resources
     # Requires 1 population
@@ -594,8 +580,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_food(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R3", 3 * amount)  # Timber
 
@@ -613,8 +597,7 @@ class World:
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount)
                            + ") (Timber " + str(3 * amount) + ") (Housing " + str(amount) +
                            "))  (OUTPUTS (Population " + str(amount) + ") (Food " + str(2 * amount) +
-                           ") (Housing " + str(amount) + ") (FoodWaste " + str(amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                           ") (Housing " + str(amount) + ") (FoodWaste " + str(amount) + ")))")
 
     # This function does the work to transform fertilizer from the resources of the world
     # Requires 1 population
@@ -622,8 +605,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_fertilizer(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R24X", 3 * amount)  # FoodWaste
 
@@ -636,8 +617,7 @@ class World:
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Population " + str(amount)
                            + ") (FoodWaste " + str(3 * amount) + ")) (OUTPUTS (Population " + str(
             amount) + ") (Fertilizer " + str(2 * amount) +
-                           ") (FertilizerWaste " + str(amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                           ") (FertilizerWaste " + str(amount) + ")))")
 
     # This function does the work to transform farm land from resources
     # Requires 1 population
@@ -645,8 +625,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_farm(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R3", 3 * amount)  # Timber
         transform_country.dec_resource("R4", 3 * amount)  # Water
@@ -660,8 +638,7 @@ class World:
         self.__path.append("(TRANSFORM " + transform_country.get_name() + " (INPUTS (Water " + str(3 * amount)
                            + ") (Timber " + str(3 * amount) + ")) (OUTPUTS (Population " + str(
             amount) + ") (Farm " + str(amount) +
-                           ") (FarmWaste " + str(amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                           ") (FarmWaste " + str(amount) + ")))")
 
     # This function does the work of transforming resources to fossil fuel
     # Requires 3 population
@@ -669,8 +646,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_fossil(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R22", 2 * amount)  # Electronics
 
@@ -686,8 +661,7 @@ class World:
             3 * amount) + ") (Electronics" + str(amount) + ") "
                                                            "(Renewable Energy " + str(
             amount) + ") (Fossil Energy" + str(4 * amount) + ") "
-                                                             "(FossilWaste " + str(amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                                                             "(FossilWaste " + str(amount) + ")))")
 
     # This function does the work of transforming resources to weapons
     # Requires 6 population
@@ -695,8 +669,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_weapons(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R22", 2 * amount)  # Electronics
         transform_country.dec_resource("R21", 3 * amount)  # Metallic Alloys
@@ -710,8 +682,7 @@ class World:
                            ") (Electronics " + str(2 * amount) + ") (Metallic Alloys " + str(3 * amount) + "))"
                                                                                                            "(OUTPUTS (Population " + str(
             6 * amount) + ") (Weapons" + str(5 * amount) + ") "
-                                                           "(WeaponsWaste " + str(3 * amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                                                           "(WeaponsWaste " + str(3 * amount) + ")))")
 
     # This function does the work of transforming into a military
     # Requires 12 population
@@ -719,8 +690,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_military(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R1", 10 * amount)  # Population
         transform_country.dec_resource("R22", 12 * amount)  # Electronics
@@ -746,8 +715,7 @@ class World:
                            ")(Telecommunications " + str(3 * amount) + "))" "(OUTPUTS (Population " + str(7 * amount) +
                            ") (Electronics " + str(8 * amount) + ") (Weapons " + str(6 * amount) + ") (Housing " +
                            str(3 * amount) + ") (Transportation " + str(3 * amount) + ") (Telecommunications " +
-                           str(2 * amount) + ") (MilitaryWaste " + str(4 * amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                           str(2 * amount) + ") (MilitaryWaste " + str(4 * amount) + ")))")
 
     # This function does the work of transforming resources to telecommunications
     # Requires 2population
@@ -755,8 +723,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_telecomm(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R22", 4 * amount)  # Electronics
         transform_country.dec_resource("R21", 6 * amount)  # Metallic Alloys
@@ -776,8 +742,7 @@ class World:
                                                                "(Metallic Alloys " + str(
             4 * amount) + ") (Telecommunications " + str(3 * amount) + ") "
                                                                        "(TelecommunicationsWaste " + str(
-            1 * amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+            1 * amount) + ")))")
 
     # This function does the work of transforming resources to telecommunications in the environmental mode
     # Requires 2 population
@@ -785,8 +750,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_telecomm_env(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R22", 3 * amount)  # Electronics
         transform_country.dec_resource("R21", 4 * amount)  # Metallic Alloys
@@ -805,8 +768,7 @@ class World:
             4 * amount) + ")(Metallic Alloys Waste" + str(2 * amount) + ") (ElectronicsWaste" + str(
             1 * amount) + ")) ""(OUTPUTS (Population " + str(2 * amount) + ") (Electronics" + str(
             2 * amount) + ") ""(Metallic Alloys " + str(4 * amount) + ") (Telecommunications " + str(
-            3 * amount) + ") ""(TelecommunicationsWaste " + str(1 * amount) + "))) EU: " + str(
-            self.expected_utility(transform_country.get_name(), prior_world)))
+            3 * amount) + ") ""(TelecommunicationsWaste " + str(1 * amount) + ")))")
 
     # This function does the work of transforming resources to medicine
     # Requires 5 population
@@ -814,8 +776,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_medicine(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R22", 6 * amount)  # Electronics
         transform_country.dec_resource("R29", 2 * amount)  # Telecommunications
@@ -833,8 +793,7 @@ class World:
             5 * amount) + ") (Electronics" + str(5 * amount) + ") "
                                                                "(Telecommunications " + str(
             2 * amount) + ") (Medicine " + str(4 * amount) + ") "
-                                                             "(MedicineWaste " + str(1 * amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+                                                             "(MedicineWaste " + str(1 * amount) + ")))")
 
     # This function does the work of transforming resources to transportation
     # Requires 2 population
@@ -842,8 +801,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_transportation(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R25", 3 * amount)  # Fossil Energy
         transform_country.dec_resource("R22", 2 * amount)  # Electronics
@@ -859,8 +816,7 @@ class World:
                                                                  "(OUTPUTS (Population " + str(
             2 * amount) + ") (Electronics" + str(1 * amount) + ") "
                                                                "(Transportation " + str(
-            3 * amount) + ") (TransportWaste " + str(1 * amount) + "))) EU: "
-                           + str(self.expected_utility(transform_country.get_name(), prior_world)))
+            3 * amount) + ") (TransportWaste " + str(1 * amount) + ")))")
 
     # This function does the work of transforming resources to transportation in the environmental mode
     # Requires 2 population
@@ -868,8 +824,6 @@ class World:
     # @param transform_country is the country performing the transform
     # @param amount is the desired amount, defaulted to 1
     def transform_transportation_env(self, transform_country, amount=1):
-        prior_world = copy.deepcopy(self)
-
         # Decrease inputs
         transform_country.dec_resource("R25", 2 * amount)  # Fossil Energy
         transform_country.dec_resource("R22", 1 * amount)  # Electronics
@@ -885,8 +839,7 @@ class World:
             2 * amount) + ") (Electronics " + str(1 * amount) + ")(ElectronicsWaste " + str(
             2 * amount) + "))""(OUTPUTS (Population " + str(
             2 * amount) + ") (Electronics" + str(1 * amount) + ") " "(Transportation " + str(
-            3 * amount) + ") (TransportWaste " + str(1 * amount) + "))) EU: " + str(
-            self.expected_utility(transform_country.get_name(), prior_world)))
+            3 * amount) + ") (TransportWaste " + str(1 * amount) + ")))")
 
     # This is the function for a country to pass for their turn
     # @param self is the current instance of the world
