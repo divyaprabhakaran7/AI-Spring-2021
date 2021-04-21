@@ -12,6 +12,7 @@ from world import World  # To create the world objects
 
 import scheduler as sd  # To call the scheduler on a given set of parameters
 import pandas as pd  # To draw the data to and from the excel files
+import statequality as sq # Get initial/final state qualities
 
 
 # This function runs the world scheduler, which will print out the schedule produced
@@ -42,6 +43,10 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
 
     dict_moves = {}
 
+    init_state_quality_dict = {}
+    for country in countries:
+        init_state_quality_dict[country] = sq.state_quality(country, cur_world_object)
+
     for x in range(num_turns):
         print("\n----- Turn # " + str(x + 1) + " -----\n")
         for country in countries:
@@ -58,6 +63,19 @@ def my_world_scheduler(resources_filename, initial_state_filename, output_filena
         cur_world_object.turn_resources()  # Adds resources after every turn (I figured after made sense bc of 1st turn)
 
     print_game_output_to_file(output_filename, dict_moves)
+
+    final_state_quality_dict = {}
+    for country in countries:
+        final_state_quality_dict[country] = sq.state_quality(country, cur_world_object)
+
+    state_quality_diff = {}
+    for country in countries:
+        state_quality_diff[country] = final_state_quality_dict[country] - init_state_quality_dict[country]
+
+    print("\n\nHere are each country's statequality improvements. Find out where you rank.")
+    for x in state_quality_diff:
+        print("\t" + str(x) + " achieved the following improvement:" + '{0:>15.3g}'.format(state_quality_diff[x]))
+
     print("\n\nScheduling complete -- Check " + output_filename + " file for results")
 
 

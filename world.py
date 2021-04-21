@@ -8,7 +8,6 @@
 # Description: This file implements the World class
 
 
-import copy  # Used to make deep copies of world objects
 import math  # Used for the math operations in the expected utility function calculation
 import statequality as sq  # Used to implement the expected utility methods
 from random import randint # For disaster probability
@@ -167,7 +166,10 @@ class World:
     # @param self is the world itself
     # @param country is the country where the disaster may take place
     def disaster(self, country):
-        disaster_range = round(1/(self.get_country(country).get_disaster_prob()))
+        prob = self.get_country(country).get_disaster_prob()
+        if prob == 0:
+            return
+        disaster_range = round(1/prob)
         disaster_val = randint(0, disaster_range)
         disaster_type = randint(0, 4)
 
