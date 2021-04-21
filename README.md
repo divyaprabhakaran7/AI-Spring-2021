@@ -4,7 +4,7 @@ Group 6 Part 2 Deliverable
 
 ## Table of Contents
 * [Setup](#setup)
-* [Genral Info](#general-info)
+* [General Info](#general-info)
 * [Navigation](#navigation)
 * [How To Run](#how-to-run)
 
@@ -17,9 +17,9 @@ Download the following packages into your project:
 - XlsxWriter
 
 ## General Info
-This project is a modeling of a world that contains countries with different resources. Countries are able to transfer and transform these resources, and have a certain quality at a given state. A scheduler creates an output of different paths countries can take to do this, and the most beneficial one for the world is ideally chosen.
+This project is a modeling of a world that contains countries with different resources. Countries are able to transfer and transform these resources, and have a certain quality at a given state. A scheduler creates an output of different paths countries can take to do this, and the most beneficial one for the world is ideally chosen. The goal of this game is for the user to enter their choice of game play and allocate resources in such a way that their country has the strongest outcome. 
 
-We have put in 5 test case files as well as their output files in /data. If you would like to create your own test cases (initial states), feel free to add them to the data file and update the method test_cases() in main.py to account for them.
+We have put in one test case files as well as their output files in /data. If you would like to create your own test cases (initial states), feel free to add them to the data file and update the method test_cases() in main.py to account for them.
 
 ## Navigation
 - country.py: generates a country and its attributes
