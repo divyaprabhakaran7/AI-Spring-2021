@@ -280,7 +280,7 @@ def prompt_user_choice():
 # The test cases we have created for our world
 # Calls to the method my_county_scheduler to do all of this work.
 def test_cases():
-    my_world_scheduler('data/resource_data.xlsx', 'data/test_case_3.xlsx', 'data/output_data3.xlsx', 3, 5, 10)
+    my_world_scheduler('data/resource_data.xlsx', 'data/test.xlsx', 'data/output_data.xlsx', 3, 5, 10)
 
 
 # This is the main program that calls the scheduler to run
